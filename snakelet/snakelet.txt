@@ -1,0 +1,13 @@
+     _______            _           _              
+    /_______)          | |         | |         _   
+    ______  ____  _____| |  _ _____| | _____ _| |_ 
+    \____ \|  _ \(____ | |_/ ) ___ | || ___ (_   _)
+    _____) ) | | / ___ |  _ (| ____| || ____| | |_ 
+   (______/|_| |_\_____|_| \_)_____)\_)_____)  \__)
+
+=======================================================
+
+Snake Bot is ran off of Snakelet, which is my own set of files
+to make sure no important codes or any of that is leaked. It
+also starts a client that I can use to control the bot via 
+discord, which is pretty neat.
