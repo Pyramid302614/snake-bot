@@ -1,3 +1,4 @@
 module.exports = {
-    client: null
+    client: null,
+    sbdir: __dirname
 }
