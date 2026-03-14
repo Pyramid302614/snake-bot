@@ -1,6 +1,6 @@
 {
     "subsystems": {
-        "events": "snake-bot/events",
-        "commands": "snake-bot/commands"
+        "events": "events",
+        "commands": "commands"
     }
 }

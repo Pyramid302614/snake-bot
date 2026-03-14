@@ -7,28 +7,37 @@ module.exports = {
 
     async boot(token) {
 
-        console.log("Creating client");
-        u.cache.client(
-            new Client({
-                "intents": [
-                    IntentsBitField.Flags.Guilds,
-                    IntentsBitField.Flags.GuildMembers,
-                    IntentsBitField.Flags.MessageContent,
-                    IntentsBitField.Flags.GuildMessages
-                ]
-            })
-        );
-
-        const client = u.cache.client;
-
+        u.log.log("Creating client");
+        const client = new Client({
+            "intents": [
+                IntentsBitField.Flags.Guilds,
+                IntentsBitField.Flags.GuildMembers,
+                IntentsBitField.Flags.MessageContent,
+                IntentsBitField.Flags.GuildMessages
+            ]
+        });
+        u.cache.client = client;
+        client.destroyed = false;
         
-        console.log("Traversing events directory"); 
-        const eventsDir = fs.readdirSync(u.config.subsystems.events);
-        // for(const item) {
+        u.log.log("Traversing events directory");
+        u.dir.traverse(u.config.subsystems.events,(file,path) => {
 
-        // }
-        
+            try {
+                if(file.data && file.execute) {
 
+                    if(file.once) client.on(file.data,file.execute);
+                    else client.once(file.data,data.execute);
+
+                }
+                u.log.log("Successfully added event: " + path);
+            } catch(e) {
+                u.log.log("Error adding event: " + path + " || " + e.message);
+            }
+
+        });
+
+        u.log.log("Logging in");
+        client.login(token);
 
     }
 

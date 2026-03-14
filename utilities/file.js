@@ -8,6 +8,8 @@ module.exports = {
         if(path.includes("../")) return;
         const p = cache.sbdir + "/" + path;
 
+        return p;
+
     },
     async read(path,then) {
 

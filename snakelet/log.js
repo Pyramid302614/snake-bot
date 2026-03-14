@@ -4,10 +4,10 @@ module.exports = {
     err_f: null,
 
     log(msg) {
-        if(log_f) this.log_f(msg);
+        if(this.log_f) this.log_f(msg);
     },
     err(message,e,flavor) {
-        if(err_f) this.err_f(message,e,flavor);
+        if(this.err_f) this.err_f(message,e,flavor);
     }
 
 }
