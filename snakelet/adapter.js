@@ -8,6 +8,7 @@ module.exports = {
     },
 
     started: false,
+    node_modules_path: null,
 
     client(v) {
         if(!v) return require("../cache.js").client;
@@ -20,17 +21,7 @@ module.exports = {
         this.started = true;
         console.log("Starting : Snake Bot");
 
-        setTimeout(() => this.client({ready:true}),3000);
-
-        // TODO: hook up to client object's .on("clientReady")
-
-        await new Promise(resolve => {
-            setInterval(() => {
-                if(this.client()?.ready) {
-                    resolve();
-                }
-            },1000);
-        });
+        await require("../client.js").boot(token);
 
     },
     async stop() {
