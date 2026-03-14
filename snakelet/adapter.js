@@ -33,7 +33,7 @@ module.exports = {
         });
 
     },
-    async stop(token) {
+    async stop() {
 
         if(!this.started) return; // Forces no killing non-existant clients
 
