@@ -29,7 +29,7 @@ module.exports = {
                     else client.once(file.data,data.execute);
 
                 }
-                u.log.log("Successfully added event: " + path);
+                u.log.log("Successfully added event: " + require("node:path").relative(process.cwd(),path));
             } catch(e) {
                 u.log.log("Error adding event: " + path + " || " + e.message);
             }

@@ -20,6 +20,7 @@ module.exports = {
 
         this.started = true;
         console.log("Starting : Snake Bot");
+        require("./log.js").log("## Snake Bot is starting",true)
 
         await require("../client.js").boot(token);
 
