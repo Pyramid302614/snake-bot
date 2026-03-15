@@ -9,6 +9,7 @@ module.exports = {
 
     started: false,
     node_modules_path: null,
+    chosen_ones: [],
 
     client(v) {
         if(!v) return require("../cache.js").client;
@@ -32,6 +33,9 @@ module.exports = {
         this.started = false;
         console.log("Stopping : Snake Bot");
 
+    },
+    async chosenOnes(v) {
+        this.chosen_ones = v;
     }
 
 }
