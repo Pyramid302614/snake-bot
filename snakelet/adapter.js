@@ -34,7 +34,7 @@ module.exports = {
         console.log("Stopping : Snake Bot");
 
     },
-    async chosenOnes(v) {
+    async set_chosen_ones(v) {
         this.chosen_ones = v;
     }
 
