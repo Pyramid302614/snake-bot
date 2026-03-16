@@ -33,6 +33,9 @@ module.exports = {
         this.started = false;
         console.log("Stopping : Snake Bot");
 
+        await require("../cache.js").client.removeAllListeners();
+        await require("../cache.js").client.destroy();
+
     },
     async set_chosen_ones(v) {
         this.chosen_ones = v;

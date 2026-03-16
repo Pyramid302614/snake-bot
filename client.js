@@ -18,7 +18,7 @@ module.exports = {
             ]
         });
         u.cache.client = client;
-        client.destroyed = false; // Marks it as undestroyed to be safe with if statements possibly null-checking it
+        client.started = true;
         
         // Goes through the configured events directory and goes through every directory to find event files
         u.log.log("Traversing events directory");
