@@ -7,5 +7,6 @@ module.exports = {
     cache: require("./cache.js"),
     log: require("./snakelet/log.js"),
     config: require("./config.json"),
-    adapter: require("./snakelet/adapter.js")
+    adapter: require("./snakelet/adapter.js"),
+    color: require("./utilities/color.js")
 }
