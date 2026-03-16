@@ -27,13 +27,13 @@ module.exports = {
             try {
                 if(file.data && file.execute) { // Only accepts files with "data" and "execute" property, "once" defaults to false
 
-                    if(file.once) client.on(file.data,file.execute);
-                    else client.once(file.data,data.execute);
+                    if(!file.once) client.on(file.data,file.execute);
+                    else client.once(file.data,file.execute);
 
                 }
                 u.log.log("Successfully added event: " + require("node:path").relative(process.cwd(),path));
             } catch(e) {
-                u.log.log("Error adding event: " + path + " || " + e.message);
+                u.log.log("Error adding event: " + require("node:path").relative(process.cwd(),path) + " || " + e.message);
             }
 
         });
@@ -54,7 +54,7 @@ module.exports = {
                     u.log.log("Successfully added command: " + require("node:path").relative(process.cwd(),path))
                 }
             } catch(e) {
-                u.log.log("Error adding command: " + path + " || " + e.message);
+                u.log.log("Error adding command: " + require("node:path").relative(process.cwd(),path) + " || " + e.message);
             }
 
         });
@@ -123,3 +123,7 @@ const errtitles0 = [
     "[Insert empathetic message here]",
     "Unlucky"
 ]
+
+
+
+// Snake you prob think I code all this on github dont you
