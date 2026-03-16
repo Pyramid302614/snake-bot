@@ -6,6 +6,13 @@ module.exports = {
     set_err(v) {
         require("./log.js").err_f = v;
     },
+    set_id(v) {
+        this.id_f = v;
+    },
+    id(path) {
+        if(id_f) this.id_f(path); else return null;
+    },
+    id_f: null,
 
     started: false,
     node_modules_path: null,
