@@ -9,8 +9,12 @@ module.exports = {
     async execute(client) {
 
         u.log.log("Snake bot is ready as \x1b[33m" + client.user.username + "\x1b[0m!");
-        client.user.setStatus({
-            activities: [],
+        client.user.setPresence({
+            activities: [
+                // {
+                //     type: ActivityType.Custom, name: ""
+                // }
+            ],
             status: "online"
         });
 
