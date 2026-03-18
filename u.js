@@ -8,5 +8,7 @@ module.exports = {
     log: require("./snakelet/log.js"),
     config: require("./config.json"),
     adapter: require("./snakelet/adapter.js"),
-    color: require("./utilities/color.js")
+    color: require("./utilities/color.js"),
+    assets: require("./utilities/assets.js"),
+    sbdb: require("./utilities/sbdb.js") 
 }
