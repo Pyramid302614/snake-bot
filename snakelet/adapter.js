@@ -46,6 +46,38 @@ module.exports = {
     },
     async set_chosen_ones(v) {
         this.chosen_ones = v;
-    }
+    },
+    // Returns how to respond
+    async event_simulate(name,args) {
+        var parse = async (v) => {
+            if(!v) return v;
+            switch(v.split(":")[0]) {
+                case "guild":
+                    return await require("../cache.js").client.guilds.fetch(v.split(":")[1]);
+                default:
+                    return v;
+            }
+        }
+        var simulated = 0;
+        require("../utilities/dir.js").traverse(require("../config.json").subsystems.events,async (file,path) => {
+            if(file.data == name) {
+                await file.execute(
+                    await parse(args[0]),
+                    await parse(args[1]),
+                    await parse(args[2]),
+                    await parse(args[3]),
+                    await parse(args[4]),
+                );
+                simulated++;
+            }
+        });
+        if(simulated > 0) {
+            return "Successfully simulated `" + simulated + "` events matching `" + name + "`";
+        } else {
+            return "No events found matching `" + name + "`";
+        }
+    },
+
+    sbdb: null
 
 }
