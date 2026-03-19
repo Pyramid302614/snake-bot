@@ -11,3 +11,13 @@ Snake Bot is ran off of Snakelet, which is my own set of files
 to make sure no important codes or any of that is leaked. It
 also starts a client that I can use to control the bot via 
 discord, which is pretty neat.
+
+For some more details, heres some stuff it includes:
+
+SBDB Access (Snake Bot local database)
+Local database + backup
+Tokens, log channels and all that
+All idle client code
+All snakelet code
+Boot scripts
+Rattlelog code

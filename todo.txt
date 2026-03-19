@@ -1,1 +1,0 @@
-add "user bot supported" flag in command (include checking if in guild with bot)

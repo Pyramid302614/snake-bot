@@ -10,5 +10,9 @@ module.exports = {
     adapter: require("./snakelet/adapter.js"),
     color: require("./utilities/color.js"),
     assets: require("./utilities/assets.js"),
-    sbdb: require("./utilities/sbdb.js") 
+    sbdb: require("./utilities/sbdb.js")
+    
 }
+
+// Why would you name it u.js pyramid??? thats so undescriptive!
+// u + tab makes my life very easy

@@ -6,10 +6,8 @@ module.exports = {
     once: false,
     async execute(guild) {
         
+        if(!u.sbdb.guildSync(guild.id))
         u.sbdb.registerGuild(guild);
-
-    },
-    simulate() {
 
     }
 }
