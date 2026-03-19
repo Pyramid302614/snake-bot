@@ -5,8 +5,8 @@ module.exports = {
     data: Events.GuildCreate,
     once: false,
     async execute(guild) {
-        
-        if(!u.sbdb.guildSync(guild.id))
+
+        if(!u.sbdb.guildExists(guild.id))
         u.sbdb.registerGuild(guild);
 
     }

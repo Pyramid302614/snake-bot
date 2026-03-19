@@ -59,20 +59,20 @@ module.exports = {
             }
         }
         var simulated = 0;
-        require("../utilities/dir.js").traverse(require("../config.json").subsystems.events,async (file,path) => {
+        require("../utilities/dir.js").traverse(require("../config.json").subsystems.events,(file,path) => {
             if(file.data == name) {
-                await file.execute(
+                (async () => file.execute(
                     await parse(args[0]),
                     await parse(args[1]),
                     await parse(args[2]),
                     await parse(args[3]),
                     await parse(args[4]),
-                );
+                ))();
                 simulated++;
             }
         });
         if(simulated > 0) {
-            return "Successfully simulated `" + simulated + "` events matching `" + name + "`";
+            return "Successfully simulated `" + simulated + "` event" + ((simulated==1)?"":"s") + "matching `" + name + "`";
         } else {
             return "No events found matching `" + name + "`";
         }
