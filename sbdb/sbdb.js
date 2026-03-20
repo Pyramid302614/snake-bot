@@ -50,7 +50,7 @@ function prechecks(then) {
             return true;
         }
         if(then) then("SBDB not yet configured.",null); // Assuming it's an err dat format
-        require("../snakelet/log.js").err("%s",{
+        require("../utilities/log/loga.js").err("%s",{
             message: "[CODE 13] SBDB not yet configured.",
             stack: new Error().stack
         },"code");

@@ -8,7 +8,6 @@ module.exports = {
 
     async boot(token) {
 
-        u.log.log("Creating client");
         const client = new Client({
             "intents": [ // Intents are the permissions of the bot essentially
                 IntentsBitField.Flags.Guilds,
@@ -102,8 +101,6 @@ module.exports = {
         );
 
         u.log.log("Pushed " + commandsData.length + " application commands.");
-        
-        u.log.log("## Snake Bot has started",true);
 
     }
 

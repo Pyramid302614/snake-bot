@@ -1,39 +1,53 @@
+const log = require("../utilities/log/log.js");
+
 module.exports = {
 
-    set_log(v) {
-        require("./log.js").log_f = v;
-    },
-    set_err(v) {
-        require("./log.js").err_f = v;
-    },
-    set_id(v) {
-        this.id_f = v;
-    },
-    id(path) {
-        if(id_f) this.id_f(path); else return null;
-    },
-    id_f: null,
+    config30: null,
+    chip: false,
+    nodisclog: false,
 
     started: false,
-    node_modules_path: null,
-    chosen_ones: [],
 
-    client(v) {
-        if(!v) return require("../cache.js").client;
-        else require("../cache.js").client = v;
+    async bootSnakelet() {
+
+        log.log("Booting Snakelet");
+        await require("./client.js").boot(this.chip);
+        log.log("Snakelet booted as: \x1b[33m" + require("./client.js").client.user.username + "\x1b[0m");
+
+        console.log("Fetching log channel");
+        await log.fetchchannel(require("./client.js").client);
+        try {
+            console.log("Channel echo: \x1b[33m#" + log.channelObj.name + "\x1b[0m");
+        } catch(e) {
+            console.log("Error fetching channel.");
+            console.log(e);
+        }
+
+        console.log("Configuring error catchers");
+        process.addListener("uncaughtException",e => log.err("Uncaught exception: %s",e,"uncaught"));
+        process.addListener("unhandledRejection",e => log.err("Uncaught rejection: %s",e,"uncaught"));
+
+
     },
-    async start(token) {
+    async bootIdleClient() {
+
+        log.log("\x1b[35mStarting idle client");
+        await require("../idleclient/idle-client.js").boot(this.chip);
+        log.log("Idle client started as: \x1b[33m" + require("../idleclient/idle-client.js").client.user.username + "\x1b[0m");
+
+    },
+    async startSnakeBot() {
 
         if(this.started) return; // Forces no duplicate clients
 
         this.started = true;
         console.log("Starting : Snake Bot");
-        require("./log.js").log("## Snake Bot is starting",true)
+        log.log("## Snake Bot is Starting",true)
 
-        await require("../client.js").boot(token);
+        await require("../client.js").boot(this.chip?this.config30.beetroot_token:this.config30.snakebot_token);
 
     },
-    async stop() {
+    async stopSnakeBot() {
 
         if(!this.started) return; // Forces no killing non-existant clients
 
