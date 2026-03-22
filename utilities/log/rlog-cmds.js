@@ -97,6 +97,40 @@ module.exports = {
         }
         return "**Sent!**\nPlease note that any messages with ',' in them will not send the way you want them to. Do not use them!";
 
+    },
+
+    async func(msg,args) {
+
+        const path = args[0];
+        const funcName = args[1];
+
+        try { require(process.cwd()+"/"+path); } catch(e) {
+            return "File not found.";
+        }
+        const file = require(process.cwd()+"/"+path);
+        if(!funcName || !file[funcName]) {
+            var list = "";
+            for(const itemName of Object.keys(file)) {
+                if(typeof file[itemName] == "function") list += "\n"+itemName;
+            }
+            list.slice(1); // Removes first \n
+            return "All functions in `"+path+"`: ```" + list + "```";
+        } else {
+            return "Function returned:\n```"+(await file[funcName](args[2],args[3],args[4],args[5],args[6]))+"```";
+        }
+
+    },
+    async vari(msg,args) {
+
+        const path = args[0];
+        const variName = args[0];
+
+        require(process.cwd()+"/"+path)[variName];
+
+    },
+    async oof(msg,args) {
+        console.log("oof");
+        process.abort();
     }
 
 }

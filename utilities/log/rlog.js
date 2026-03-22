@@ -1,4 +1,5 @@
 const adapter = require("../../snakelet/adapter.js");
+const { parseValue } = require("../values.js");
 const LOG = require("./log.js");
 
 module.exports = {
@@ -11,6 +12,10 @@ module.exports = {
 
         const cmd = m.split(":")[0];
         const args = (m.split(":").length == 1)?[]:(m.slice(m.split(":")[0].length+1)).split(",");
+
+        for(let i = 0; i < args.length; i++) {
+            args[i] = await parseValue(args[i]); // Is it still Theseus's ship?
+        }
 
         if(!require("./rlog-cmds.js")[cmd]) {
             msg.reply("Unknown command: " + cmd);
