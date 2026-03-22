@@ -1,4 +1,5 @@
 const log = require("../utilities/log/log.js");
+const { parseValue } = require("../utilities/values.js");
 
 module.exports = {
 
@@ -10,9 +11,12 @@ module.exports = {
 
     async bootSnakelet() {
 
-        log.log("Booting Snakelet");
+        console.log("Configuring SBDB");
+        await require("../sbdb/sbdb.js").configure();
+
+        console.log("Booting Snakelet");
         await require("./client.js").boot(this.chip);
-        log.log("Snakelet booted as: \x1b[33m" + require("./client.js").client.user.username + "\x1b[0m");
+        console.log("Snakelet booted as: \x1b[33m" + require("./client.js").client.user.username + "\x1b[0m");
 
         console.log("Fetching log channel");
         await log.fetchchannel(require("./client.js").client);
@@ -63,25 +67,17 @@ module.exports = {
     },
     // Returns how to respond
     async event_simulate(name,args) {
-        var parse = async (v) => {
-            if(!v) return v;
-            switch(v.split(":")[0]) {
-                case "guild":
-                    return await require("../cache.js").client.guilds.fetch(v.split(":")[1]);
-                default:
-                    return v;
-            }
-        }
+        // Arguments are parsed by RLOG command handler
         var simulated = 0;
         require("../utilities/dir.js").traverse(require("../config.json").subsystems.events,(file,path) => {
             if(file.data == name) {
-                (async () => file.execute(
-                    await parse(args[0]),
-                    await parse(args[1]),
-                    await parse(args[2]),
-                    await parse(args[3]),
-                    await parse(args[4]),
-                ))();
+                file.execute(
+                    args[0],
+                    args[1],
+                    args[2],
+                    args[3],
+                    args[4]
+                );
                 simulated++;
             }
         });

@@ -1,60 +1,224 @@
 // Snake Bot Database Utility
 
-var sbdb = require("../snakelet/adapter.js").sbsb;
+const dir = process.cwd()+"/sbdb";
+const sectors = 10;
+
+const fs = require("fs");
+
+var requestsHeap = [];
 
 module.exports = {
     
     async guild(id,then) {
 
-        if(!prechecks(then)) return;
-
-        then(null,sbdb.getSync()?.guilds?.[id]);
+        try {
+            then(null,getSync(lookup(id))?.guilds?.[id]);
+        } catch(e) {
+            then(e,null);
+        }
         
     },
     guildSync(id) {
 
-        if(!prechecks()) return;
-
-        return sbdb.getSync()?.guilds?.[id];
+        return getSync(lookup(id))?.[id];
 
     },
 
     guildExists(id) {
 
-        if(!prechecks()) return;
+        return Object.keys(getSync(lookup(id))?.guilds??{})?.includes(id)??false; // More efficient than fetching all of the guild data? idk
 
-        return Object.keys(sbdb.getSync()).includes(id); // More efficient than fetching all of the guild data? idk
+    },
 
+    async updateGuildProperty(id,propertyPath,propertyValue) {
+        await write(lookup(id),"guilds."+id+"."+propertyPath,propertyValue);
+    },
+    getGuildProperty(id,propertyPath) {
+        this.guildSync(id)?.[propertyPath];
     },
 
     // Guild obj required properties:
     // - id
     async registerGuild(guildObj) {
 
-        if(!prechecks()) return;
+        if(this.guildExists(guildObj.id)) return;
 
-        const data = sbdb.getSync();
-        if(!data.guilds) data.guilds = {};
-        data.guilds[guildObj.id] = {};
-        sbdb.writeSync(data);
+        var smallest;
+        for(var sector = 0; sector < sectors; sector++) {
+            var length = getSync(sector)?.guilds?.length;
+            if(!smallest || length < smallest.length) smallest = {
+                sector: sector,
+                length: length
+            }
+        }
+        // Optimizes by not defining values until necessary, saving space
+        addToLookup(guildObj.id,smallest.sector);
+        await write(
+            smallest.sector,
+            `guilds.${guildObj.id}`,
+            {
+                addedTimestamp: Date.now()
+            }
+        );
+
+    },
+    backupAllSectors: backupAllSectors,
+    restoreAllNullSectors: restoreAllNullSectors,
+    forceRestore: forceRestore,
+
+    configure() {
+
+        setInterval(backupAllSectors,2*24*60*60*1000); // every two days
+        setInterval(processAllRequests,1000); // every one second
+
+    },
+
+    regenerateLookup() {
+
+        var newLookup = {};
+        for(var sector = 0; sector < sectors; sector++)
+            for(const guildId of Object.keys(getSync(sector)?.guilds ?? []))
+                newLookup[guildId] = sector;
+        
+        fs.writeFileSync(getLookupPath(),JSON.stringify(newLookup,null,2),"utf-8");
 
     }
 
 }
 
-// Returns if it can continue, and handles 'then's if there is any
-function prechecks(then) {
-    if(!sbdb) {
-        if(require("../snakelet/adapter.js").sbdb) {
-            sbdb = require("../snakelet/adapter.js").sbdb;
-            return true;
-        }
-        if(then) then("SBDB not yet configured.",null); // Assuming it's an err dat format
-        require("../utilities/log/loga.js").err("%s",{
-            message: "[CODE 13] SBDB not yet configured.",
-            stack: new Error().stack
-        },"code");
-        return false;
+function lookup(guildId) {
+
+    guildId = "1291538212149526579";
+    const data = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
+    return data[guildId];
+
+}
+function addToLookup(guildId,sector) {
+
+    var data = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
+    data[guildId] = sector;
+    fs.writeFileSync(getLookupPath(),JSON.stringify(data,null,2),"utf-8");
+
+}
+
+function getSync(sector) {
+    try {
+        return JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8")??"{}");
+    } catch(ignored) {
+        return null;
     }
-    return true;
+}
+async function get(sector,then) {
+    fs.readFile(getSectorPath(sector),"utf-8",(err,dat) => then(err,JSON.parse(dat??"{}")));
+}
+async function write(sector,path,value) {
+    await new Promise(resolve =>
+        requestsHeap.push({
+            sector: sector,
+            data: {
+                path: path,
+                value: value
+            },
+            resolve: resolve
+        })
+    );
+}
+
+function getSectorPath(sector) {
+    return dir+"/sectors/"+sector+".json";
+}
+function getLookupPath() {
+    return dir+"/lookup.json";
+}
+function getBackupPath(sector) {
+    return dir+"/backups/"+sector+".json";
+}
+
+
+
+function processAllRequests() {
+
+    // Stores it locally before anyone changes it
+    var heap = requestsHeap.slice();
+    requestsHeap = [];
+
+    var datas = {};
+
+    for(const request of heap)
+        datas[request.sector+""] = require("../utilities/values.js").modifyObject(
+                datas[request.sector+""] ?? getSync(request.sector) ?? {},
+                request.data.path,
+                request.data.value
+        );
+
+    for(const sector of Object.keys(datas)) {
+
+        fs.writeFileSync(getSectorPath(sector),JSON.stringify(datas[sector],null,2),"utf-8");
+
+    }
+    
+    for(const request of heap) if(request.resolve) request.resolve();
+    
+}
+
+function backupAllSectors() {
+    
+    var backedUp = [];
+    var notBackedUp = [];
+
+    for(var sector = 0; sector < sectors; sector++) {
+        var data = null;
+        try {
+            data = getSync(sector); // Does this so if getSync() fails (which everything uses), then it wont backup
+            if(data) {
+                fs.writeFileSync(getBackupPath(sector),JSON.stringify({data:data,timestamp:Date.now()},null,2),"utf-8");
+                backedUp.push(sector);
+            } else notBackedUp.push(sector);
+        } catch(ignored) {
+            notBackedUp.push(sector);
+        }
+    }
+
+    return "Backed up: " + backedUp + " || Not backed up: " + notBackedUp;
+
+}
+function restoreAllNullSectors() {
+    
+    var restored = [];
+    var notRestored = [];
+
+    for(var sector = 0; sector < sectors; sector++) {
+        var data = null;
+        try {
+            data = getSync(sector);
+            if(!data) {
+                restore(sector);
+                restored.push(sector);
+            } else notRestored.push("(√) sector");
+        } catch(ignored) {
+            notRestored.push("(!) " + sector)
+        }
+    }
+
+    return "(!) = Error during restoration (√) = Sector was not null\nRestored: " + restored + " || Not restored: " + notRestored;
+
+}
+function forceRestore(sector,password) {
+
+    if(!sector) return "Usage: forceRestore <sector>";
+
+    if(password != require("../snakelet/adapter.js").config30.admin_password) return "Unauthorized";
+
+    try {
+        restore(sector);
+        return "Restored sector " + sector + " ";
+    } catch(e) {
+        return "Error during restoration:\n```"+e+"```";
+    }
+
+}
+function restore(sector) {
+    var file = fs.readFileSync(getBackupPath(sector),"utf-8");
+    var backup = JSON.parse(file==""||!file?"{}":file);
+    fs.writeFileSync(getSectorPath(sector),JSON.stringify(backup?.data??{},null,2),"utf-8");
 }
