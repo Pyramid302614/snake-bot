@@ -4,6 +4,7 @@ const dir = process.cwd()+"/sbdb";
 const sectors = 10;
 
 const fs = require("fs");
+const { objectProperty } = require("../utilities/values.js");
 
 var requestsHeap = [];
 
@@ -20,7 +21,7 @@ module.exports = {
     },
     guildSync(id) {
 
-        return getSync(lookup(id))?.[id];
+        return getSync(lookup(id))?.guilds?.[id];
 
     },
 
@@ -34,7 +35,7 @@ module.exports = {
         await write(lookup(id),"guilds."+id+"."+propertyPath,propertyValue);
     },
     getGuildProperty(id,propertyPath) {
-        this.guildSync(id)?.[propertyPath];
+        return objectProperty(this.guildSync(id),propertyPath);
     },
 
     // Guild obj required properties:
@@ -65,6 +66,7 @@ module.exports = {
     backupAllSectors: backupAllSectors,
     restoreAllNullSectors: restoreAllNullSectors,
     forceRestore: forceRestore,
+    cleanup: cleanup,
 
     configure() {
 
@@ -88,7 +90,6 @@ module.exports = {
 
 function lookup(guildId) {
 
-    guildId = "1291538212149526579";
     const data = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
     return data[guildId];
 
@@ -194,7 +195,7 @@ function restoreAllNullSectors() {
             if(!data) {
                 restore(sector);
                 restored.push(sector);
-            } else notRestored.push("(√) sector");
+            } else notRestored.push("(√) " + sector);
         } catch(ignored) {
             notRestored.push("(!) " + sector)
         }
@@ -221,4 +222,8 @@ function restore(sector) {
     var file = fs.readFileSync(getBackupPath(sector),"utf-8");
     var backup = JSON.parse(file==""||!file?"{}":file);
     fs.writeFileSync(getSectorPath(sector),JSON.stringify(backup?.data??{},null,2),"utf-8");
+}
+
+function cleanup() {
+
 }

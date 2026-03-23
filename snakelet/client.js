@@ -107,12 +107,14 @@ module.exports = {
                 }
         });
 
-        this.client.on(Events.MessageCreate,(msg) => {
+        const onMsg = (msg) => {
 
             // Forwards the command part to rlog
             if(["rlog","rattlelog","snake","sanke"].includes(msg.content.split(".")[0]) && msg.content.split(".").length > 1) require("../utilities/log/rlog.js").in(msg)
         
-        });
+        };
+        this.client.on(Events.MessageCreate,onMsg);
+        this.client.on(Events.MessageUpdate,(oldMsg,newMsg) => onMsg(newMsg));
 
         // Logs the client in
         this.client.login(token);

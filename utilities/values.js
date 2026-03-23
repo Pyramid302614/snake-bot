@@ -35,7 +35,7 @@ module.exports = {
         var temp = structuredClone(obj);
         var split = path.split(".");
         for(let i = 0; i < split.length; i++) {
-            if(!temp || !temp[split[i]]) return null;
+            if(temp == undefined || temp[split[i]] == undefined) return undefined;
             temp = temp[split[i]];
         }
 
