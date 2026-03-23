@@ -72,13 +72,27 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setTitle(errtitles0[Math.floor(Math.random()*errtitles0.length)])
-                            .setDescription("An error occurred while executing that command!\nIf you believe this is a mistake, report it in the `/server` and I will fix it!"+(u.adapter.chosen_ones.includes(interaction.user.id)?("\n```"+e.stack+"```"):""))
+                            .setDescription("An error occurred while executing that command!\nIf you believe this is a mistake, report it in the `/server` and I will fix it!"+(u.adapter.config30.chosen_ones.includes(interaction.user.id)?("\n```"+e.stack+"```"):""))
                             .setColor([255,0,0])
                     ],
                     flags: [ MessageFlags.Ephemeral ] // discord.js v15 heh
                 }
                 if(interaction.deferred || interaction.replied) interaction.followUp(msg);
                 else interaction.reply(msg);
+            }
+
+            if(interaction.isChannelSelectMenu() || interaction.isButton()) {
+                if(interaction.customId.split(":")[0] != interaction.user.id) {
+                    interaction.update({});
+                    return;
+                };
+                var t = require(interaction.customId.split(":")[1]);
+                try {
+                    var f = require(interaction.customId.split(":")[1])[interaction.customId.split(":")[2]]
+                    f(interaction);
+                } catch(e) {
+                    interaction.reply("An error occurred while processing that interaction")
+                }
             }
 
         });

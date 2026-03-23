@@ -27,7 +27,7 @@ module.exports = {
 
     guildExists(id) {
 
-        return Object.keys(getSync(lookup(id))?.guilds??{})?.includes(id)??false; // More efficient than fetching all of the guild data? idk
+       return lookup(id)??false;
 
     },
 
