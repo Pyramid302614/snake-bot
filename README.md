@@ -1,8 +1,4 @@
-# Snake Bot
-Designed by Pyramid and Snake
-Coded by Pyramid
-Art by Pyramid
-Readme by Me (Who is me)
+# Snake Bot!!!
 
 # Contacts
 **Pyramid:** @pyramid302614 on Discord, @pyramid302614 on Github\
