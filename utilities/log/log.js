@@ -17,7 +17,7 @@ module.exports = {
 
         try {
             if(!discordOnly) console.log(msg);
-            if(!require("../../snakelet/adapter.js").nodisclog) require("./log.js").inChannel(msg);
+            if(!require("../../snakelet/adapter.js").nodisclog) this.inChannel(msg);
         } catch(ignored) {}
 
     },
@@ -30,7 +30,7 @@ module.exports = {
             msg = msg.replaceAll(match[0],"`"+match[0]+"`");
         }
 
-        if(this.channelObj) await require("./log.js").channelObj.send(msg ?? "_ _");
+        if(this.channelObj) await this.channelObj.send(msg ?? "_ _");
 
     },
 
@@ -48,7 +48,7 @@ module.exports = {
         pings = pings.slice(1); // removes first space
 
         try {
-            if(!require("../../snakelet/adapter.js").nodisclog) require("./log.js").channelObj.send({
+            if(!require("../../snakelet/adapter.js").nodisclog) this.channelObj.send({
             content: (flavor=="code"?pings:""),
             embeds: [
                 new EmbedBuilder()
