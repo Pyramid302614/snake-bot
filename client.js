@@ -71,7 +71,7 @@ module.exports = {
                 const msg = {
                     embeds: [
                         new EmbedBuilder()
-                            .setTitle(errtitles0[Math.floor(Math.random()*errtitles0.length)])
+                            .setTitle(u.errTitles.generalPack[Math.floor(Math.random()*u.errTitles.generalPack.length)])
                             .setDescription("An error occurred while executing that command!\nIf you believe this is a mistake, report it in the `/server` and I will fix it!"+(u.adapter.config30.chosen_ones.includes(interaction.user.id)?("\n```"+e.stack+"```"):""))
                             .setColor([255,0,0])
                     ],
@@ -82,17 +82,9 @@ module.exports = {
             }
 
             if(interaction.isChannelSelectMenu() || interaction.isButton()) {
-                if(interaction.customId.split(":")[0] != interaction.user.id) {
-                    interaction.update({});
-                    return;
-                };
-                var t = require(interaction.customId.split(":")[1]);
-                try {
-                    var f = require(interaction.customId.split(":")[1])[interaction.customId.split(":")[2]]
-                    f(interaction);
-                } catch(e) {
-                    interaction.reply("An error occurred while processing that interaction")
-                }
+                
+                require("./utilities//commands/messageElements.js").interaction(interaction);
+
             }
 
         });
@@ -119,21 +111,6 @@ module.exports = {
     }
 
 }
-
-// For errors with
-const errtitles0 = [
-    "Bad news",
-    "What????",
-    "Damn",
-    "That red message can't be good",
-    "Welp",
-    "Blame snake",
-    "Oops",
-    "Its not your fault... or is it?",
-    ":despair:",
-    "[Insert empathetic message here]",
-    "Unlucky"
-]
 
 
 
