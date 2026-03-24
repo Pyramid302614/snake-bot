@@ -25,6 +25,8 @@ module.exports = {
     // Returns weither not to NOT execute the execute function
     async processCommand(interaction,contexts) {
 
+        contexts = contexts ?? [];
+
         if(!contexts.includes("absent") && !interaction.guild) {
             interaction.reply({
                 embeds: [

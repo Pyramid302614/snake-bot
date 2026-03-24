@@ -27,9 +27,11 @@ module.exports = {
 
     guildExists(id) {
 
-       return lookup(id)??false;
+       return lookup(id)!=undefined?true:false;
 
     },
+    
+    lookup: lookup,
 
     async updateGuildProperty(id,propertyPath,propertyValue) {
         await write(lookup(id),"guilds."+id+"."+propertyPath,propertyValue);

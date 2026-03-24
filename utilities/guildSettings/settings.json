@@ -1,0 +1,6 @@
+{
+    "configured": {"n":"Configured","s":false,"d":false,"t":"boolean"},
+    "channels": {
+        "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels"}
+    }
+}

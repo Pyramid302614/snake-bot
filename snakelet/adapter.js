@@ -1,4 +1,4 @@
-const log = require("../utilities/log/log.js");
+const log = () => { return require("../utilities/log/log.js"); };
 const { parseValue } = require("../utilities/values.js");
 
 module.exports = {
@@ -19,25 +19,25 @@ module.exports = {
         console.log("Snakelet booted as: \x1b[33m" + require("./client.js").client.user.username + "\x1b[0m");
 
         console.log("Fetching log channel");
-        await log.fetchchannel(require("./client.js").client);
+        await log().fetchchannel(require("./client.js").client);
         try {
-            console.log("Channel echo: \x1b[33m#" + log.channelObj.name + "\x1b[0m");
+            console.log("Channel echo: \x1b[33m#" + log().channelObj.name + "\x1b[0m");
         } catch(e) {
             console.log("Error fetching channel.");
             console.log(e);
         }
 
         console.log("Configuring error catchers");
-        process.addListener("uncaughtException",e => log.err("Uncaught exception: %s",e,"uncaught"));
-        process.addListener("unhandledRejection",e => log.err("Uncaught rejection: %s",e,"uncaught"));
+        process.addListener("uncaughtException",e => log().err("Uncaught exception: %s",e,"uncaught"));
+        process.addListener("unhandledRejection",e => log().err("Uncaught rejection: %s",e,"uncaught"));
 
 
     },
     async bootIdleClient() {
 
-        log.log("\x1b[35mStarting idle client");
+        log().log("\x1b[35mStarting idle client");
         await require("../idleclient/idle-client.js").boot(this.chip);
-        log.log("Idle client started as: \x1b[33m" + require("../idleclient/idle-client.js").client.user.username + "\x1b[0m");
+        log().log("Idle client started as: \x1b[33m" + require("../idleclient/idle-client.js").client.user.username + "\x1b[0m");
 
     },
     async startSnakeBot() {
@@ -46,7 +46,7 @@ module.exports = {
 
         this.started = true;
         console.log("Starting : Snake Bot");
-        log.log("## Snake Bot is Starting",true)
+        log().log("## Snake Bot is Starting",true)
 
         await require("../client.js").boot(this.chip?this.config30.beetroot_token:this.config30.snakebot_token);
 

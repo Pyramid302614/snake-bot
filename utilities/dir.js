@@ -32,6 +32,30 @@ module.exports = {
 
         t(p); // Starts the chain
 
+    },
+
+    traverseArray(array,forEach) {
+
+        var t = (array) => {
+            for(const item of array) {
+                if(Array.isArray(item)) t(item);
+                else forEach(item);
+            }
+        }
+
+        t(array); // Starts the chain just like the last one
+
+    },
+
+    traverseObject(obj,forEach) {
+
+        var t = (obj) => {
+            for(const value of Object.values(obj)) {
+                if(!Array.isArray(obj) && typeof obj == "object") t(value);
+                else forEach(value);
+            }
+        }
+
     }
 
 }

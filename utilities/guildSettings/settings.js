@@ -1,5 +1,10 @@
-const { sbdb } = require("../../u");
+const sbdb = require("../../sbdb/sbdb.js");
 const { objectProperty } = require("../values");
+
+// d: default vaule
+// s: show in configurations panel
+// t: value type
+// n: Pretty name
 
 module.exports = {
 
@@ -18,12 +23,49 @@ module.exports = {
 
         if(sbdb.guildExists(guildId)) await sbdb.updateGuildProperty(guildId,"settings."+path,value);
 
-    }
+    },
+
+    // Returns a more presentable value for it's name that isn't the code save one like "this_and_that"
+    prettyName: prettyName,
+
+    // Returns a pretty value for it that is formatted instead of raw IDs
+    prettyValue: prettyValue,
+
+    settingsJSON: require("./settings.json")
 
 }
 
 function defaultValue(path) {
 
-    return objectProperty(require("./defaults.json"),path);
+    return objectProperty(require("./settings.json"),path).d; // d = default value
+
+}
+
+
+async function prettyValue(settingData) {
+   
+    switch(settingData.t) { // Cases without anyting to the right are a part the ones below it
+        case "string":
+        case "number": return settingData.v;
+        case "array":
+        case "object": return JSON.parse(settingData.v,null,2);
+        case "channel": return `<#${settingData.v}>`;
+        case "channels": var result = ""; for(const channel of settingData.v) result += `\n<#${channel}>`; return result.slice(1);
+        case "guild": return `**$${(await require("../../cache.js").client.guilds.fetch(settingData.v)).name}`;
+        case "guilds": var result = ""; for(const guild of settingData.v) result += `\n**$${(await require("../../cache.js").client.guilds.fetch(guild)).name}`; return result.slice(1);
+        default: return settingData.v; // Returns same value if invalid typwe
+    }
+
+}
+function prettyName(settingData) {
+
+    return `**${settingData.n}**`;
+
+}
+
+function getData(path) {
+
+    var data = require("./settings.json")[path];
+    return objectProperty(data,path);
 
 }

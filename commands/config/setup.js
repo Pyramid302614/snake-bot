@@ -11,6 +11,15 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     contexts: [],
     async execute(interaction) {
+
+        if(u.settings.get(interaction.guild.id,"configured")) {
+
+            require("./settings.js").execute(interaction); // Forwards it to settings
+            return;
+
+        }
+
+        // If not configured ===========================
             
         await interaction.reply({
             embeds: [
@@ -43,7 +52,7 @@ module.exports = {
         // therefore, if I have it be more than 1 ms and add some shiny colors and humurous messages, it comes
         // off as "damn, this things legit" thus improving it's first impressions, which as
         // you may have heard, are the best impressions.
-        var messages = ["Settings things up...","Adding guild to the Snake Bot Database...","Configuring settings...","Calling snakes over...","Configuring random crap...","Painting snakes green...","Pissing off angry snake...","Pissing off angry snake...","Finishing things up....","Finishing things up...."];
+        var messages = ["Settings things up...","Adding guild to the Snake Bot Database...","Configuring settings...","Calling snakes over...","Configuring random crap...","Painting snakes green...","Nuking AI database...","Pissing off angry snake...","Finishing things up....","Finishing things up...."];
         var colors = ["#009a33","#ffee00","#00fffb","#ff4400","#ff00d9"]; // Jumps between left and right on the hue slider
         var done = false;
         var i = 0; // Color
@@ -60,6 +69,19 @@ module.exports = {
 
         await new Promise(resolve => setTimeout(resolve,1000));
 
+
+        const confirmButton = 
+            u.msgelem.messageElement(
+                new ButtonBuilder()
+                    .setLabel("Confirm Choices")
+                    .setStyle(ButtonStyle.Primary),
+                () => {},
+                [interaction.user.id]
+            );
+
+
+        var selectedChannels = [];
+        var selectDel = () => {};
         interaction.editReply({
             embeds: [
                 new EmbedBuilder()
@@ -71,36 +93,69 @@ module.exports = {
                 {
                     type: 1,
                     components: [
-                        new ChannelSelectMenuBuilder()
-                            .setPlaceholder("Select here")
-                            .setCustomId(interaction.user.id+":./commands/config/setup.js:snake_spawn_channels_select_menu")
-                            .setMinValues(0).setMaxValues(25)
-                            .setChannelTypes(ChannelType.GuildText,ChannelType.GuildAnnouncement)
+                        u.msgelem.messageElement(
+                            new ChannelSelectMenuBuilder()
+                                .setPlaceholder("Select here")
+                                .setCustomId(interaction.user.id+":./commands/config/setup.js:snake_spawn_channels_selection_menu")
+                                .setMinValues(0).setMaxValues(25)
+                                .setChannelTypes(ChannelType.GuildText,ChannelType.GuildAnnouncement),
+                            (del,interaction,data) => {
+                                selectDel = del;
+                                interaction.update({});
+                                selectedChannels = interaction.values;
+                            },
+                            [interaction.user.id]
+                        ).data
                     ]
                 },
                 {
                     type: 1,
                     components: [
-                        new ButtonBuilder()
-                            .setLabel("Confirm Choices")
-                            .setCustomId(interaction.user.id+":./commands/config/setup.js:snake_spawn_channels_confirm_button")
-                            .setStyle(ButtonStyle.Primary)
+                        confirmButton.data
                     ]
                 }
             ]
         });
 
-        await new Promise(resolve => 
-            require("./setup.js").snake_spawn_channels_confirm_button = (b_interaction) => {
-            resolve();
+        await new Promise(resolve => {
+            confirmButton.execute = (del,interaction,data) => {
+                interaction.update({});
+                del();
+                resolve();
+            }
         });
 
+        selectDel();
+        
+        await u.settings.set(interaction.guild.id,"channels.spawnable",selectedChannels);
+        await u.settings.set(interaction.guild.id,"channels.configured",true);
+
+        const currentSettings = u.settings.get(interaction.guild.id,"channels.spawnable");
+        if(!selectedChannels.every((val,i) => val == currentSettings?.[i])) {
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Well that was weird.")
+                        .setDescription("It seems your guild settings didn't save. Maybe try again?\nIf that doesn't work, either report the bug in `/server` or directly reach out to @pyramid302614.")
+                        .setColor([255,0,0])
+                ],
+                components: []
+            });
+        } else {
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("You're all set!")
+                        .setDescription("Enjoy Snake Bot!!")
+                        .setColor(u.color.rgb("#ea00ff"))
+                ],
+                components: []
+            });
+
+        }
+        
         
 
-    },
-    snake_spawn_channels_selection_menu: (interaction) => {
-        selected = interaction.selectedValues;
-    },
-    snake_spawn_channels_selection_menu_selected: [],
-    snake_spawn_channels_confirm_button: () => {}
+    }
 }
