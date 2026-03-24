@@ -34,17 +34,17 @@ It also needs a directory outside the snake-bot directory to store the database.
 # 
 
 ## Unecessary credits
-Me - My mom (genuinely who is 'me')
-My computer - MinisForum
-My OS - Binbows Michaelsoft
-Snake - Snake's mom
-Pyramid - Pyramid's mom
-My keyboard - Razer
-My keyboard's number lock key - Razer
-My fingers - My mom
-"An eyeinator for an eyeintaor will make the world go blindinator." - My man ghandinator
-My mom - My grandma
-Github - idk
-My house - idk
-Snake Bot - All of us fr ❤️
-The number 5 - me
+Me - My mom (genuinely who is 'me')\
+My computer - MinisForum\
+My OS - Binbows Michaelsoft\
+Snake - Snake's mom\
+Pyramid - Pyramid's mom\
+My keyboard - Razer\
+My keyboard's number lock key - Razer\
+My fingers - My mom\
+"An eyeinator for an eyeintaor will make the world go blindinator." - My man ghandinator\
+My mom - My grandma\
+Github - idk\
+My house - idk\
+Snake Bot - All of us fr ❤️\
+The number 5 - me\
