@@ -11,7 +11,11 @@ module.exports = {
     color: require("./utilities/color.js"),
     assets: require("./utilities/assets.js"),
     sbdb: require("./sbdb/sbdb.js"),
-    values: require("./utilities/values.js")
+    values: require("./utilities/values.js"),
+    settings: require("./utilities/guildSettings/settings.js"),
+    msgelem: require("./utilities/commands/messageElements.js"),
+    errTitles: require("./utilities/errorTitles.js")
+
 }
 
 // Why would you name it u.js pyramid??? thats so undescriptive!
