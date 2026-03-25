@@ -102,8 +102,9 @@ async function selectLocation(guildObj) {
 
         const channel = await guildObj.channels.fetch(channels[i]);
 
-        channel.send();
-        
+        const messages = channel.messages.fetch({limit:10});
+        if(messages[messages.length-5].createdTimestamp+10*60*1000>Date.now()) // 4th to last message must be at most 10 minutes old
+
     }
 
 }
