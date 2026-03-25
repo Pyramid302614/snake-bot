@@ -12,7 +12,11 @@ module.exports = {
         ":despair:",
         "[Insert empathetic message here]",
         "Unlucky"
-    ]
+    ],
+
+    newTitle(name) {
+        return this[name][Math.floor(Math.random()*this[name].length)];
+    }
 
 }
 

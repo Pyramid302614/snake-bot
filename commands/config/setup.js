@@ -69,91 +69,15 @@ module.exports = {
 
         await new Promise(resolve => setTimeout(resolve,1000));
 
-
-        const confirmButton = 
-            u.msgelem.messageElement(
-                new ButtonBuilder()
-                    .setLabel("Confirm Choices")
-                    .setStyle(ButtonStyle.Primary),
-                () => {},
-                [interaction.user.id]
-            );
-
-
-        var selectedChannels = [];
-        var selectDel = () => {};
-        interaction.editReply({
+        await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
-                    .setTitle("What channels should I use? (You can edit this later if needed)")
-                    .setDescription("Snakes will be able to spawn in any channel you select.\n**Note: You must give Snake Bot access to channels in order for snakes to spawn there.**")
-                    .setColor(u.color.rgb("#ffbb00"))
+                    .setTitle("You're all set! Now what?")
+                    .setDescription("Go in any channels you want to have snakes spawn in and do `/add-channel` to add it and do `/remove-channel` do remove it.\n\n**IMPORTANT!**\n - Snake Bot cannot illegally send messages in channels it does not have access to! If you add a channel that it cannot speak in, snakes will **not** spawn!\n - Snake Bot uses an advanced algorithm to decide where to spawn snakes. If you add #general as a channel, don't worry about it intruding on conversations, because the algorithm is trained to avoid channels with high activity to not ruin the moment!")
+                    .setColor(u.color.rgb("#ea00ff"))
             ],
-            components: [
-                {
-                    type: 1,
-                    components: [
-                        u.msgelem.messageElement(
-                            new ChannelSelectMenuBuilder()
-                                .setPlaceholder("Select here")
-                                .setCustomId(interaction.user.id+":./commands/config/setup.js:snake_spawn_channels_selection_menu")
-                                .setMinValues(0).setMaxValues(25)
-                                .setChannelTypes(ChannelType.GuildText,ChannelType.GuildAnnouncement),
-                            (del,interaction,data) => {
-                                selectDel = del;
-                                interaction.update({});
-                                selectedChannels = interaction.values;
-                            },
-                            [interaction.user.id]
-                        ).data
-                    ]
-                },
-                {
-                    type: 1,
-                    components: [
-                        confirmButton.data
-                    ]
-                }
-            ]
+            components: []
         });
-
-        await new Promise(resolve => {
-            confirmButton.execute = (del,interaction,data) => {
-                interaction.update({});
-                del();
-                resolve();
-            }
-        });
-
-        selectDel();
-        
-        await u.settings.set(interaction.guild.id,"channels.spawnable",selectedChannels);
-        await u.settings.set(interaction.guild.id,"channels.configured",true);
-
-        const currentSettings = u.settings.get(interaction.guild.id,"channels.spawnable");
-        if(!selectedChannels.every((val,i) => val == currentSettings?.[i])) {
-            await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Well that was weird.")
-                        .setDescription("It seems your guild settings didn't save. Maybe try again?\nIf that doesn't work, either report the bug in `/server` or directly reach out to @pyramid302614.")
-                        .setColor([255,0,0])
-                ],
-                components: []
-            });
-        } else {
-
-            await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("You're all set!")
-                        .setDescription("Enjoy Snake Bot!!")
-                        .setColor(u.color.rgb("#ea00ff"))
-                ],
-                components: []
-            });
-
-        }
         
         
 

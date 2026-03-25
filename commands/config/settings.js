@@ -13,23 +13,29 @@ module.exports = {
 
         var list = "";
 
-        var each = (obj) => {
-            list += u.settings.prettyName(obj) + ": " + u.settings.prettyValue(obj) + "\n";
+        var each = async (obj,path) => {
+            list += "\n" + await u.settings.prettyName(obj) + ": " + await u.settings.prettyValue(obj,u.settings.get(interaction.guild.id,path));
         }
-        var t = (obj) => {
-            for(const value of Object.values(obj))
+        list.slice(1,);
+
+        var t = async (obj,path) => {
+            path = path ?? "";
+            for(var i = 0; i < Object.keys(obj).length; i++)  {
+                const value = Object.values(obj)[i];
+                const key = Object.keys(obj)[i];
                 if(typeof value != "object") return;
-                if(value.d && value.t && value.s && value.n) each(value);
-                else t(value);
+                if(value.d && value.t && value.s && value.n) await each(value,(path+"."+key).slice(1));
+                else await t(value,path+"."+key);
+            }
         }
-        t(u.settings.settingsJSON);
+        await t(u.settings.settingsJSON,);
 
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Settings for **" + interaction.guild.name + "**")
                     .setDescription(list)
-                    .setFooter("Fun fact: Your guild is stored in sector " + u.sbdb.lookup(interaction.guild.id))
+                    .setFooter({text:"Fun fact: Your guild is stored in sector " + u.sbdb.lookup(interaction.guild.id)})
                     .setColor(u.color.rgb("#00f351"))
             ]
         });     

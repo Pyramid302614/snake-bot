@@ -2,5 +2,9 @@
     "configured": {"n":"Configured","s":false,"d":false,"t":"boolean"},
     "channels": {
         "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels"}
+    },
+    "spawning": {
+        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"number"},
+        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean"}
     }
 }

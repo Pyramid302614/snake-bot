@@ -36,24 +36,26 @@ module.exports = {
 }
 
 function defaultValue(path) {
-
-    return objectProperty(require("./settings.json"),path).d; // d = default value
+    return objectProperty(require("./settings.json"),path)?.d; // d = default value
 
 }
 
 
-async function prettyValue(settingData) {
-   
-    switch(settingData.t) { // Cases without anyting to the right are a part the ones below it
-        case "string":
-        case "number": return settingData.v;
-        case "array":
-        case "object": return JSON.parse(settingData.v,null,2);
-        case "channel": return `<#${settingData.v}>`;
-        case "channels": var result = ""; for(const channel of settingData.v) result += `\n<#${channel}>`; return result.slice(1);
-        case "guild": return `**$${(await require("../../cache.js").client.guilds.fetch(settingData.v)).name}`;
-        case "guilds": var result = ""; for(const guild of settingData.v) result += `\n**$${(await require("../../cache.js").client.guilds.fetch(guild)).name}`; return result.slice(1);
-        default: return settingData.v; // Returns same value if invalid typwe
+async function prettyValue(settingData,value) {
+    try {
+        switch(settingData.t) { // Cases without anyting to the right are a part the ones below it
+            case "string":
+            case "number": return value;
+            case "array":
+            case "object": return JSON.parse(value,null,2);
+            case "channel": return `<#${value}>`;
+            case "channels": var result = ""; for(const channel of value) result += `\n     <#${channel}>`; return result;
+            case "guild": return `**$${(await require("../../cache.js").client.guilds.fetch(value)).name}`;
+            case "guilds": var result = ""; for(const guild of value) result += `\n     **$${(await require("../../cache.js").client.guilds.fetch(guild)).name}`; return result;
+            default: return value; // Returns same value if invalid typwe
+        }
+    } catch(ignored) {
+        return value;
     }
 
 }

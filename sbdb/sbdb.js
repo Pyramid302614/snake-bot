@@ -31,6 +31,9 @@ module.exports = {
 
     },
     
+    getAllIDs() {
+        return Object.keys(fs.readFileSync(getLookupPath(),"utf-8")??{});
+    },
     lookup: lookup,
 
     async updateGuildProperty(id,propertyPath,propertyValue) {
@@ -72,8 +75,8 @@ module.exports = {
 
     configure() {
 
-        setInterval(backupAllSectors,2*24*60*60*1000); // every two days
-        setInterval(processAllRequests,1000); // every one second
+        require("../snakelet/adapter.js").intervals_or_timeouts.push(setInterval(backupAllSectors,2*24*60*60*1000)); // every two days
+        require("../snakelet/adapter.js").intervals_or_timeouts.push(setInterval(processAllRequests,1000)); // every one second
 
     },
 
