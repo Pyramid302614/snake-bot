@@ -6,13 +6,13 @@ module.exports = {
 
     configure() {
 
-        u.adapter.intervals_or_timeouts.push(setInterval(() => {
+        var i = setInterval(() => {
 
             // Calls checkFrames asynchronously
-            const ids = u.sbdb.getAllIDs();
+            const ids = ["12345"]//u.sbdb.getAllIDs();
             for(const id of ids) checkFrame(id); // Holy efficiency :fire: you don't even have to read any of the guild data (until you get in checkFrame() ofc)
             
-        },1*60*1000)); // 1 minute
+        },1/**60*/*1000); // 1 minute
 
     }
 
@@ -20,27 +20,31 @@ module.exports = {
 
 async function startSpawn(guildId) {
 
-    if(!(u.settings.get(guildId,"spawning.enabled")??false)) return;
+    // if(!(u.settings.get(guildId,"spawning.enabled")??false)) return;
+    console.log("spawn");
 
 }
 
 // Checks and sets timers
 async function checkFrame(guildId) {
 
-    const now = Date.now(); // Pre-calculates
-    const currentFrame = u.sbdb.getGuildProperty(guildId,"spawning.frame");
-    if(!currentFrame?.end /*I did .end just incase currentFrame is {}*/ || now >= currentFrame.end) u.sbdb.updateGuildProperty(guildId,"spawning.frame",newFrame(guildId));
-    else
-        if(currentFrame.executed.length >= currentFrame.timeline.length) return; // Waiting for the above thing to trigger
-        else {
-            for(var i = currentFrame.timeline.length-1; i >= 0; i--){
-                const time = currentFrame.timeline[i];
-                if(now >= time && !executed.includes(i)) {
-                    currentFrame.executed.push(i);
-                    await startSpawn(guildId);
+    try {
+        const now = Date.now(); // Pre-calculates
+        const currentFrame = u.sbdb.getGuildProperty(guildId,"spawning.frame");
+        if(!currentFrame?.end /*I did .end just incase currentFrame is {}*/ || now >= currentFrame.end) u.sbdb.updateGuildProperty(guildId,"spawning.frame",newFrame(guildId));
+        else
+            if(currentFrame.executed.length >= currentFrame.timeline.length) return; // Waiting for the above thing to trigger
+            else {
+                for(var i = currentFrame.timeline.length-1; i >= 0; i--) {
+                    if(now >= currentFrame.timeline[i] && !currentFrame.executed.includes(i)) {
+                        currentFrame.executed.push(i);
+                        await startSpawn(guildId); // Higher priority
+                        await u.sbdb.updateGuildProperty(guildId,"spawning.frame",currentFrame);
+                        return;
+                    }
                 }
             }
-        }
+    } catch(ignored) {}
 
 }
 
@@ -51,7 +55,7 @@ function newFrame(guildId) {
     frequency = Math.min(72,frequency); // Maxes out at 3 per hour silently (Please dont break my vps)
 
     const now = Date.now();
-    const duration = 24*60*60*1000; // Pre-calculates 24 hours
+    const duration = 24/**60*60*/*1000; // Pre-calculates 24 hours
     const min_distance = 0.75; // Shortens deviation by 25% (x0.75) (Distance as in distance from other points)
     const max_deviation = Math.floor(duration/frequency)*min_distance;
 

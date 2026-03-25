@@ -51,7 +51,7 @@ module.exports = {
 
         var smallest;
         for(var sector = 0; sector < sectors; sector++) {
-            var length = getSync(sector)?.guilds?.length;
+            var length = Object.keys(getSync(sector)?.guilds??{})?.length;
             if(!smallest || length < smallest.length) smallest = {
                 sector: sector,
                 length: length
