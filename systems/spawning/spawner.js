@@ -20,9 +20,16 @@ module.exports = {
 
 async function startSpawn(guildId) {
 
-    // if(!(u.settings.get(guildId,"spawning.enabled")??false)) return;
-    console.log("spawn");
+    const guildObj = u.cache.client.guilds.fetch(guildId);
 
+    // if(!(u.settings.get(guildId,"spawning.enabled")??false)) return;
+    // I coded this in school
+
+    var channel = selectLocation(guildObj);
+    if(!channel) return;
+
+
+    
 }
 
 // Checks and sets timers
@@ -78,5 +85,25 @@ function newFrame(guildId) {
         timeline: points,
         executed: []
     };
+
+}
+
+// Returns false if no channels
+async function selectLocation(guildObj) {
+
+    var channels = u.settings.get(guildObj.id,"channels.spawnable");
+    if(channels.length == 0) return false;
+
+    var seed = Math.random();
+
+    for(var i = Math.floor(seed*channels.length); i < channels.length; i++) {
+
+        if(i >= channels.length) i = 0;
+
+        const channel = await guildObj.channels.fetch(channels[i]);
+
+        channel.send();
+        
+    }
 
 }
