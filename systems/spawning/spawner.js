@@ -1,5 +1,6 @@
 // Universal check rate: 1 minute
 
+const { ButtonBuilder } = require("discord.js");
 const u = require("../../u");
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
         var i = setInterval(() => {
 
             // Calls checkFrames asynchronously
-            const ids = ["12345"]//u.sbdb.getAllIDs();
+            u.sbdb.getAllIDs();
             for(const id of ids) checkFrame(id); // Holy efficiency :fire: you don't even have to read any of the guild data (until you get in checkFrame() ofc)
             
         },1/**60*/*1000); // 1 minute
@@ -22,13 +23,61 @@ async function startSpawn(guildId) {
 
     const guildObj = u.cache.client.guilds.fetch(guildId);
 
-    // if(!(u.settings.get(guildId,"spawning.enabled")??false)) return;
+    if(!(u.settings.get(guildId,"spawning.enabled")??false)) return "Spawning disabled";
+
+    var channel = await selectLocation(guildObj);
+    if(!channel) return "Channel failed";
+
+    const emergingMsg = await channel.send("A snake is emerging...");
+
+    await new Promise(resolve => setTimeout(resolve,3000));
+
+    emergingMsg.delete();
+
+    const type = require("./types.js").randomType();
+    if(!type) return "Type failed";
+
+    const spawnMsg = await channel.send({
+        content: `A ${type.name} snake has emerged!`,
+        comonents: [
+            {
+                type: 1,
+                components: [
+                    u.msgelem.messageElement(
+                        new ButtonBuilder()
+                            .setLabel("Catch me")
+                            .setType(ButtonType.Primary),
+                        (del,interaction,data) => {
+
+                            // Updates count asynchronously
+                            let count = 1; // 1 snake
+                            let path = `inventories.${interaction.user.id}.snakes.${type.name}`;
+                            const currentAmount = (u.sbdb.getGuildProperty(
+                                guildId,
+                                path
+                            ) ?? 0);
+                            u.sbdb.updateGuildProperty(
+                                guildId,
+                                path,
+                                currentAmount + amount
+                            );
+
+                            // Shows that you caught it
+                            interaction.message.update({
+                                content: `You have caught ${type.name} snake! (New amount: ${currentAmount+amount})`, // An assumption on the new value
+                                components: []
+                            });
+
+                            // Deletes button from msgelem cache
+                            del();
+
+                        }
+                    )
+                ] 
+            }
+        ]
+    });
     // I coded this in school
-
-    var channel = selectLocation(guildObj);
-    if(!channel) return;
-
-
     
 }
 
@@ -91,20 +140,25 @@ function newFrame(guildId) {
 // Returns false if no channels
 async function selectLocation(guildObj) {
 
-    var channels = u.settings.get(guildObj.id,"channels.spawnable");
-    if(channels.length == 0) return false;
+    try {
+        var channels = u.settings.get(guildObj.id,"channels.spawnable");
+        if(channels.length == 0) return false; // If no channels added
+        if(channels.length == 1) return channels[0]; // If only one channel added
 
-    var seed = Math.random();
+        var seed = Math.random();
 
-    for(var i = Math.floor(seed*channels.length); i < channels.length; i++) {
+        for(var i = Math.floor(seed*channels.length); i < channels.length; i++) {
 
-        if(i >= channels.length) i = 0;
+            if(i >= channels.length) i = 0;
 
-        const channel = await guildObj.channels.fetch(channels[i]);
+            const channel = await guildObj.channels.fetch(channels[i]);
 
-        const messages = channel.messages.fetch({limit:10});
-        if(messages[messages.length-5].createdTimestamp+10*60*1000>Date.now()) // 4th to last message must be at most 10 minutes old
+            const messages = channel.messages.fetch({limit:10});
+            if(messages[messages.length-5].createdTimestamp+10*60*1000>Date.now()) // 4th to last message must be at most 10 minutes old
+            return channel;
 
-    }
+        }
+    } catch(ignored) {}
+
 
 }

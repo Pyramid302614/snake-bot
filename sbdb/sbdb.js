@@ -32,7 +32,7 @@ module.exports = {
     },
     
     getAllIDs() {
-        return Object.keys(fs.readFileSync(getLookupPath(),"utf-8")??{});
+        return Object.keys(JSON.parse(fs.readFileSync(getLookupPath(),"utf-8")??"{}"));
     },
     lookup: lookup,
 

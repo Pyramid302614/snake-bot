@@ -1,0 +1,8 @@
+{
+    "assetsdir": "images/snakes",
+    "types": {
+        "regular": {
+            "chance": 0.50
+        }
+    }
+}
