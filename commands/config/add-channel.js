@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
+const { ChannelType, SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 const u = require("../../u");
 const { EmbedBuilder } = require("@discordjs/builders");
 
@@ -12,6 +12,18 @@ module.exports = {
     contexts: [],
 
     async execute(interaction) {
+
+        if(![ChannelType.GuildText].includes(interaction.channel)) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Invalid channel type")
+                        .setColor(u.color.rgb("#ffee00"))
+                ],
+                flags: [MessageFlags.Ephemeral]
+            });
+            return;
+        }
 
         if(u.settings.get(interaction.guild.id,"channels.spawnable").includes(interaction.channel.id)) {
             await interaction.reply({
