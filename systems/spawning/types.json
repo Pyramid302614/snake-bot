@@ -3,6 +3,9 @@
     "types": {
         "regular": {
             "chance": 0.50
+        },
+        "rare": {
+            "chance": 1
         }
     }
 }
