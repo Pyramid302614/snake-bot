@@ -14,7 +14,10 @@ module.exports = {
     values: require("./utilities/values.js"),
     settings: require("./utilities/guildSettings/settings.js"),
     msgelem: require("./utilities/commands/messageElements.js"),
-    errTitles: require("./utilities/errorTitles.js")
+    errTitles: require("./utilities/errorTitles.js"),
+    snakes: {
+        types: require("./systems/spawning/types.js")
+    }
 
 }
 

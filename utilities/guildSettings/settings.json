@@ -1,10 +1,10 @@
 {
-    "configured": {"n":"Configured","s":false,"d":false,"t":"boolean"},
+    "configured": {"n":"Configured","s":false,"d":false,"t":"boolean","de":"Weither not your server has been configured or not."},
     "channels": {
-        "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels"}
+        "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels","de":"All channels that can have snakes spawn."}
     },
     "spawning": {
-        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"number"},
-        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean"}
+        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"integer","de":"The amount of snakes that can spawn within 24 hours."},
+        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snake Bot should spawn snakes."}
     }
 }

@@ -45,14 +45,16 @@ async function prettyValue(settingData,value) {
     try {
         switch(settingData.t) { // Cases without anyting to the right are a part the ones below it
             case "string":
+            case "integer":
             case "number": return value;
+            case "boolean": return value?"Yes":"No";
             case "array":
             case "object": return JSON.parse(value,null,2);
             case "channel": return `<#${value}>`;
             case "channels": var result = ""; for(const channel of value) result += `\n     <#${channel}>`; return result;
             case "guild": return `**$${(await require("../../cache.js").client.guilds.fetch(value)).name}`;
             case "guilds": var result = ""; for(const guild of value) result += `\n     **$${(await require("../../cache.js").client.guilds.fetch(guild)).name}`; return result;
-            default: return value; // Returns same value if invalid typwe
+            default: return value; // Returns same value if invalid type
         }
     } catch(ignored) {
         return value;
