@@ -1,6 +1,10 @@
 // Universal check rate: 1 minute
 
-const { ButtonBuilder } = require("discord.js");
+// In case you were wondering here's how the "advanced" channel selection algorithm works:
+// (When?) It spawns based on the frame's timeline
+// (Where?) It spawns in a random channel from the list you gave it (/add-channel), but skips any channels where the 8th most recent message is less that 20 minutes of age 
+
+const { ButtonBuilder, ButtonStyle } = require("discord.js");
 const u = require("../../u");
 
 module.exports = {
@@ -10,75 +14,83 @@ module.exports = {
         var i = setInterval(() => {
 
             // Calls checkFrames asynchronously
-            u.sbdb.getAllIDs();
+            const ids = u.sbdb.getAllIDs();
             for(const id of ids) checkFrame(id); // Holy efficiency :fire: you don't even have to read any of the guild data (until you get in checkFrame() ofc)
             
         },1/**60*/*1000); // 1 minute
 
-    }
+    },
+
+    startSpawn: startSpawn
 
 }
 
 async function startSpawn(guildId) {
 
-    const guildObj = u.cache.client.guilds.fetch(guildId);
+    try {
+        
+        const guildObj = await u.cache.client.guilds.fetch(guildId);
 
-    if(!(u.settings.get(guildId,"spawning.enabled")??false)) return "Spawning disabled";
+        if(!(u.settings.get(guildId,"spawning.enabled")??false)) return "Spawning disabled";
 
-    var channel = await selectLocation(guildObj);
-    if(!channel) return "Channel failed";
+        var channel = await selectLocation(guildObj);
+        if(!channel) return "Channel failed";
 
-    const emergingMsg = await channel.send("A snake is emerging...");
+        const emergingMsg = await channel.send("A snake is emerging...");
 
-    await new Promise(resolve => setTimeout(resolve,3000));
+        await new Promise(resolve => setTimeout(resolve,3000));
 
-    emergingMsg.delete();
+        await emergingMsg.delete();
 
-    const type = require("./types.js").randomType();
-    if(!type) return "Type failed";
+        const type = require("./types.js").randomType();
+        if(!type) return "Type failed";
 
-    const spawnMsg = await channel.send({
-        content: `A ${type.name} snake has emerged!`,
-        comonents: [
-            {
-                type: 1,
-                components: [
-                    u.msgelem.messageElement(
-                        new ButtonBuilder()
-                            .setLabel("Catch me")
-                            .setType(ButtonType.Primary),
-                        (del,interaction,data) => {
+        const spawnMsg = await channel.send({
+            content: `A ${type.name} snake has emerged!`,
+            components: [
+                {
+                    type: 1,
+                    components: [
+                        u.msgelem.messageElement(
+                            new ButtonBuilder()
+                                .setLabel("Catch me")
+                                .setStyle(ButtonStyle.Primary),
+                            async (del,interaction,data) => {
 
-                            // Updates count asynchronously
-                            let count = 1; // 1 snake
-                            let path = `inventories.${interaction.user.id}.snakes.${type.name}`;
-                            const currentAmount = (u.sbdb.getGuildProperty(
-                                guildId,
-                                path
-                            ) ?? 0);
-                            u.sbdb.updateGuildProperty(
-                                guildId,
-                                path,
-                                currentAmount + amount
-                            );
+                                // Updates count asynchronously
+                                let amount = 1; // 1 snake
+                                let path = `inventories.${interaction.user.id}.snakes.${type.name}`;
+                                const currentAmount = (u.sbdb.getGuildProperty(
+                                    guildId,
+                                    path
+                                ) ?? 0);
+                                u.sbdb.updateGuildProperty(
+                                    guildId,
+                                    path,
+                                    currentAmount + amount
+                                );
 
-                            // Shows that you caught it
-                            interaction.message.update({
-                                content: `You have caught ${type.name} snake! (New amount: ${currentAmount+amount})`, // An assumption on the new value
-                                components: []
-                            });
+                                // Shows that you caught it
+                                await interaction.message.edit({
+                                    content: `You have caught ${type.name} snake! (New amount: ${currentAmount+amount})`, // An assumption on the new value
+                                    components: []
+                                });
 
-                            // Deletes button from msgelem cache
-                            del();
+                                // Deletes button from msgelem cache
+                                del();
 
-                        }
-                    )
-                ] 
-            }
-        ]
-    });
-    // I coded this in school
+                            }
+                        ).data
+                    ] 
+                }
+            ]
+        });
+        // I coded this in school
     
+    } catch(ignored) {
+        console.error(ignored);
+    }
+
 }
 
 // Checks and sets timers
@@ -111,9 +123,9 @@ function newFrame(guildId) {
     frequency = Math.min(72,frequency); // Maxes out at 3 per hour silently (Please dont break my vps)
 
     const now = Date.now();
-    const duration = 24/**60*60*/*1000; // Pre-calculates 24 hours
+    const duration = 24*60*60*1000; // Pre-calculates 24 hours
     const min_distance = 0.75; // Shortens deviation by 25% (x0.75) (Distance as in distance from other points)
-    const max_deviation = Math.floor(duration/frequency)*min_distance;
+    const max_deviation = Math.floor(duration/frequency)/2*min_distance;
 
     // CodeHS project representation:
     // https://codehs.com/sandbox/greencamel7231/1d-linear-map-skewer/run (Ctrl+Click on VSCode)
@@ -122,10 +134,10 @@ function newFrame(guildId) {
     const points = [];
     for(var i = 0; i < frequency; i++) {
 
-        let linear = Math.floor(now + (now + duration) * (i / frequency));
-        let nonlinear = Math.min(Math.max(now,linear - max_deviation + Math.floor(Math.random()*(max_deviation+1))),now+duration);
+        let linear = Math.floor(now + (duration) * (i / frequency));
+        let nonlinear = Math.min(Math.max(now,linear - max_deviation + Math.floor(Math.random()*(max_deviation*2+1))),now+duration);
 
-        points.push(nonlinear);
+        if(!points.includes(nonlinear)) points.push(nonlinear);
 
     }
 
@@ -143,7 +155,7 @@ async function selectLocation(guildObj) {
     try {
         var channels = u.settings.get(guildObj.id,"channels.spawnable");
         if(channels.length == 0) return false; // If no channels added
-        if(channels.length == 1) return channels[0]; // If only one channel added
+        if(channels.length == 1) return guildObj.channels.fetch(channels[0]); // If only one channel added
 
         var seed = Math.random();
 
@@ -154,7 +166,7 @@ async function selectLocation(guildObj) {
             const channel = await guildObj.channels.fetch(channels[i]);
 
             const messages = channel.messages.fetch({limit:10});
-            if(messages[messages.length-5].createdTimestamp+10*60*1000>Date.now()) // 4th to last message must be at most 10 minutes old
+            if(messages[messages.length-9].createdTimestamp+20*60*1000>Date.now()) // 4th to last message must be at most 10 minutes old
             return channel;
 
         }

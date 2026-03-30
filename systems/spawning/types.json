@@ -2,9 +2,11 @@
     "assetsdir": "images/snakes",
     "types": {
         "regular": {
+            "pretty": "Regular Snake",
             "chance": 0.50
         },
         "rare": {
+            "pretty": "Rare Snake",
             "chance": 1
         }
     }

@@ -1,9 +1,11 @@
 module.exports = {
 
-    path(path) {
+    path(path_) {
 
-        return require("../cache.js").sbdir + "/assets/" + path;
-
+        const path = require("../cache.js").sbdir + "/assets/" + path_;
+        return require("fs").existsSync(path) ? path : 
+            (path.split("/")[0] == "images")? require("../cache.js").sbdir + "/assets/images/unknown64.png" // 64 x 64
+            : path
     },
 
     pfp() {

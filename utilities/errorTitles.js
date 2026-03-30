@@ -14,6 +14,27 @@ module.exports = {
         "Unlucky"
     ],
 
+    successPack: [
+        "Done!",
+        "Yipeeeeee!!",
+        "Nice",
+        "Hooray!!",
+        "Epic",
+        "Very good", //
+        "Very nice", // Do you know ball?
+        "Wonderous",
+        "Tasty",
+        "Tasty"
+    ],
+
+    successColorPack: [
+        "#009a33",
+        "#ffee00",
+        "#00fffb",
+        "#ff7300",
+        "#ff00d9"
+    ],
+
     newTitle(name) {
         return this[name][Math.floor(Math.random()*this[name].length)];
     }

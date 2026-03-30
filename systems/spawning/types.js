@@ -25,8 +25,8 @@ module.exports = {
 
         for(let i = 0; i < Object.keys(data.types).length; i++) {
            
-            var key = Object.keys(types)[i];
-            var value = types[key];
+            var key = Object.keys(data.types)[i];
+            var value = data.types[key];
 
             if(seed<(value.chance??0)) return {
                 name: key,
