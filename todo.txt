@@ -2,3 +2,4 @@ Cool ideas:
 
 - customizable inventory
 - customizable spawn message
+- catch minigames (URGENT)
