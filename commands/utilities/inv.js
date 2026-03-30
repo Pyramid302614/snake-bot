@@ -45,7 +45,7 @@ module.exports = {
             snakesList += `\n${value} ${prettyName}s`;
         }
         if(snakesList.length != 0) snakesList = snakesList.slice(1); // Removes first new line
-        else snakesList = "This person has not collected any snakes yet :(";
+        else snakesList = interaction.user.id == person.id?"You haven't caught any snakes yet :(":"This person has not collected any snakes yet :(";
 
         interaction.reply({
             embeds: [
