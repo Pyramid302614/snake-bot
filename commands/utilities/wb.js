@@ -19,12 +19,15 @@ module.exports = {
     async execute(interaction) {
 
         var currentStation = 0;
-        // 0: Home
-        // 1: Shard Crafter
-
+        
+        const stations = [];
+        for(var i = 0; i < stationNames.length; i++) {
+            stations.push({});
+        }
+        
         await interaction.reply({
-            embeds: await display(interaction,currentStation),
-            components: fetchToolbar(interaction,currentStation)
+            embeds: await display(interaction,currentStation,stations),
+            components: fetchToolbar(interaction,currentStation,stations)
         });
 
     }
@@ -32,7 +35,7 @@ module.exports = {
 }
 
 // Gives **embed array** with station stuff
-async function display(interaction,station) {
+async function display(interaction,station,stations) {
 
     switch(station) {
 
@@ -56,6 +59,7 @@ async function display(interaction,station) {
             return [
                 new EmbedBuilder()
                     .setTitle("Hi!")
+                    .setDescription("Station data: " + (stations[station].test ?? 0))
             ]
 
         default:
@@ -71,8 +75,42 @@ async function display(interaction,station) {
 
 }
 
+// Gets message elements for station
+function getActionRow(interaction,station,stations) {
+
+    switch(station) {
+
+        case 0:
+            return [];
+
+        case 1:
+            return [
+                u.msgelem.messageElement(
+                    new ButtonBuilder()
+                        .setLabel("Button!")
+                        .setStyle(ButtonStyle.Primary),
+                async (del,interaction,data) => {
+                    await interaction.reply("Hi");
+                    await interaction.message.edit({
+                        embeds: await display(interaction,station,stations),
+                        components: fetchToolbar(interaction,station,stations)
+                    });
+                    stations[station].test = (stations[station].test ?? 0) + 1;
+                    del();
+                },
+                [interaction.user.id]
+                ).data
+            ];
+
+        default:
+            return [];
+
+    }
+    
+}
+
 // Gives components array with buttons based on station
-function fetchToolbar(interaction,station) {
+function fetchToolbar(interaction,station,stations) {
 
     const components = [
         backButton(interaction,station).data
@@ -80,18 +118,27 @@ function fetchToolbar(interaction,station) {
     for(let i = 1; i < stationNames.length; i++) { // i = 1 to exlude home station
         components.push(stationButton(interaction,i).data);
     }
+    const stationComponents = [
+        getActionRow(interaction,station,stations)
+    ];
 
     return [{
 
         type: 1,
         components: components
 
+    },
+    {
+     
+        type: 1,
+        components: stationComponents
+        
     }];
 
 }
 
 // Back button (Returns msgelem)
-function backButton(interaction,station) {
+function backButton(interaction,station,stations) {
 
     const disabled = station == 0;
 
@@ -103,8 +150,8 @@ function backButton(interaction,station) {
         async (del,interaction,data) => {
             await interaction.update({});
             await interaction.message.edit({
-                embeds: await display(interaction,0),
-                components: fetchToolbar(interaction,0)
+                embeds: await display(interaction,0,stations),
+                components: fetchToolbar(interaction,0,stations)
             });
             del();
         },
@@ -115,7 +162,7 @@ function backButton(interaction,station) {
 
 // Gets msgelem of station button
 // Station is # not name btw
-function stationButton(interaction,station) {
+function stationButton(interaction,station,stations) {
 
     return u.msgelem.messageElement(
         new ButtonBuilder()
@@ -124,8 +171,8 @@ function stationButton(interaction,station) {
         async (del,interaction,data) => {
             await interaction.update({});
             await interaction.message.edit({
-                embeds: await display(interaction,station),
-                components: fetchToolbar(interaction,station)
+                embeds: await display(interaction,station,stations),
+                components: fetchToolbar(interaction,station,stations)
             });
             del();
         },
