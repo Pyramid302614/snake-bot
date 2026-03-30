@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags, ButtonStyle, ChannelType } = require("discord.js");
-const u = require("../../u");
+const u = require("../../u.js");
 const { EmbedBuilder } = require("@discordjs/builders");
 const { ButtonBuilder } = require("@discordjs/builders");
 const { ChannelSelectMenuBuilder } = require("@discordjs/builders");
@@ -73,7 +73,7 @@ module.exports = {
             embeds: [
                 new EmbedBuilder()
                     .setTitle("You're all set! Now what?")
-                    .setDescription("Go in any channels you want to have snakes spawn in and do `/add-channel` to add it and do `/remove-channel` do remove it.\n\n**IMPORTANT!**\n - Snake Bot cannot illegally send messages in channels it does not have access to! If you add a channel that it cannot speak in, snakes will **not** spawn!\n - Snake Bot uses an advanced algorithm to decide where to spawn snakes. If you add #general as a channel, don't worry about it intruding on conversations, because the algorithm is trained to avoid channels with high activity to not ruin the moment!")
+                    .setDescription("Go in any channels you want to have snakes spawn in and do `/add-channel` to add it and do `/remove-channel` do remove it.\n\n**IMPORTANT!**\n - Snake Bot cannot illegally send messages in channels it does not have access to! If you add a channel that it cannot speak in, snakes will **not** spawn!\n - Snake Bot uses an advanced algorithm to decide where to spawn snakes. If you add #general as a channel, don't worry about it intruding on conversations, because the algorithm is trained to avoid channels with high activity to not ruin the moment!\n\n(Protip: Do `/settings` to view your settings!)")
                     .setColor(u.color.rgb("#ea00ff"))
             ],
             components: []

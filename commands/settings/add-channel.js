@@ -13,7 +13,7 @@ module.exports = {
 
     async execute(interaction) {
 
-        if(![ChannelType.GuildText].includes(interaction.channel)) {
+        if(![ChannelType.GuildText].includes(interaction.channel.type)) {
             await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
@@ -67,19 +67,8 @@ module.exports = {
         }
 
         // Success!!
-        var successTitles = [
-            "Done!",
-            "Yipeeeeee!!",
-            "Nice",
-            "Hooray!!",
-            "Epic",
-            "Very good", //
-            "Very nice", // Do you know ball?
-            "Wonderous",
-            "Tasty",
-            "Tasty"
-        ];
-        var colors = ["#009a33","#ffee00","#00fffb","#ff7300","#ff00d9"];        
+        var successTitles = u.errTitles.successPack;
+        var colors = u.errTitles.successColorPack;        
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
