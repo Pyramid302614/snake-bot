@@ -1,0 +1,4 @@
+Cool ideas:
+
+- customizable inventory
+- customizable spawn message
