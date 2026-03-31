@@ -1,0 +1,10 @@
+{
+    "catalog": {
+
+        "test": {
+            "pretty": "Test",
+            "cost": 50
+        }
+
+    }
+}

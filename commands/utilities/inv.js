@@ -73,7 +73,7 @@ module.exports = {
                         **Snake Shards:**
                         ${shardsList}
                     `)
-                    .setColor(Object.keys(snakes).length.length != 0 && u.color.rgb(u.errTitles.newTitle("successColorPack")) || [255,0,0])
+                    .setColor(/*Object.keys(snakes).length.length != 0 && u.color.rgb(u.errTitles.newTitle("successColorPack")) || [255,0,0]*/) // Soon to be customizable
             ],
             flags: !visible?[MessageFlags.Ephemeral]:[]
         });
