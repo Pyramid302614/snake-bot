@@ -58,7 +58,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(generalPack[Math.floor(Math.random()*generalPack.length)])
-                        .setDescription("That button has expired. It's probably because the server just restarted, so run that command again and it will work :)")
+                        .setDescription("That message element has expired. It's probably because the server just restarted, so run that command again and it will work :)")
                         .setColor([255,0,0])
                 ],
                 flags: [MessageFlags.Ephemeral]

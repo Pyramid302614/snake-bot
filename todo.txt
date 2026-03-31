@@ -3,3 +3,4 @@ Cool ideas:
 - customizable inventory
 - customizable spawn message
 - catch minigames (URGENT)
+- sort inventory and wb station inv lists by chance

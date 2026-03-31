@@ -12,8 +12,6 @@ module.exports = {
     contexts: [],
 
     async execute(interaction) {
-
-        var currentStation = 0;
         
         const stations = [];
         for(var i = 0; i < wb.stationNames.length; i++) {
@@ -21,8 +19,8 @@ module.exports = {
         }
         
         await interaction.reply({
-            embeds: await wb.display(interaction,currentStation,stations),
-            components: wb.fetchToolbar(interaction,currentStation,stations)
+            embeds: await wb.display(interaction,0,stations),
+            components: wb.fetchToolbar(interaction,0,stations)
         });
 
     }

@@ -81,7 +81,7 @@ module.exports = {
                 else interaction.reply(msg);
             }
 
-            if(interaction.isChannelSelectMenu() || interaction.isButton()) {
+            if(interaction.isChannelSelectMenu() || interaction.isAnySelectMenu() || interaction.isButton()) {
                 
                 require("./utilities//commands/messageElements.js").interaction(interaction);
 

@@ -36,7 +36,7 @@ module.exports = {
             return;
         }
 
-        const snakes = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${person.id}.snakes`) ?? [];
+        const snakes = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${person.id}.snakes`) ?? {};
         var snakesList = "";
         for(let i = 0; i < Object.keys(snakes).length; i++) {
             const key = Object.keys(snakes)[i];
@@ -47,6 +47,16 @@ module.exports = {
         if(snakesList.length != 0) snakesList = snakesList.slice(1); // Removes first new line
         else snakesList = interaction.user.id == person.id?"You haven't caught any snakes yet :(":"This person has not collected any snakes yet :(";
 
+        const shards = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${person.id}.shards`) ?? {};
+        var shardsList = "";
+        for(let i = 0; i < Object.keys(shards).length; i++) {
+            const key = Object.keys(shards)[i];
+            const value = Object.values(shards)[i];
+            const prettyName = u.snakes.types.getTypeData(key).shardPretty ?? key; // If no pretty name, use key name (e.g., 'rare', 'regular' instead of 'Rare Snake', 'Regular Snake')
+            shardsList += `\n${value} ${prettyName}s`;
+        }
+        if(shardsList.length != 0) shardsList = shardsList.slice(1); // Removes first new line
+        else shardsList = interaction.user.id == person.id?"You haven't crafted any shards yet :( (Protip: `/wb`)":"This person has not crafted any shards yet :(";
         interaction.reply({
             embeds: [
                 new EmbedBuilder()
@@ -59,6 +69,9 @@ module.exports = {
                     .setDescription(`
                         **Snakes:**
                         ${snakesList}
+
+                        **Snake Shards:**
+                        ${shardsList}
                     `)
                     .setColor(Object.keys(snakes).length.length != 0 && u.color.rgb(u.errTitles.newTitle("successColorPack")) || [255,0,0])
             ],

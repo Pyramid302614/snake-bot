@@ -3,10 +3,12 @@
     "types": {
         "regular": {
             "pretty": "Regular Snake",
+            "shardPretty": "Regular Shard",
             "chance": 0.50
         },
         "rare": {
             "pretty": "Rare Snake",
+            "shardPretty": "Rare Shard",
             "chance": 1
         }
     }
