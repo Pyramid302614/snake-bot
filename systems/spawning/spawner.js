@@ -53,6 +53,14 @@ async function startSpawn(guildId) {
             // message: `${guildId}:${channel.id}:${spawnMsg.id}`
         }); // Waits for it to finish writing before sending
 
+        const slither0 = setTimeout(() => {
+
+        });
+        const slither1 = setTimeout(() => {
+
+        });
+        u.adapter.intervals_or_timeouts.push(slither1);
+        
         const spawnMsg = await channel.send({
             content: `A ${type.name} snake has emerged!`,
             components: [
@@ -97,6 +105,8 @@ async function startSpawn(guildId) {
             ]
         });
         // I coded this in school
+
+        
 
         return "Spawned successfully.";
 
