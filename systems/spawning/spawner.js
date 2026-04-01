@@ -31,6 +31,8 @@ async function startSpawn(guildId) {
         
         const guildObj = await u.cache.client.guilds.fetch(guildId);
 
+        if(!u.sbdb.getGuildProperty(guildId,"spawning.instance.caught")) return "Already an instance";
+
         if(!(u.settings.get(guildId,"spawning.enabled")??false)) return "Spawning disabled";
 
         var channel = await selectLocation(guildObj);
@@ -45,6 +47,12 @@ async function startSpawn(guildId) {
         const type = require("./types.js").randomType();
         if(!type) return "Type failed";
 
+        await u.sbdb.updateGuildProperty(guildId,"spawning.instance",{
+            timestamp: Date.now(),
+            caught: false,
+            // message: `${guildId}:${channel.id}:${spawnMsg.id}`
+        }); // Waits for it to finish writing before sending
+
         const spawnMsg = await channel.send({
             content: `A ${type.name} snake has emerged!`,
             components: [
@@ -56,6 +64,9 @@ async function startSpawn(guildId) {
                                 .setLabel("Catch me")
                                 .setStyle(ButtonStyle.Primary),
                             async (del,interaction,data) => {
+
+                                // Updates instance asynchronously
+                                u.sbdb.updateGuildProperty(guildId,"spawning.instance.caught",true);
 
                                 // Updates count asynchronously
                                 let amount = 1; // 1 snake
@@ -86,9 +97,11 @@ async function startSpawn(guildId) {
             ]
         });
         // I coded this in school
-    
+
+        return "Spawned successfully.";
+
     } catch(ignored) {
-        console.error(ignored);
+        return ignored.message; // Not so ignored anymore
     }
 
 }
@@ -99,7 +112,7 @@ async function checkFrame(guildId) {
     try {
         const now = Date.now(); // Pre-calculates
         const currentFrame = u.sbdb.getGuildProperty(guildId,"spawning.frame");
-        if(!currentFrame?.end /*I did .end just incase currentFrame is {}*/ || now >= currentFrame.end) u.sbdb.updateGuildProperty(guildId,"spawning.frame",newFrame(guildId));
+        if(!currentFrame?.end /*I did .end just incase currentFrame is {}*/ || now >= (currentFrame.end??24*60*60*1000)) u.sbdb.updateGuildProperty(guildId,"spawning.frame",newFrame(guildId));
         else
             if(currentFrame.executed.length >= currentFrame.timeline.length) return; // Waiting for the above thing to trigger
             else {
@@ -155,7 +168,7 @@ async function selectLocation(guildObj) {
     try {
         var channels = u.settings.get(guildObj.id,"channels.spawnable");
         if(channels.length == 0) return false; // If no channels added
-        if(channels.length == 1) return guildObj.channels.fetch(channels[0]); // If only one channel added
+        if(channels.length == 1) return await guildObj.channels.fetch(channels[0]); // If only one channel added
 
         var seed = Math.random();
 

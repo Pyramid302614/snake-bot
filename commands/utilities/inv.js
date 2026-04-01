@@ -56,7 +56,7 @@ module.exports = {
             shardsList += `\n${value} ${prettyName}s`;
         }
         if(shardsList.length != 0) shardsList = shardsList.slice(1); // Removes first new line
-        else shardsList = interaction.user.id == person.id?"You haven't crafted any shards yet :( (Protip: `/wb`)":"This person has not crafted any shards yet :(";
+        else shardsList = interaction.user.id == person.id?"You haven't crafted any shards yet :(\n-# (Protip: `/wb`)":"This person has not crafted any shards yet :(";
         interaction.reply({
             embeds: [
                 new EmbedBuilder()
