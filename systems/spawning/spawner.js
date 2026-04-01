@@ -55,7 +55,7 @@ async function startSpawn(guildId) {
 
         const slither0 = setTimeout(() => {
 
-        });
+        },u.settings.get("spawning.slithering.rate"));
         const slither1 = setTimeout(() => {
 
         });

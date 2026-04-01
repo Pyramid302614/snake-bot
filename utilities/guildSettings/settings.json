@@ -5,6 +5,10 @@
     },
     "spawning": {
         "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"integer","de":"The amount of snakes that can spawn within 24 hours."},
-        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snake Bot should spawn snakes."}
+        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snake Bot should spawn snakes."},
+        "slithering": {
+            "enabled": {"n":"Slithering enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snakes will slither to other channels after it spawns."},
+            "speed": {"n": "Slithering speed (Minutes)","s":true,"t":"number","de":"How many minutes will have to pass before Snakes will slither again."}
+        }
     }
 }
