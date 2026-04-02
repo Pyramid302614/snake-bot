@@ -15,7 +15,7 @@ module.exports = {
         await interaction.deferReply();
 
         const response = await require("../../systems/spawning/spawner.js").startSpawn(interaction.guild.id);
-        const ok = (response+"").includes("successfully");
+        const ok = response.code == 0; // As of new spawning systems
 
         await interaction.editReply({
             embeds: [

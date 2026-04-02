@@ -1,0 +1,112 @@
+const { EmbedBuilder } = require("@discordjs/builders");
+const u = require("../../u");
+const { ButtonBuilder } = require("@discordjs/builders");
+const { ButtonStyle } = require("discord.js");
+
+const defaultEmerge0 = `
+    A <name> has spawned! Press "Catch" to catch it before it slithers away!
+`;
+const defaultEmerge1 = `
+    A <name> has spawned! Press "Catch" to catch it!
+`;
+const defaultSlither = `
+    A <name> has slither into <channel>! Press "Catch to catch it before it slithers away!
+`;
+
+// Key: key of snake data
+// value value of snake data
+function defaultArguments(key,value) {
+    return {
+        name: value.pretty ?? key
+    }
+}
+
+module.exports = {
+
+    emerge(guildId,snake) {
+
+        if(!snake.type) return "No type provided.";
+
+        const type = snake.type;
+        const snake = u.snakes.types.getTypeData(type);
+
+        return {
+            content: evaluate(
+                u.settings.get(guildId,"spawning.messages.emerge") ??
+                    u.settings.get(guildId,"spawning.slithering.enabled")?
+                        defaultEmerge0:
+                        defaultEmerge1,
+                defaultArguments(type,snake)
+            )
+        };
+
+    },
+
+    slither(guildId,snake) {
+
+        if(!snake.type) return "No type provided.";
+
+        const type = snake.type;
+        const snake = u.snakes.types.getTypeData(type);
+
+        return {
+            content: evaluate(
+                u.settings.get(guildId,"spawning.messages.slither") ??
+                    defaultSlither,
+                defaultArguments(type,snake)
+            )
+        };
+
+    }
+
+}
+
+function evaluate(string,args) {
+
+    for(let i = 0; i < args.length; i++) string.replaceAll(`<${Object.keys(args)[i]}>`,Object.values(args)[i]);
+    return string;
+
+}
+
+function catchButton(guildId,snake) {
+
+        if(!snake.type) return "No type provided.";
+
+        const type = snake.type;
+        const snake = u.snakes.types.getTypeData(type);
+    
+        return u.msgelem.messageElement(
+            new ButtonBuilder()
+                .setLabel("Catch me")
+                .setStyle(ButtonStyle.Primary),
+            async (del,interaction,data) => {
+
+                // Updates instance asynchronously
+                u.sbdb.updateGuildProperty(guildId,"spawning.instance.caught",true);
+
+                // Updates count asynchronously
+                let amount = 1; // 1 snake
+                let path = `inventories.${interaction.user.id}.snakes.${type}`;
+                const currentAmount = (u.sbdb.getGuildProperty(
+                    guildId,
+                    path
+                ) ?? 0);
+                u.sbdb.updateGuildProperty(
+                    guildId,
+                    path,
+                    currentAmount + amount
+                );
+
+                // Shows that you caught it
+                await interaction.message.edit({
+                    content: `You have caught ${type} snake! (New amount: ${currentAmount+amount})`, // An assumption on the new value
+                    components: []
+                });
+
+                // Deletes button from msgelem cache
+                del();
+
+            }
+        )
+
+}

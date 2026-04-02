@@ -17,7 +17,8 @@ module.exports = {
     errTitles: require("./utilities/errorTitles.js"),
     snakes: {
         types: require("./systems/spawning/types.js")
-    }
+    },
+    time: require("./utilities/time.js")
 
 }
 
