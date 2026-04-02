@@ -23,26 +23,32 @@ function defaultArguments(key,value) {
 
 module.exports = {
 
-    emerge(guildId,snake) {
+    emerge(guildData,snake) {
 
-        if(!snake.type) return "No type provided.";
+        if(!snake.type) return {
+            data: "No type provided.",
+            code: -1
+        };
 
         const type = snake.type;
         const snake = u.snakes.types.getTypeData(type);
 
         return {
-            content: evaluate(
-                u.settings.get(guildId,"spawning.messages.emerge") ??
-                    u.settings.get(guildId,"spawning.slithering.enabled")?
-                        defaultEmerge0:
-                        defaultEmerge1,
-                defaultArguments(type,snake)
-            )
+            data: {
+                content: evaluate(
+                    guildData?.settings?.spawning?.messages?.emerge ??
+                        guildData?.settings?.spawning?.slithering?.enabled ?
+                            defaultEmerge0:
+                            defaultEmerge1,
+                    defaultArguments(type,snake)
+                )
+            },
+            code: 0
         };
 
     },
 
-    slither(guildId,snake) {
+    slither(guildData,snake) {
 
         if(!snake.type) return "No type provided.";
 
@@ -51,7 +57,7 @@ module.exports = {
 
         return {
             content: evaluate(
-                u.settings.get(guildId,"spawning.messages.slither") ??
+                guildData?.settings?.spawning?.messages?.slither ??
                     defaultSlither,
                 defaultArguments(type,snake)
             )

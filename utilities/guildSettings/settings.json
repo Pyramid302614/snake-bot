@@ -8,7 +8,8 @@
         "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snake Bot should spawn snakes."},
         "slithering": {
             "enabled": {"n":"Slithering enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snakes will slither to other channels after it spawns."},
-            "speed": {"n": "Slithering speed (Minutes)","s":true,"t":"number","de":"How many minutes will have to pass before Snakes will slither again."}
+            "speed": {"n": "Slithering speed (Minutes)","s":true,"t":"number","de":"How many minutes will have to pass before Snakes will slither again."},
+            "amount": {"n": "Slithering amount","s":true,"d":3,"t":"number","de":"Approximately how many times a snake can slither before it goes away."}
         }
     }
 }
