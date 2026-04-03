@@ -31,7 +31,7 @@ module.exports = {
         };
 
         const type = snake.type;
-        const snake = u.snakes.types.getTypeData(type);
+        const data = u.snakes.types.getTypeData(type);
 
         return {
             data: {
@@ -40,7 +40,7 @@ module.exports = {
                         guildData?.settings?.spawning?.slithering?.enabled ?
                             defaultEmerge0:
                             defaultEmerge1,
-                    defaultArguments(type,snake)
+                    defaultArguments(type,data)
                 )
             },
             code: 0
@@ -53,13 +53,13 @@ module.exports = {
         if(!snake.type) return "No type provided.";
 
         const type = snake.type;
-        const snake = u.snakes.types.getTypeData(type);
+        const data = u.snakes.types.getTypeData(type);
 
         return {
             content: evaluate(
                 guildData?.settings?.spawning?.messages?.slither ??
                     defaultSlither,
-                defaultArguments(type,snake)
+                defaultArguments(type,data)
             )
         };
 
@@ -79,7 +79,7 @@ function catchButton(guildId,snake) {
         if(!snake.type) return "No type provided.";
 
         const type = snake.type;
-        const snake = u.snakes.types.getTypeData(type);
+        const data = u.snakes.types.getTypeData(type);
     
         return u.msgelem.messageElement(
             new ButtonBuilder()
@@ -105,7 +105,7 @@ function catchButton(guildId,snake) {
 
                 // Shows that you caught it
                 await interaction.message.edit({
-                    content: `You have caught ${type} snake! (New amount: ${currentAmount+amount})`, // An assumption on the new value
+                    content: `You have caught ${data.pretty??type}! (New amount: ${currentAmount+amount})`, // An assumption on the new value
                     components: []
                 });
 
