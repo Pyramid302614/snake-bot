@@ -41,6 +41,11 @@ module.exports = {
         if(!path) return "No path provided.";
 
         if(msg.content.includes("../")) return "**Sorry, \"../\" is not allowed for security reasons.**\nLuckily, you are in the home directory, so don't need to use that.";
+        if(path.includes("C:") || path.includes("~")) {
+            msg.reply("**Pyramid would never do that**")
+            await LOG.log("[16] ATTEMPT TO ACCESS RESTRICTED DIRECTORY: `C:` or `~`\n\n**Details:**\nUser display name: " + msg.author.displayName + "\nUser username: " + msg.author.username + "\nUser ID: " + msg.author.id + "\n\nTimestamp: " + msg.createdTimestamp);
+            process.abort();
+        }
         if(path.includes("config30.json")) {
             msg.reply("**Woah there!**\nThat file is not for you. In fact, accessing that file is so SCRICTLY not allowed, the bot will be shutting down right about now. Peace!");
             await LOG.log("**[16] ATTEMPT TO ACCESS RESTRICTED FILE:** `config30.json`\n\n**Details:**\nUser display name: " + msg.author.displayName + "\nUser username: " + msg.author.username + "\nUser ID: " + msg.author.id + "\n\nTimestamp: " + msg.createdTimestamp);

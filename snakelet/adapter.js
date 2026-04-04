@@ -57,7 +57,9 @@ module.exports = {
     async stopSnakeBot() {
 
         if(!this.started) return; // Forces no killing non-existant clients
-        for(const timeout of this.intervals_or_timeouts) timeout?.close();
+        for(const timeout of this.timeouts) clearTimeout(timeout);
+        for(const interval of this.intervals) clearTimeout(interval);
+        
 
         this.started = false;
         console.log("Stopping : Snake Bot");
@@ -92,6 +94,7 @@ module.exports = {
         }
     },
 
-    intervals_or_timeouts: []
+    intervals: [],
+    timeouts: []
 
 }

@@ -76,8 +76,8 @@ module.exports = {
 
     configure() {
 
-        require("../snakelet/adapter.js").intervals_or_timeouts.push(setInterval(backupAllSectors,2*24*60*60*1000)); // every two days
-        require("../snakelet/adapter.js").intervals_or_timeouts.push(setInterval(processAllRequests,1000)); // every one second
+        require("../snakelet/adapter.js").intervals.push(setInterval(backupAllSectors,2*24*60*60*1000)); // every two days
+        require("../snakelet/adapter.js").intervals.push(setInterval(processAllRequests,1000)); // every one second
 
     },
 

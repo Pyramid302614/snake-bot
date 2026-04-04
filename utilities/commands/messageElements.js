@@ -24,7 +24,7 @@ module.exports = {
             }
         };
         this.elements[eid] = elementData;
-        require("../../snakelet/adapter.js").intervals_or_timeouts.push(setTimeout(elementData.del,10*60*1000)); // 10 minutes
+        require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,10*60*1000)); // 10 minutes
         return elementData;
 
     },

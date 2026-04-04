@@ -10,7 +10,7 @@ const defaultEmerge1 = `
     A <name> has spawned! Press "Catch" to catch it!
 `;
 const defaultSlither = `
-    A <name> has slither into <channel>! Press "Catch to catch it before it slithers away!
+    A <name> has slither into <channel>! Press "Catch" to catch it before it slithers away!
 `;
 
 // Key: key of snake data
@@ -25,13 +25,10 @@ module.exports = {
 
     emerge(guildData,snake) {
 
-        if(!snake.type) return {
+        if(!snake.name) return {
             data: "No type provided.",
             code: -1
         };
-
-        const type = snake.type;
-        const data = u.snakes.types.getTypeData(type);
 
         return {
             data: {
@@ -40,7 +37,7 @@ module.exports = {
                         guildData?.settings?.spawning?.slithering?.enabled ?
                             defaultEmerge0:
                             defaultEmerge1,
-                    defaultArguments(type,data)
+                    defaultArguments(snake.name,snake.data)
                 )
             },
             code: 0
@@ -50,17 +47,17 @@ module.exports = {
 
     slither(guildData,snake) {
 
-        if(!snake.type) return "No type provided.";
-
-        const type = snake.type;
-        const data = u.snakes.types.getTypeData(type);
+        if(!snake.name) return {data:"No type provided.",code:-1};
 
         return {
-            content: evaluate(
-                guildData?.settings?.spawning?.messages?.slither ??
-                    defaultSlither,
-                defaultArguments(type,data)
-            )
+            data: {
+                content: evaluate(
+                    guildData?.settings?.spawning?.messages?.slither ??
+                        defaultSlither,
+                    defaultArguments((snake.data.pretty??snake.name).toLowerCase(),snake.data)
+                )
+            },
+            code: 0
         };
 
     }
@@ -69,7 +66,7 @@ module.exports = {
 
 function evaluate(string,args) {
 
-    for(let i = 0; i < args.length; i++) string.replaceAll(`<${Object.keys(args)[i]}>`,Object.values(args)[i]);
+    for(let i = 0; i < args.length; i++) string = string.replaceAll(`<${Object.keys(args)[i]}>`,Object.values(args)[i]);
     return string;
 
 }

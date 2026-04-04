@@ -45,7 +45,16 @@ module.exports = {
             })
             return;
         }
-        
+        if(interaction.options.getNumber("amount") / Math.abs(interaction.options.getNumber("amount")) == -1) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Negative numbers aren't allowed!")
+                        .setDescription("That would probably break the bot.... idk")
+                        .setColor(u.color.rgb("#ff7300"))
+                ]
+            })
+        }
         if(interaction.options.getNumber("amount") % 1 != 0) {
             await interaction.reply({
                 embeds: [
