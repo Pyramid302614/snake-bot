@@ -68,6 +68,7 @@ module.exports = {
         else if(data.executors == "everyone" || data.executors.includes(interaction.user.id)) {
 
             data.execute(data.del,interaction,data);
+            this.elements[interaction.customId.slice("eid:".length)] = data; // Re-sync
 
         } else interaction.update({});
 

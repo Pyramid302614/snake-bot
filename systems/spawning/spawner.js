@@ -15,11 +15,13 @@ module.exports = {
             },10000) // Every 10 seconds
         );
 
-    }
+    },
+
+    checkGuild: checkGuild
 
 }
 
-async function checkGuild(id) {
+async function checkGuild(id,overrideSpawnData) {
 
     try {
 
@@ -28,7 +30,7 @@ async function checkGuild(id) {
         const now = Date.now();
 
         // Fetches and/or regenerates spawn data if necessary
-        var spawnData = u.sbdb.getGuildProperty(id,"spawning");
+        var spawnData = overrideSpawnData ?? u.sbdb.getGuildProperty(id,"spawning");
         if(now % 5000 < 2000) { // Every 3-5 seconds (Safely)
             const channels = u.settings.get(id,"channels.spawnable");
             if(!channels || channels.length == 0) return {data:"No channels selected",code:1}; // Checks if path size has changed
@@ -53,9 +55,10 @@ async function checkGuild(id) {
             if(now >= spawnData.next) {
 
                 // Generate message 
-                const emergeMessage = messages.emerge(u.sbdb.guildSync(id),u.snakes.types.randomType());
+                const emergeMessage = messages.emerge(u.sbdb.guildSync(id),u.snakes.types.randomType(),id);
                 if(emergeMessage.code == 0)
-                    spawnData.msgId = (await (await guildObj.channels.fetch(spawnData.path[0])).send(emergeMessage.data)).id;
+                    console.log(emergeMessage.data);
+                    // spawnData.msgId = (await (await guildObj.channels.fetch(spawnData.path[0])).send(emergeMessage.data)).id;
                 else
                     return {data:"Failed to get random type",code:-1};
                 

@@ -101,10 +101,17 @@ module.exports = {
         u.log.log("Pushing application commands to Discord");
         const rest = new REST({ "version": 10 }).setToken(token);
 
-        await rest.put(
-            Routes.applicationCommands(client.user.id),
-            { body: commandsData }
-        );
+        const body = [];
+        for(const command of await rest.get(Routes.applicationCommands(client.user.id)))
+            if(command.name == "launch") body.push(command);
+        for(const command of commandsData)
+            body.push(command);
+        
+            await rest.put(
+                Routes.applicationCommands(client.user.id),
+                { body: body }
+            );
+
 
         u.log.log("Pushed " + commandsData.length + " application commands.");
 

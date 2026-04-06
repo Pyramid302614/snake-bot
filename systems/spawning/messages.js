@@ -1,7 +1,8 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const u = require("../../u");
 const { ButtonBuilder } = require("@discordjs/builders");
-const { ButtonStyle } = require("discord.js");
+const { ButtonStyle, ContainerBuilder, TextDisplayBuilder } = require("discord.js");
+const { newMinigame } = require("./minigame");
 
 const defaultEmerge0 = `
     A <name> has spawned! Press "Catch" to catch it before it slithers away!
@@ -23,7 +24,7 @@ function defaultArguments(key,value) {
 
 module.exports = {
 
-    emerge(guildData,snake) {
+    emerge(guildData,snake,guildId) {
 
         if(!snake.name) return {
             data: "No type provided.",
@@ -38,7 +39,8 @@ module.exports = {
                             defaultEmerge0:
                             defaultEmerge1,
                     defaultArguments(snake.name,snake.data)
-                )
+                ),
+                components: [{type:1,components:[catchButton(guildId,snake)]}]
             },
             code: 0
         };
@@ -71,25 +73,29 @@ function evaluate(string,args) {
 
 }
 
-function catchButton(guildId,snake) {
+function catchButton(guildId,snake,catching,userCatching) {
 
-        if(!snake.type) return "No type provided.";
-
-        const type = snake.type;
-        const data = u.snakes.types.getTypeData(type);
+        catching = catching ?? false;
+        if(!snake) return "No type provided.";
     
         return u.msgelem.messageElement(
             new ButtonBuilder()
-                .setLabel("Catch me")
-                .setStyle(ButtonStyle.Primary),
+                .setLabel(catching?`${userCatching.displayName} is catching...`:"Catch me")
+                .setStyle(ButtonStyle.Primary)
+                .setDisabled(catching),
             async (del,interaction,data) => {
+
+                if(catching) {
+                    interaction.update({});
+                    return;
+                }
 
                 // Updates instance asynchronously
                 u.sbdb.updateGuildProperty(guildId,"spawning.instance.caught",true);
 
                 // Updates count asynchronously
                 let amount = 1; // 1 snake
-                let path = `inventories.${interaction.user.id}.snakes.${type}`;
+                let path = `inventories.${interaction.user.id}.snakes.${snake.name}`;
                 const currentAmount = (u.sbdb.getGuildProperty(
                     guildId,
                     path
@@ -100,16 +106,15 @@ function catchButton(guildId,snake) {
                     currentAmount + amount
                 );
 
-                // Shows that you caught it
-                await interaction.message.edit({
-                    content: `You have caught ${data.pretty??type}! (New amount: ${currentAmount+amount})`, // An assumption on the new value
-                    components: []
+                newMinigame(interaction,guildId); // Responds to the message
+                
+                del();
+                interaction.update({
+                    components: {type:1,components:[catchButton(guildId,snake,true,interaction.user)]}
                 });
 
-                // Deletes button from msgelem cache
-                del();
-
-            }
+            },
+            catching?[userCatching.id]:"everyone"
         )
 
 }

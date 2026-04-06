@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 const u = require("../../u");
 const { EmbedBuilder } = require("@discordjs/builders");
 
@@ -22,7 +22,8 @@ module.exports = {
                 new EmbedBuilder()
                     .setTitle("✅ Cleared spawning cache.")
                     .setDescription("This would be useful if **snakes weren't spawning**, or if **A snake was stuck in an expired state.**")
-            ]
+            ],
+            flags: [MessageFlags.Ephemeral]
         });
 
     }

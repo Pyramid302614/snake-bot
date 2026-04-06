@@ -51,7 +51,8 @@ module.exports = {
         await require("../client.js").boot(this.chip?this.config30.beetroot_token:this.config30.snakebot_token);
 
         console.log("Configuring spawn timers");
-        await require("../systems/spawning/spawner.js").configure();
+        require("../systems/spawning/spawner.js").configure();
+        require("../systems/minigames/minigames.js").host(this.config30.website.port,this.config30.website.ip,this.chip);
 
     },
     async stopSnakeBot() {
