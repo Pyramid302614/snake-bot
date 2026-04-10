@@ -4,7 +4,7 @@
         <style>
             @font-face {
                 font-family: reem_kufi;
-                src: url("assets/ReemKufi-Bold.ttf");
+                src: url("/assets/ReemKufi-Bold.ttf");
             }
         </style>
     </head>
@@ -12,6 +12,10 @@
         <div style="position:fixed;place-items:center;width:100%;height:100%;"><div style="position:fixed;text-align:center;top:50%;transform:translateY(-50%);">
             <span style="font-family:reem_kufi;font-size:80px" id="loading">Loading...</span>
         </div></div>
-        <script>s&&playScript</script>
+        <script>
+            s&&playScript
+            s&&generalScript
+            s&&minigameScript
+        </script>
     </body>
 </html>

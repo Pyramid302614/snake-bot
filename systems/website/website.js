@@ -1,4 +1,5 @@
-const u = require("../../u");
+const { Events } = require("discord.js");
+const u = require("../../u.js");
 const fs = require("fs");
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
         if((u.sbdb.getGuildProperty(guildId,`minigame`)??{}).stage == 0) {
             await u.sbdb.updateGuildProperty(guildId,`minigame.stage`,1);
             await u.sbdb.updateGuildProperty(guildId,`minigame.trustedIP`,trustedIP);
+            await u.sbdb.updateGuildProperty(guildId,`minigame.secret`,newSecret());
         } else
             return;
 
@@ -28,16 +30,36 @@ module.exports = {
 
     host(port,ip) {
 
+        u.adapter.intervals.push(
+            setInterval(() => reqCount = {},frameDuration)
+        );
         const server = require("http").createServer(request);
-        server.listen(port,"0.0.0.0",() => console.log("Minigames hosted on port " + port + " at ip " + ip));
+        server.listen(port,"0.0.0.0",() => console.log("Website hosted on port " + port + " at ip " + ip));
 
     }
 
 }
 
+const frameDuration = u.time.minutes(2);
+const maximumRequestsEveryFrame = 30;
+var reqCount = {};
 
-const hostedDir = "snake-bot/systems/minigames/public";
+const allowedFiles = [
+    "/assets/ReemKufi-Bold.ttf",
+    "/assets/DMSans_18pt-Light.ttf",
+    "/assets/DMSans_18pt-ExtraLight.ttf",
+    "/assets/DMSans_18pt-Regular.ttf"
+];
+
+const hostedDir = "snake-bot/systems/website/public";
 async function request(req,res) {
+
+    res.setHeader('Access-Control-Allow-Origin',"*");
+
+    console.log("URL: " + req.url + " Requests: " + reqCount[req.socket.remoteAddress] + " of " + maximumRequestsEveryFrame);;
+
+    if(reqCount[req.socket.remoteAddress] > maximumRequestsEveryFrame) return; // Im not finna respond to alla that
+    reqCount[req.socket.remoteAddress] = (reqCount[req.socket.remoteAddress]??0)+1;
 
     try {
 
@@ -47,9 +69,12 @@ async function request(req,res) {
         // Whitelist
         var returnMsg = await (async () => {
 
-            // console.log("URL: " + req.url);
-
             switch(true) {
+
+                case /\/snake-bot/.test(req.url):
+
+                    contentType = "text/html";
+                    return fs.readFileSync(`${hostedDir}/index.html`,"utf-8");
 
                 case /\/\?.+/.test(req.url):
 
@@ -57,12 +82,14 @@ async function request(req,res) {
                     const guildId = req?.url?.split("guild_id=")?.[1]?.split("&")?.[0];
                     if(!guildId) return "Failed to get guild id from url.";
 
-                    if(!u.sbdb.getGuildProperty(guildId,"minigame")) {
+                    const minigame = u.sbdb.getGuildProperty(guildId,"minigame");
+
+                    if(!minigame) {
                         contentType = "text/html";
                         return fs.readFileSync(`${hostedDir}/none.html`) ?? "File not found";
                     }
 
-                    const minigameID = u.sbdb.getGuildProperty(guildId,"minigame.id");
+                    const minigameID = minigame.id;
                     if(minigameID == null || minigameID == undefined) return "Failed to fetch new minigame ID.";
 
                     const amberVars = (v) => {
@@ -73,18 +100,19 @@ async function request(req,res) {
                             .replaceAll("&&spectateScript",fs.readFileSync(`${hostedDir}/spectate.js`))
                             .replaceAll("&&minigameID",minigameID)
                             .replaceAll("&&guildId",guildId)
+                            .replaceAll("&&generalScript",fs.readFileSync(`${hostedDir}/minigames/general.js`))
                             .replaceAll("&&minigameScript",fs.readFileSync(`${hostedDir}/minigames/${minigameID}.js`))
                             .replaceAll("&&cloudflared",u.adapter.config30.cloudflared) // CloudFlared tunnel url
                             .replaceAll("**","&&"); // Escape for escape
                     };
 
-                    
+
                     const stage = u.sbdb.getGuildProperty(guildId,"minigame.stage");
 
                     if(stage == 0) {
 
                         // Set stage to 1
-                        await require("./minigames.js").start(guildId,req.socket.remoteAddress); // Your >PUBLIC< IP!!! You expose this to the internet DAILY. I am !!NOT!! storing your PRIVATE IP    
+                        await require("./website.js").start(guildId,req.socket.remoteAddress); // Your >PUBLIC< IP!!! You expose this to the internet DAILY. I am !!NOT!! storing your PRIVATE IP    
 
                         // Return play file
                         contentType = "text/html";
@@ -108,14 +136,27 @@ async function request(req,res) {
                     const guild = await u.cache.client.guilds.fetch(req.split("guild_id=")[1].split("&")[0]);
                     return (await guild.members.fetch(u.sbdb.getGuildProperty(guild.id,"minigame.userId"))).displayName;
 
+                case /\/secret:\d+/.test(req.url):
+
+                    const guildId_ = req.url.split(":")[req.url.split(":").length-1];
+                    const minigame_ = u.sbdb.getGuildProperty(guildId_,"minigame");
+                    if(!minigame_) return newSecret(); // Take this
+                    if(minigame_.fetchedSecret == null || minigame_.fetchedSecret == undefined || minigame_.fetchedSecret == false) {
+                        u.sbdb.updateGuildProperty(guildId_,"minigame.fetchedSecret",true); // Asynchronously writes because why not
+                        return minigame_.secret;
+                    } else {
+                        return newSecret(); // Your welcome
+                    }
 
                 case /\/close:\d+/.test(req.url):
 
-                    console.log(req.url.split(":")[req.url.split(":").length-1]);
-                    await u.sbdb.updateGuildProperty(req.url.split(":")[req.url.split(":").length-1],"minigame",null);
+                    const data = req.url.split(":");
+                    const minigame__ = u.sbdb.getGuildProperty(data[1],"minigame");
+                    if(minigame__.secret == data[2] && minigame__.trustedIP == req.socket.remoteAddress)
+                        await u.sbdb.updateGuildProperty(data[1],"minigame",null);
                     break;
 
-                case /\/api\/token/.test(req): ret = false; discordRequest(req,res);
+                case /\/api\/token/.test(req.url): ret = false; discordRequest(req,res);
                 
                     return;
 
@@ -125,7 +166,38 @@ async function request(req,res) {
                     return "pong :)";
 
 
-                default: return null; // If the request is not whitelisted
+
+                case /\/.+\..+/.test(req.url):
+
+                    const requestedFile = req.url;
+                    if(allowedFiles.includes(requestedFile)) {
+                        const ext = require("node:path").extname(requestedFile);
+                        switch(ext) {
+                            case "ttf": contentType = "font/ttf"; break;
+                            case "txt": contentType = "text/plain"; break;
+                            case "html": contentType = "text/html"; break;
+                            case "png": contentType = "image/png"; break;
+                            case "json": contentType = "text/json"; break;
+                        };
+                        if(!fs.existsSync(hostedDir + requestedFile)) {
+                            res.writeHead(404,{"Content-Type":"text/plain"});
+                            res.end("404 File not found");
+                            ret = false;
+                            return;
+                        }
+                        return fs.readFileSync(hostedDir + requestedFile);
+                    }
+
+                    res.writeHead(404,{"Content-Type":"text/plain"});
+                    res.end("404 File not found"); // It could exist but my security doesn't think so
+                    ret = false;
+                    return;
+
+                default: 
+                    
+                    // Ok maybe this was a little harsh
+                    // reqCount[req.socket.remoteAddress] = maximumRequestsEveryFrame+1; // Makes it time you out if you do things wrong teehee
+                    return null; // If the request is not whitelisted
 
 
         }})() ?? "Request sent."; // You'll never really know
@@ -137,8 +209,12 @@ async function request(req,res) {
 
     } catch(e) {
 
-        res.writeHead(400,{"Content-Type":"text/plain"});
-        res.end("400 Bad Request\n\nError:"+e.message);
+        // It was too descriptive for my liking
+        // res.writeHead(400,{"Content-Type":"text/plain"});
+        // res.end("400 Bad Request\n\nError: "+e.message);
+
+        res.writeHead(200,{"Content-Type":contentType});
+        res.end("Request sent.");
 
     }
 
@@ -169,4 +245,8 @@ async function discordRequest(req,res) {
     // Return the access_token to our client as { access_token: "..."}
     res.send({access_token});
 
+}
+
+function newSecret() {
+    return Math.floor(Math.random()*16_000_000).toString(16);
 }

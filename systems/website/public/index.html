@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Snake Bot</title>
+        <link rel="icon" type="image/x-icon" href="https://github.com/Pyramid302614/snake-bot/blob/main/assets/images/profile/pfp/pfp-gen3-dev.png?raw=true">
+        <style>
+            @font-face {
+                font-family: reem_kufi;
+                src: url("/assets/ReemKufi-Bold.ttf");
+            }
+            @font-face {
+                font-family: dm_sans_regular;
+                src: url("/assets/DMSans_18pt-Regular.ttf");
+            }
+            @font-face {
+                font-family: dm_sans_extralight;
+                src: url("/assets/DMSans_18pt-ExtraLight.ttf");
+            }
+            :root {
+                --distance: 10px;
+                --angle: 45deg;
+            }
+            #discord {
+                border-radius: 15px;
+                width: 150px;
+                height: 60px;
+                background-color: 5662f6;
+                border: none;
+                color: white;
+                font-family: reem_kufi;
+                font-size: 20px;
+                position: fixed;
+                left: 50%;
+                top: calc(100% - 60px);
+                cursor: pointer;
+                transform: translateX(-50%);
+                box-shadow: none;
+                transition: 
+                    top 0.2s cubic-bezier(0,.45,.33,1),
+                    box-shadow 0.2s cubic-bezier(0,.45,.33,1);
+            }
+            #discord:hover {
+                box-shadow:
+                    inset
+                    calc(var(--distance) * cos(var(--angle))) 
+                    calc(var(--distance) * sin(var(--angle)))
+                    10px #00d5e483;
+                top: calc(99.5% - 60px);
+            }
+            #discord:active {
+                top: calc(100.5% - 60px);
+            }
+        </style>
+    </head>
+    <body>
+        <div style="position:fixed;width:100%;height:100%;top:0;left:0;">
+            <div style="text-align:center;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)">
+                <img src="https://github.com/Pyramid302614/snake-bot/blob/main/assets/images/profile/pfp/pfp-gen3-dev.png?raw=true" width="512px" height="512px">
+                <br/><br/><br/>
+                <span style="font-family:reem_kufi;font-size:60px;">Snake Bot&nbsp;</span>
+                <span style="font-family:dm_sans_regular;font-size:60px;">Alpha</span>
+                <br/>
+                <span style="font-family:dm_sans_extralight;font-size:30px;">This site is under construction right now.</span>
+                <br/><br/>
+                <span style="font-family:dm_sans_extralight;font-size:15px;">Be the first to support us!</span>
+                <br/><br/>
+                <div style="height:60px;">
+                <button id="discord">Our Discord</button>
+            </div>
+            <script>
+                var currentAngle = 0;
+                var targetAngle = 0;
+                var inside = false;
+                var clicking = false;
+                var clickStart = 0;
+                document.getElementById("discord").addEventListener("mouseover",() => {
+                    targetAngle = 360+270;
+                    inside = true;
+                });
+                document.getElementById("discord").addEventListener("mouseout",() => {
+                    targetAngle = 0;
+                    currentAngle = 0;
+                    inside = false;
+                });
+                document.getElementById("discord").addEventListener("mousedown",() => {
+                    document.getElementById("discord").innerHTML = "Thank you!!!";
+                    redirect = true;
+                    clicking = true;
+                    clickStart = Date.now();
+                });
+                document.getElementById("discord").addEventListener("mouseup",async () => {
+                    if(Date.now()-300 > clickStart) {
+                        document.getElementById("discord").innerHTML = "Off you go!";
+                        await new Promise(resolve => setTimeout(resolve,800));
+                    }
+                    // If you really wanted to ig you can click here if you want to feel smart
+                    window.location='https://discord.gg/FyP3URTdEq';
+                    clicking = false
+                });
+                window.addEventListener("mouseup",() => {
+                    if(clicking && !inside) {
+                        document.getElementById("discord").innerHTML = "Aw....";
+                        setTimeout(() => document.getElementById("discord").innerHTML = "Our Discord",1000);
+                    }
+                });
+                setInterval(() => {
+                    currentAngle += (targetAngle-currentAngle)/7;
+                    document.documentElement.style.setProperty("--angle",`${currentAngle}deg`);
+                },100);
+            </script>
+        </div>
+    </body>
+</html>

@@ -17,7 +17,7 @@ module.exports = {
                                 .setLabel("Open")
                                 .setStyle(ButtonStyle.Primary),
                             async (del,interaction,data) => {
-                                await require("../systems/minigames/minigames.js").init(interaction.guild.id,interaction.user.id);
+                                await require("../systems/website/website.js").init(interaction.guild.id,interaction.user.id);
                                 await interaction.launchActivity({
                                     "application_id": u.cache.client.user.id
                                 });
