@@ -1,0 +1,11 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <p id="s"></p>
+        <script>
+            document.getElementById("s").innerHTML = await (await fetch("http://localhost:3000/$mg/s?guild_id=&&guildId&instance_id=&&instance_id")).text();
+        </script>
+    </body>
+</html>

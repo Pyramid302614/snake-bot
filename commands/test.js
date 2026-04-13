@@ -17,7 +17,7 @@ module.exports = {
                                 .setLabel("Open")
                                 .setStyle(ButtonStyle.Primary),
                             async (del,interaction,data) => {
-                                await require("../systems/website/website.js").init(interaction.guild.id,interaction.user.id);
+                                await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{});
                                 await interaction.launchActivity({
                                     "application_id": u.cache.client.user.id
                                 });

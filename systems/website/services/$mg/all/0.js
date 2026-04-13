@@ -1,0 +1,1 @@
+const wss = new WebSocket("wss://localhost:8080");

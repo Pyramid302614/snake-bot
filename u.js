@@ -18,7 +18,8 @@ module.exports = {
     snakes: {
         types: require("./systems/spawning/types.js")
     },
-    time: require("./utilities/time.js")
+    time: require("./utilities/time.js"),
+    url: require("./utilities/url.js")
 
 }
 

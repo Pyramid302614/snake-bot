@@ -52,7 +52,7 @@ module.exports = {
 
         console.log("Configuring spawn timers");
         require("../systems/spawning/spawner.js").configure();
-        require("../systems/website/website.js").host(this.config30.website.port,this.config30.website.ip,this.chip);
+        require("../systems/website/gateway.js").host(this.config30.website.port,this.config30.website.wsport);
 
     },
     async stopSnakeBot() {
