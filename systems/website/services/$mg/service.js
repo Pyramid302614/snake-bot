@@ -42,11 +42,12 @@ module.exports = {
                     return {
                         type: "text/html",
                         msg: ambervars(
-                            require("fs").readFileSync(`${hostedDir}/$mg/container.html`) ?? "",
+                            require("fs").readFileSync(`${hostedDir}/$mg/container.html`).toString(),
                             {
                                 id: newId(hostedDir),
                                 guild_id: args.guild_id,
-                                instance_id: args.instance_id
+                                instance_id: args.instance_id,
+                                member: JSON.stringify(await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(handlerResponse.users[handlerResponse[handlerResponse.users.length-1]]))
                             }
                         ),
                         code: 200
@@ -105,6 +106,8 @@ function ambervars(content,data) {
         .replaceAll("&&id",data.id)
         .replaceAll("&&guildId",data.guild_id)
         .replaceAll("&&instanceId",data.instance_id)
+        .replaceAll("&&member",data.member)
+        .replaceAll("&&user",data.member.user)
         .replaceAll("**","&&") // Escape for escape
     ;
 }
