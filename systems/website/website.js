@@ -14,7 +14,6 @@ module.exports = {
                 id: Math.floor(Math.random()*fs.readdirSync(hostedDir + "/minigames").length)
             }
         );
-        await new Promise(resolve => setTimeout(resolve,500));
 
     },
     async start(guildId,trustedIP) {

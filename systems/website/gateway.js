@@ -53,7 +53,7 @@ module.exports = {
 
                 return {
                     code: 400,
-                    msg: "Bad request"+(ip=="127.0.0.1"?`\n${e}`:""),
+                    msg: "Bad request"+(["127.0.0.1",u.adapter.config30.pyshomecomputer,"::1"].includes(ip)?`\n${e.stack??e.message}`:""),
                     type: "text/plain"
                 };
 

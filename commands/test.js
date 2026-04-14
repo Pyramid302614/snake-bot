@@ -7,6 +7,7 @@ module.exports = {
         .setDescription("test"),
     contexts: ["absent"],
     async execute(interaction) {
+        await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{});
         await interaction.reply({
             components: [
                 {
@@ -17,11 +18,12 @@ module.exports = {
                                 .setLabel("Open")
                                 .setStyle(ButtonStyle.Primary),
                             async (del,interaction,data) => {
-                                await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{});
+                                const users = u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users") ?? [];
+                                users.push(interaction.user.id);
+                                u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users",users);
                                 await interaction.launchActivity({
                                     "application_id": u.cache.client.user.id
                                 });
-                                del();
                             },
                             [interaction.user.id]
                         ).data

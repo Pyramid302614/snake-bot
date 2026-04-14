@@ -3,12 +3,28 @@
         <meta charset="UTF-8">
     </head>
     <body>
-        <span>Display:&nbsp;</span><span id="s"></span>
+        <span id="display" style="font-family:monospace;"></span>
         <script>
-            (async () => {
-                const s = await (await fetch("http://localhost:3000/$mg/s?guild_id=&&guildId&instance_id=&&instanceId")).text();
-                document.getElementById("s").innerHTML = JSON.stringify(JSON.parse("&&user"),null,2);
-            })();
+
+            try {
+                    
+                document.getElementById("display").innerHTML = "&&user.displayName";
+                
+            
+                // Fetching S
+                setTimeout(async () => {
+
+                    document.getElementById("display").innerHTML = (await fetch("http://localhost:3000/$mg/s?guild_id=&&guildId&instance_id=&&instanceId")).text();
+
+                }, 5000);
+
+            } catch(e) {
+                
+                console.error(e);
+                document.getElementById("display").innerHTML = e;
+            
+            }
+
         </script>
     </body>
 </html>

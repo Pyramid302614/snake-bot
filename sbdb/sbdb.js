@@ -40,7 +40,7 @@ module.exports = {
         await write(lookup(id),"guilds."+id+"."+propertyPath,propertyValue);
     },
     getGuildProperty(id,propertyPath) {
-        if(!propertyPath) require("../utilities/log/log.js").err("You didn't provide a guild id didnt you");
+        if(!propertyPath) require("../utilities/log/log.js").err("%s","You didn't provide a guild id didnt you");
         return objectProperty(this.guildSync(id),propertyPath);
     },
 

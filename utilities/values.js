@@ -1,3 +1,5 @@
+const { User, ActionRow, ActionRowBuilder } = require("discord.js");
+
 module.exports = {
     async parseValue(v) {
         var split = [v.split(":")[0],v.slice(v.split(":")[0].length+1)];
