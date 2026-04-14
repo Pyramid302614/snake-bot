@@ -1,8 +1,18 @@
-const u = require("../../../../u")
+const u = require("../../../../u");
+
+const fs = require("fs");
 
 module.exports = {
 
     async request(req,res,url,args,hostedDir) {
+
+        if(!args.guild_id) {
+            return {
+                type: "text/html",
+                msg: fs.readFileSync(hostedDir+"/$mg/lost.html"),
+                code: 200
+            };
+        }
 
         if(!args.instance_id || !args.guild_id) return "<g>";
         
@@ -24,8 +34,19 @@ module.exports = {
 
                     await new Promise(resolve => setTimeout(resolve,1000));
                     const users = u.sbdb.getGuildProperty(args.guild_id,"minigame.users");
-                    if(!users) return "User cache is empty";
-                    const user = users[users.length-1]; // Last joined player
+                    var user = "unknown";
+                    if(user) for(let i = 0; i < Object.keys(users).length; i++) {
+                        if(Object.values(users)[i] == "unknown") {
+                            user = Object.keys(users)[i];
+                            break;
+                        }
+                    }
+                    if(user == "unknown") return {
+                        type: "text/html",
+                        msg: fs.readFileSync(hostedDir+"/$mg/lost.html"),
+                        code: 200
+                    };
+                    u.sbdb.updateGuildProperty(args.guild_id,`minigame.users.${user}`,req.socket.remoteAddress);
                     
                     await u.sbdb.updateGuildProperty(args.guild_id,"minigame.s",newS());
                     const id = newId(hostedDir);
@@ -33,13 +54,13 @@ module.exports = {
                     return {
                         type: "text/html",
                         msg: ambervars(
-                            require("fs").readFileSync(`${hostedDir}/$mg/container.html`).toString(),
+                            fs.readFileSync(`${hostedDir}/$mg/container.html`).toString(),
                             {
                                 id: id,
                                 guild_id: args.guild_id,
                                 instance_id: args.instance_id,
                                 member: await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(user),
-                                script: require("fs").readFileSync(`${hostedDir}/$mg/all/${id}.js`)
+                                script: fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`)
                             }
                         ),
                         code: 200
@@ -67,7 +88,7 @@ function newS() {
 }
 function newId(hostedDir) {
     
-    return Math.floor(Math.random()*require("fs").readdirSync(`${hostedDir}/$mg/all`).length);
+    return Math.floor(Math.random()*fs.readdirSync(`${hostedDir}/$mg/all`).length);
 
 }
 

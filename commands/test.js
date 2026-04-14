@@ -18,8 +18,8 @@ module.exports = {
                                 .setLabel("Open")
                                 .setStyle(ButtonStyle.Primary),
                             async (del,interaction,data) => {
-                                const users = u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users") ?? [];
-                                users.push(interaction.user.id);
+                                const users = u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users") ?? {};
+                                users[interaction.user.id] = "unknown";
                                 u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users",users);
                                 await interaction.launchActivity({
                                     "application_id": u.cache.client.user.id

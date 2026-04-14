@@ -1,4 +1,5 @@
 const fs = require("fs");
+const u = require("../../../../u.js");
 
 module.exports = {
 
@@ -8,12 +9,7 @@ module.exports = {
 
             case "/":
 
-                if(args.guild_id) return require("../$mg/service.js").request(req,res,url,args,hostedDir); // Forwards it to mg service
-                if(args.instance_id) return {
-                    type: "text/html",
-                    msg: fs.readFileSync(hostedDir+"/$mg/lost.html"),
-                    code: 200
-                };
+                if(args.instance_id) return require("../$mg/service.js").request(req,res,url,args,hostedDir); // Forwards it to mg service
 
                 return "True root";
 
