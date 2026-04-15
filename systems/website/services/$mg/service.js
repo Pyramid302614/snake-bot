@@ -60,7 +60,8 @@ module.exports = {
                                 guild_id: args.guild_id,
                                 instance_id: args.instance_id,
                                 member: await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(user),
-                                script: fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`)
+                                script: fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`),
+                                wsScript: fs.readFileSync(`${hostedDir}/$mg/ws.js`)
                             }
                         ),
                         code: 200
@@ -94,12 +95,14 @@ function newId(hostedDir) {
 
 function ambervars(content,data) {
     return content
+        .replaceAll("s&&","&&") // Script-safes
         .replaceAll("&&id",data.id)
         .replaceAll("&&guildId",data.guild_id)
         .replaceAll("&&instanceId",data.instance_id)
         .replaceAll("&&member.displayName",data.member.displayName)
         .replaceAll("&&user.displayName",data.member.user.displayName)
         .replaceAll("&&script",data.script)
+        .replaceAll("&&wsScript",data.wsScript)
         .replaceAll("**","&&") // Escape for escape
     ;
 }
