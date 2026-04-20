@@ -8,7 +8,9 @@ module.exports = {
     // Label: The text on the button
     // Style: The button style
     // Executors: The people with permission to press it
-    messageElement(data,execute,executors) {
+    messageElement(data,execute,executors,expire) {
+
+        expire = expire ?? true;
 
         var eid = this.newEID();
         data.setCustomId("eid:"+eid);
@@ -24,7 +26,7 @@ module.exports = {
             }
         };
         this.elements[eid] = elementData;
-        require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,10*60*1000)); // 10 minutes
+        if(expire) require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,10*60*1000)); // 10 minutes
         return elementData;
 
     },

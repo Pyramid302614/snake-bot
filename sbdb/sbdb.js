@@ -146,8 +146,12 @@ function getBackupPath(sector) {
 function processAllRequests() {
 
     // Stores it locally before anyone changes it
-    var heap = requestsHeap.slice();
-    requestsHeap = [];
+    var original = requestsHeap.slice();
+    var heap = []; // Reversed heap
+    for(let i = original.length-1; i >= 0; i--) {
+        heap.push(original[i]);
+    }
+    requestsHeap = []; // Clears the heap stored
 
     var datas = {};
 
