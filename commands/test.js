@@ -21,6 +21,6 @@ module.exports = {
                 }
             ]
         });
-        await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{id:newId(u.cache.sbdir + "/systems/website/services"),s:newS(),msgId:msg.id,channelId:msg.channel.id});
+        await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{id:newId(u.cache.sbdir + "/systems/website/services"),s:newS(),msgId:msg.id,channelId:msg.channel?.id});
     }
 }
