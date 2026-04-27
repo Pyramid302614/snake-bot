@@ -1,0 +1,192 @@
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            @font-face {
+                font-family: reem_kufi;
+                src: url("/$fs/$mg/assets/ReemKufi-Bold.ttf");
+            }
+            @font-face {
+                font-family: dm_sans;
+                src: url("/$fs/$mg/assets/DMSans_18pt-Light.ttf");
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <span id="display" style="font-family:monospace;">Loading...</span>
+        <canvas id="canvas" style="position:fixed;top:0;left:50%;top:50%;transform:translate(-50%,-50%);" width="50px" height="50px"></canvas>
+
+        <script>
+            
+            function overrideDisplay(msg) {
+                document.getElementById("display").innerHTML = msg;
+            }
+            function log(msg,override) {
+                console.log(msg);
+                document.getElementById("display").innerHTML += `<br/>[INF] ${msg}`;
+            }
+            function err(m) {
+                console.error(m);
+                document.getElementById("display").innerHTML += `<br/>[ERR] ${m}`;
+            }
+
+        </script>
+
+        <script type="module" src="/script.mjs">
+
+            
+
+        </script>
+
+
+        <script>
+            
+            document.addEventListener("DOMContentLoaded",() => {
+
+                var mouseX = 0;
+                var mouseY = 0;
+
+                s&&script
+
+                window.addEventListener("error",(e) => err(e.message));
+                window.addEventListener("unhandledrejection",(r) => err(r.message));
+
+                const canvas = document.getElementById("canvas");
+                const g = canvas.getContext("2d");
+                log("Fetched canvas: " + canvas);
+                log("Fetched graphics context: " + g);
+
+                const Adapter = adapter?.();
+                if(!Adapter) {
+                    log("Failed to fetch Snake Bot ME adapter");
+                } else {
+                    log("Fetched adapter!\n" + JSON.stringify(Adapter,null,2));
+                }
+                
+                function fill(r,g_,b,a) {
+                    if(a !== undefined) g.fillStyle = `rgba(${r},${g_},${b},${Math.round(a/255*100)/100})`;
+                    else g.fillStyle = `rgb(${r},${g_},${b})`;
+                }
+                function noStroke() {
+
+                }
+                function rect(x,y,w,h) {
+                    g.fillRect(x,y,w,h);
+                }
+                function ellipse(x,y,w,h) {
+                    g.beginPath();
+                    g.ellipse(x,y,w/2,h/2,0,0,Math.PI*2);
+                    g.fill();
+                }
+                function text(t,x,y) {
+                    g.fillText(t,x,y);
+                }
+                var fontSize = 12;
+                var fontFamily = "Arial";
+                function textSize(s) {
+                    fontSize = s;
+                    updateFont();
+                }
+                function textFamily(f) {
+                    fontFamily = f;
+                    updateFont();
+                }
+                function updateFont() {
+                    g.font = `${fontSize}px ${fontFamily}`;
+                }
+
+                var startupCompleted = false;
+                let startupTimestamp = 0;
+                function startupDraw() {
+                    const now = Date.now();
+                    if(now - startupTimestamp >= 3000) startupCompleted = true;
+                    else {
+                        fill(0,0,0);
+                        rect(0,0,canvas.width,canvas.height);
+                        fill(255,255,255);
+                        textFamily("reem_kufi");
+                        textSize(50*Adapter.scale);
+                        text("Snake Bot ME",canvas.width/2-g.measureText("Snake Bot ME").width/2,canvas.height/2+((50/2-10)*Adapter.scale));
+                        textFamily("dm_sans");
+                        textSize(30*Adapter.scale);
+                        text("InDev 2",canvas.width/2-g.measureText("InDev 2").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
+                    }
+                }
+
+                function updateCanvasSize() {
+                    canvas.width = Math.min(Adapter.canvas[0]/Adapter.canvas[1]*window.innerHeight,window.innerWidth);
+                    canvas.height = Math.min(Adapter.canvas[1]/Adapter.canvas[0]*window.innerWidth,window.innerHeight);
+                    Adapter.scale = window.innerWidth > window.innerHeight ? (canvas.height/Adapter.canvas[1]) : (canvas.width/Adapter.canvas[0]);
+                }
+                async function loadCanvas() {
+
+                    updateCanvasSize();
+
+                    log("Hooking event listeners");
+                    window.addEventListener("resize",updateCanvasSize);
+                    window.addEventListener("keydown",(k) => Adapter?.keyPressed?.(k.keyCode));
+                    window.addEventListener("keyup",(k) => Adapter?.keyReleased?.(k.keyCode));
+                    window.addEventListener("mousedown",(e) => { mouseX = e.clientX; mouseY = e.clientY; Adapter?.mousePressed(); });
+
+                    log("Starting boot screen");
+                    startupTimestamp = Date.now();
+                    await new Promise(resolve => { let i = setInterval(() => {
+                    if(startupCompleted) { clearInterval(i); resolve(); }
+                    else startupDraw(); 
+                    }, 1000/60)});
+
+                    log("Migrated to minigame");
+                    overrideDisplay("");
+                    let pBackgroundSum = -1;
+                    setInterval(() => {
+                        Adapter.draw();
+                        let bSum = Adapter.background[0]+Adapter.background[1]+Adapter.background[2];
+                        if(bSum != pBackgroundSum) {
+                            // log("update")
+                            document.body.style.backgroundColor = `rgb(${Adapter.background[0]-(Adapter.background[0]-(255/2))/5},${Adapter.background[1]-(Adapter.background[1]-(255/2))/5},${Adapter.background[2]-(Adapter.background[2]-(255/2))/5})`;
+                        }
+                        pBackground = bSum;
+                    } ,1000/Adapter.frameRate);
+
+                }
+
+                (async () => {
+                    
+                    try {
+
+                        log("Executing SDK startup delay");
+                        await new Promise(resolve => setTimeout(resolve,1_000));
+
+                        const { DiscordSDK } = window;
+                        var sdk = false;
+                        if(DiscordSDK) {
+                            sdk = new DiscordSDK("&&clientId"); TODO client id not showing
+                            log("SDK ready function: " + (sdk.ready !== undefined));
+                            await sdk.ready();
+                            log("SDK handshook");
+                        } else {
+                            log ("(!) No SDK");
+                        }
+
+                        if(Adapter) loadCanvas();
+
+                        const r = await Adapter.report();
+                
+                    } catch(e) {
+                        
+                        err(e.stack);
+                    
+                    }
+
+                })();
+
+            });
+
+        </script>
+
+
+    </body>
+</html>

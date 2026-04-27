@@ -128,7 +128,7 @@ module.exports = {
     async vari(msg,args) {
 
         const path = args[0];
-        const variName = args[0];
+        const variName = args[1];
 
         require(process.cwd()+"/"+path)[variName];
 
@@ -136,6 +136,14 @@ module.exports = {
     async oof(msg,args) {
         console.log("oof");
         process.abort();
+    },
+
+    async request_untimeout(msg,args) {
+
+        const ip = args[0];
+        require("../../systems/website/gateway.js").request_untimeout(ip);
+        return `Lifted timeout from ip ${ip.split(".")[0]}.${ip.split(".")[1]}.***.***`; // Pointless censor but eh idk
+
     }
 
 }

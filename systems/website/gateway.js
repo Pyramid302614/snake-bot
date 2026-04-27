@@ -3,6 +3,7 @@
 const u = require("../../u.js");
 const { WebSocket } = require("ws");
 const http = require("http");
+const { createProxyServer } = require("http-proxy");
 
 const servicesDir = u.cache.sbdir + "/systems/website/services";
 
@@ -12,25 +13,51 @@ const maxRequestsPerFrame = 30;
 
 module.exports = {
 
+    request_untimeout(ip) {
+        requests[ip] = 0;
+    },
     host(port,wsport) {
+
+
+        u.log.log("Beginning website initialization process");
+
+
+        // Service pre-loading
+
+        for(const service of require("fs").readdirSync(servicesDir)) {
+            try {
+                require(servicesDir + "/" + service + "/service.js")?.init?.();
+            } catch(e) {
+                u.log.log("Error initializing service: " + service + "\n```" + e.stack + "```");
+                process.exit();
+            }
+            u.log.log("Initialized service: " + service);
+        }
+
+
+        // HTTP server
 
         const server = http.createServer(this.request);
         server.listen(port,"0.0.0.0",() => console.log("Server hosted at port " + port));
 
-        const wss = new WebSocket.Server({port:wsport});
-        wss.on("connection",(ws) => {
-            try {
-                console.log(ws);
-                if(processRateLimit(ws.socket.remoteAddress)) return;
-                require("./websocket.js").connection(ws);
-            } catch(ignored) {}
-        });
-        wss.on("message",(msg) => {
-            try {
-                console.log(msg);
-            } catch(ignored) {}
-        });
-        console.log("Websocket server hosted at port " + wsport);
+
+        // Websocket
+        
+        // const wss = new WebSocket.Server({port:wsport});
+        // wss.on("connection",(ws) => {
+        //     try {
+        //         console.log(ws);
+        //         if(processRateLimit(ws.socket.remoteAddress)) return;
+        //         require("./websocket.js").connection(ws);
+        //     } catch(ignored) {}
+        // });
+        // wss.on("message",(msg) => {
+        //     try {
+        //         console.log(msg);
+        //     } catch(ignored) {}
+        // });
+        // console.log("Websocket server hosted at port " + wsport);
+
 
     },
 
@@ -63,7 +90,7 @@ module.exports = {
             msg: "Null response",
             type: "text/plain"
         };
-        
+
         try {
             
             if((response.msg??response) == "<g>") return;

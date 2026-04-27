@@ -3,7 +3,9 @@ const whitelistedFiles = [
     "/$mg/assets/DMSans_18pt-Light.ttf",
     "/$mg/assets/lost.png",
     "/$mg/assets/lost2.png",
-    "/$mg/lost.html"
+    "/$mg/lost.html",
+    "/$mg/script.js",
+    "/$mg/script.mjs"
 ];
 
 module.exports = {
