@@ -9,16 +9,8 @@ module.exports = {
             case "/":
 
                 if(args.instance_id) {
-                    var rawArgs = "";
-                    for(let i = 0; i < Object.keys(args).length; i++) {
-                        rawArgs += "&" + Object.keys(args)[i] + "=" + Object.values(args)[i];
-                    }
-                    rawArgs = rawArgs.slice(1); // Removes first &
-                    return {
-                        type: "text/html",
-                        msg: `<html><head></head><body><script>console.log("Redirecting..."); setInterval(() => window.location.href='/$mg/vite/?${rawArgs}', 1000);</script></body></html>`,
-                        code: 200
-                    };
+                    req.url = "/$mg/vite/root";
+                    return require("../$mg/service.js").request(req,res,"/vite/root",args,hostedDir);
                 }
 
                 return "True root";

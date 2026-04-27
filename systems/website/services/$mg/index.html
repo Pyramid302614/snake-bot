@@ -163,10 +163,14 @@
                         const { DiscordSDK } = window;
                         var sdk = false;
                         if(DiscordSDK) {
-                            sdk = new DiscordSDK("&&clientId"); TODO client id not showing
+                            sdk = new DiscordSDK("&&clientid");
                             log("SDK ready function: " + (sdk.ready !== undefined));
+                            log("Waiting for SDK dap...");
                             await sdk.ready();
-                            log("SDK handshook");
+                            log("SDK dapped ("+Math.floor(Math.random()*100)+"% resonant)");
+                            if(sdk.guildId != "&&guildId") return;
+                            if(sdk.instanceId != "&&guildId") return;
+                            log("Verified URL IDs. Proceeding");
                         } else {
                             log ("(!) No SDK");
                         }

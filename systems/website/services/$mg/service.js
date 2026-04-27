@@ -27,16 +27,10 @@ module.exports = {
         // res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
         if(!proxy) return "Cannot reach vite client; Proxy is null";
-
-
-        if(url.startsWith("/vite/") && !args["instance_id"]) {
-            proxy.web(req,res);
-            return "<g>";
-        }
         
         switch(url) {
 
-            case "/vite/":
+            case "/vite/root":
 
                 if(!args.guild_id) {
                     return {
@@ -83,14 +77,16 @@ module.exports = {
                     const id = u.sbdb.getGuildProperty(args.guild_id,"minigame.id");
 
                     // Crafts ambervars
+                    const member = await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(user);
                     const headers = {
-                        id: id,
-                        ip: u.adapter.chip?"https://beetroot.pyramidstudios.xyz":"https://snakebot.pyramidstudios.xyz",
-                        guild_id: args.guild_id,
-                        instance_id: args.instance_id,
-                        member: await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(user),
-                        script: fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`),
-                        client_id: u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id
+                        "id": id,
+                        "ip": u.adapter.chip?"https://beetroot.pyramidstudios.xyz":"https://snakebot.pyramidstudios.xyz",
+                        "guildid": args.guild_id,
+                        "instanceid": args.instance_id,
+                        "userid": member.user.id,
+                        "displayname": member.user.displayName,
+                        "script": fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`),
+                        "clientid": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id
                     }
 
                     // Adds them to request headers
@@ -115,6 +111,11 @@ module.exports = {
                 console.log(args.r);
                 // backend win code
                 return "<g>";
+
+            default:
+                
+                proxy.web(req,res);
+                return "<g>";
                 
 
         }
@@ -127,21 +128,4 @@ function newId(hostedDir) {
     const dir = fs.readdirSync(`${hostedDir}/$mg/all`);
     return dir[Math.floor(Math.random()*dir.length)].split(".")[0];
 
-}
-
-function ambervars(content,data) {
-    return content
-        .replaceAll("s&&","&&") // Script-safes
-        .replaceAll("&&id",data.id)
-        .replaceAll("&&ip",data.ip)
-        .replaceAll("&&guildId",data.guild_id)
-        .replaceAll("&&instanceId",data.instance_id)
-        .replaceAll("&&member.displayName",data.member.user.displayName)
-        .replaceAll("&&user.displayName",data.member.user.displayName)
-        .replaceAll("&&member.userId",data.member.user.id)
-        .replaceAll("&&user.userId",data.member.user.id)
-        .replaceAll("&&clientId",data.client_id)
-        .replaceAll("&&script",data.script)
-        .replaceAll("**","&&") // Escape for escape
-    ;
 }
