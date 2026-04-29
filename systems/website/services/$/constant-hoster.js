@@ -14,4 +14,4 @@ require("http").createServer((req,res) => {
         res.writeHead(response.code??200,{"Content-Type":response.type??"text/plain"});
         res.end((response.msg ?? response) ?? response.code);
     }
-}).listen(3000,"0.0.0.0",() => console.log("Server hosted at port 3000."))
+}).listen(3001,"0.0.0.0",() => console.log("Server hosted at port 3001."))
