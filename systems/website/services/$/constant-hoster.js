@@ -6,6 +6,9 @@ require("http").createServer((req,res) => {
     if(req.url == "/$/") {
         res.writeHead(200,{"Content-Type":"text/html"});
         res.end(require("fs").readFileSync("snake-bot/systems/website/services/$/index.html"));
+    } else if(req.url == "/$/sitemap") {
+        res.writeHead(200,{"Content-Type":"text/html"});
+        res.end(require("fs").readFileSync("snake-bot/systems/website/services/$/sitemap.txt"));
     } else if(req.url.startsWith("/$fs")) {
         const response = require("../$fs/service.js").request(req,res,req.url.slice("/$fs".length),{},"snake-bot/systems/website/services");
         res.writeHead(response.code??200,{"Content-Type":response.type??"text/plain"});
