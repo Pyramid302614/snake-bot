@@ -8,7 +8,7 @@ module.exports = {
         .setDescription("test"),
     contexts: ["absent"],
     async execute(interaction) {
-        const msg = await interaction.reply({
+        await interaction.reply({
             components: [
                 {
                     type: 1,
@@ -21,6 +21,12 @@ module.exports = {
                 }
             ]
         });
-        await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{id:newId(u.cache.sbdir + "/systems/website/services"),msgId:msg.id,channelId:msg.channel?.id});
+
+        await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{
+            id: newId(u.cache.sbdir + "/systems/website/services"),
+            msgId: (await interaction.fetchReply()).id,
+            channelId: interaction.channel.id,
+            type: u.snakes.types.randomType()
+        });
     }
 }

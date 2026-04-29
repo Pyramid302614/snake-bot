@@ -11,7 +11,12 @@ const defaultEmerge1 = `
     A <name> has spawned! Press "Catch" to catch it!
 `;
 const defaultSlither = `
-    A <name> has slither into <channel>! Press "Catch" to catch it before it slithers away!
+    A <name> has slithered into <channel>! Press "Catch" to catch it before it slithers away!
+`;
+const defaultCatch = `
+    <user> has caught a <type> after <entire-time>
+
+    New amount: <amount>
 `;
 
 // Key: key of snake data
@@ -61,6 +66,16 @@ module.exports = {
             },
             code: 0
         };
+
+    },
+
+    async catch(guildData,snake,guildId) {
+
+        const guild = await u.cache.client.guilds.fetch(guildId);
+        const channel = await guild.channels.fetch(u.sbdb.getGuildProperty(guildId,"minigame.channelId"));
+        const message = await channel.messages.fetch(u.sbdb.getGuildProperty(guildId,"minigame.msgId"));
+
+        // message.update()
 
     }
 

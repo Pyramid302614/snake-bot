@@ -16,8 +16,10 @@ module.exports = {
     request_untimeout(ip) {
         requests[ip] = 0;
     },
-    host(port,wsport) {
+    host() {
 
+        const port = u.adapter.config30.ports.port;
+        const wsport = u.adapter.config30.ports.wsport;
 
         u.log.log("Beginning website initialization process");
 
@@ -43,26 +45,25 @@ module.exports = {
 
         // Websocket
         
-        // const wss = new WebSocket.Server({port:wsport});
-        // wss.on("connection",(ws) => {
-        //     try {
-        //         console.log(ws);
-        //         if(processRateLimit(ws.socket.remoteAddress)) return;
-        //         require("./websocket.js").connection(ws);
-        //     } catch(ignored) {}
-        // });
-        // wss.on("message",(msg) => {
-        //     try {
-        //         console.log(msg);
-        //     } catch(ignored) {}
-        // });
-        // console.log("Websocket server hosted at port " + wsport);
+        const wss = new WebSocket.Server({ port: wsport },u.log.log("Websocket hosted on port " + wsport));
+        wss.on("connection",(ws,req) => {
+            ws.on("message",(m) => {
+                if(processRateLimit(req.socket.remoteAddress)) return;
+                m = m.toString();
+                if(/\$.*:.*/.test(m)) {
+                    const service = m.split(":")[0];
+                    const response = require(servicesDir + "/" + service + "/service.js")?.wsMessage?.(m.slice(service.length)) ?? "Null response.";
+                    if(response == "<g>") return;
+                    else ws.send(response);
+                } else return;
+            });
+        });
 
 
     },
 
     async request(req,res) {
-
+        
         const ip = req.socket.remoteAddress;
 
         if(processRateLimit(ip)) return; // Returns true if it needs to ghost you

@@ -14,9 +14,9 @@
         </style>
     </head>
 
-    <body>
+    <body style="background-color:black">
 
-        <span id="display" style="font-family:monospace;">Loading...</span>
+        <span id="display" style="font-family:monospace;color:white;">Loading...</span>
         <canvas id="canvas" style="position:fixed;top:0;left:50%;top:50%;transform:translate(-50%,-50%);" width="50px" height="50px"></canvas>
 
         <script>
@@ -63,7 +63,7 @@
                 if(!Adapter) {
                     log("Failed to fetch Snake Bot ME adapter");
                 } else {
-                    log("Fetched adapter!\n" + JSON.stringify(Adapter,null,2));
+                    log("Fetched adapter!");//\n" + JSON.stringify(Adapter,null,2));
                 }
                 
                 function fill(r,g_,b,a) {
@@ -102,7 +102,8 @@
                 let startupTimestamp = 0;
                 function startupDraw() {
                     const now = Date.now();
-                    if(now - startupTimestamp >= 3000) startupCompleted = true;
+                    let length = 3000;
+                    if(now - startupTimestamp >= length) startupCompleted = true;
                     else {
                         fill(0,0,0);
                         rect(0,0,canvas.width,canvas.height);
@@ -112,13 +113,13 @@
                         text("Snake Bot ME",canvas.width/2-g.measureText("Snake Bot ME").width/2,canvas.height/2+((50/2-10)*Adapter.scale));
                         textFamily("dm_sans");
                         textSize(30*Adapter.scale);
-                        text("InDev 2",canvas.width/2-g.measureText("InDev 2").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
+                        text("InDev 3",canvas.width/2-g.measureText("InDev 3").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
                     }
                 }
 
                 function updateCanvasSize() {
-                    canvas.width = Math.min(Adapter.canvas[0]/Adapter.canvas[1]*window.innerHeight,window.innerWidth);
-                    canvas.height = Math.min(Adapter.canvas[1]/Adapter.canvas[0]*window.innerWidth,window.innerHeight);
+                    canvas.width = Math.round(Math.min(Adapter.canvas[0]/Adapter.canvas[1]*window.innerHeight,window.innerWidth)/2)*2;
+                    canvas.height = Math.round(Math.min(Adapter.canvas[1]/Adapter.canvas[0]*window.innerWidth,window.innerHeight)/2)*2;
                     Adapter.scale = window.innerWidth > window.innerHeight ? (canvas.height/Adapter.canvas[1]) : (canvas.width/Adapter.canvas[0]);
                 }
                 async function loadCanvas() {
@@ -162,23 +163,33 @@
 
                         const { DiscordSDK } = window;
                         var sdk = false;
+                        var ws = false;
                         if(DiscordSDK) {
                             sdk = new DiscordSDK("&&clientid");
                             log("SDK ready function: " + (sdk.ready !== undefined));
                             log("Waiting for SDK dap...");
                             await sdk.ready();
                             log("SDK dapped ("+Math.floor(Math.random()*100)+"% resonant)");
-                            if(sdk.guildId != "&&guildId") return;
-                            if(sdk.instanceId != "&&guildId") return;
+                            if(sdk.guildId != "&&guildid" || sdk.instanceId != "&&instanceid") {
+                                err("Error verifying URL IDs.");
+                                return;
+                            }
                             log("Verified URL IDs. Proceeding");
+
+                            log("Configuring SDK");
+                            sdk.commands.encourageHardwareAcceleration();
+
                         } else {
                             log ("(!) No SDK");
+                            return;
                         }
 
                         if(Adapter) loadCanvas();
 
                         const r = await Adapter.report();
-                
+                        
+                        fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=&&userid&data=${JSON.stringify(r)}`);
+
                     } catch(e) {
                         
                         err(e.stack);

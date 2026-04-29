@@ -4,6 +4,10 @@ const { MessageFlags } = require("discord.js");
 
 module.exports = {
     "1092": async (interaction) => {
+        if(u.sbdb.getGuildProperty(interaction.guild.id,"minigame.finished")) {
+            interaction.update({});
+            return;
+        }
         const users = u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users") ?? {};
         users[interaction.user.id] = "unknown";
         try {

@@ -13,7 +13,11 @@ module.exports = {
                     return require("../$mg/service.js").request(req,res,"/vite/root",args,hostedDir);
                 }
 
-                return "True root";
+                return {
+                    type: "text/html",
+                    msg: fs.readFileSync(hostedDir + "/$/index.html"),
+                    code: 200
+                };
 
             case "/favicon.ico":
 
@@ -22,6 +26,14 @@ module.exports = {
                     msg: "No favicon file",
                     type: "text/plain"
                 };
+
+            case "/sitemap":
+
+            return {
+                type: "text/plain",
+                msg: fs.readFileSync(hostedDir + "/$/sitemap.txt"),
+                code: 200
+            };
                 
             default: return {code:404};
 

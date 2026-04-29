@@ -1,6 +1,8 @@
 const whitelistedFiles = [
     "/$mg/assets/ReemKufi-Bold.ttf",
     "/$mg/assets/DMSans_18pt-Light.ttf",
+    "/$mg/assets/DMSans_18pt-Regular.ttf",
+    "/$mg/assets/DMSans_18pt-ExtraLight.ttf",
     "/$mg/assets/lost.png",
     "/$mg/assets/lost2.png",
     "/$mg/lost.html",
