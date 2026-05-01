@@ -55,11 +55,11 @@ async function checkGuild(id,overrideSpawnData) {
             if(now >= spawnData.next) {
 
                 // Generate message 
-                const emergeMessage = messages.emerge(u.sbdb.guildSync(id),u.snakes.types.randomType(),id);
-                if(emergeMessage.code == 0)
-                    console.log(emergeMessage.data);
-                    // spawnData.msgId = (await (await guildObj.channels.fetch(spawnData.path[0])).send(emergeMessage.data)).id;
-                else
+                const channel = await guildObj.channels.fetch(spawnData.path[0]);
+                const emergeMessage = await messages.emerge(u.sbdb.guildSync(id),u.snakes.types.randomType(),id);
+                if(emergeMessage.code == 0) {
+                    spawnData.msgId = (await (channel.send(emergeMessage.data))).id;
+                } else
                     return {data:"Failed to get random type",code:-1};
                 
                 spawnData.step = 1;
@@ -91,9 +91,9 @@ async function checkGuild(id,overrideSpawnData) {
                 } else {
                     
                     // Regenerate message
-                    const slitherMessage = messages.slither(u.sbdb.guildSync(id),u.snakes.types.randomType());
+                    const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-1]));
+                    const slitherMessage = await messages.slither(u.sbdb.guildSync(id),u.snakes.types.randomType(),channel,id);
                     if(slitherMessage.code == 0) {
-                        const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-1]));
                         if(channel) spawnData.msgId = (await channel.send(slitherMessage.data)).id;
                     } else
                         return {data:"Failed to get random type",code:-1};

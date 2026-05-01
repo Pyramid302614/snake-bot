@@ -163,15 +163,23 @@ module.exports = {
                         .replaceAll("%20"," ")
                     );
 
-                    const score = data[0];
-
-                    // u.sbdb.updateGuildProperty(args.guild_id,"minigame.winner",{
-                    //     user_id: args.user_id,
-                    //     score: score
-                    // });
+                    const score = data[2];
+                    const entireTime = data[0];
+                    const roundTime = data[1];
                     
                     await u.sbdb.updateGuildProperty(args.guild_id,"minigame.finished",true);
-                    await require("../../../spawning/messages.js").catch(u.sbdb.guildSync(args.guild_id),u.sbdb.getGuildProperty(args.guild_id,"minigame.type"),args.guild_id);
+                    await require("../../../spawning/messages.js").catch(
+                        u.sbdb.guildSync(args.guild_id),
+                        {
+                            snake: u.sbdb.getGuildProperty(args.guild_id,"minigame.type"),
+                            id: u.sbdb.getGuildProperty(args.guild_id,"minigame.id"),
+                            winner: args.user_id,
+                            score: score,
+                            entireTime: entireTime,
+                            roundTime: roundTime
+                        },
+                        args.guild_id
+                    );
 
                 } catch(ignored) {
                     console.log(ignored);
