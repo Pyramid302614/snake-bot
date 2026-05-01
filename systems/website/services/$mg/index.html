@@ -51,8 +51,8 @@
 
                 s&&script
 
-                window.addEventListener("error",(e) => err(e.message));
-                window.addEventListener("unhandledrejection",(r) => err(r.message));
+                window.addEventListener("error",(e) => err(e));
+                window.addEventListener("unhandledrejection",(r) => err(r));
 
                 const canvas = document.getElementById("canvas");
                 const g = canvas.getContext("2d");
@@ -113,7 +113,7 @@
                         text("Snake Bot ME",canvas.width/2-g.measureText("Snake Bot ME").width/2,canvas.height/2+((50/2-10)*Adapter.scale));
                         textFamily("dm_sans");
                         textSize(30*Adapter.scale);
-                        text("InDev 3",canvas.width/2-g.measureText("InDev 3").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
+                        text("InDev 4",canvas.width/2-g.measureText("InDev 4").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
                     }
                 }
 
@@ -122,15 +122,48 @@
                     canvas.height = Math.round(Math.min(Adapter.canvas[1]/Adapter.canvas[0]*window.innerWidth,window.innerHeight)/2)*2;
                     Adapter.scale = window.innerWidth > window.innerHeight ? (canvas.height/Adapter.canvas[1]) : (canvas.width/Adapter.canvas[0]);
                 }
+                function getRelativePos(x,y,element) {
+                    const rect = element.getBoundingClientRect();
+                    return {
+                        x: x - rect.left,
+                        y: y - rect.top
+                    };
+                }
                 async function loadCanvas() {
 
                     updateCanvasSize();
 
+                    log("Loading platform");
+                    Adapter.mobile = "&&platform" != "desktop";
+                    log("Platform: &&platform");
+                    log("Detected mobile: " + Adapter.mobile);
                     log("Hooking event listeners");
                     window.addEventListener("resize",updateCanvasSize);
                     window.addEventListener("keydown",(k) => Adapter?.keyPressed?.(k.keyCode));
                     window.addEventListener("keyup",(k) => Adapter?.keyReleased?.(k.keyCode));
-                    window.addEventListener("mousedown",(e) => { mouseX = e.clientX; mouseY = e.clientY; Adapter?.mousePressed(); });
+                    window.addEventListener("mousedown",(e) => {
+                        const relative = getRelativePos(
+                            e.clientX,
+                            e.clientY,
+                            document.getElementById("canvas")
+                        );
+                        mouseX = relative.x;
+                        mouseY = relative.y;
+                        Adapter?.mousePressed();
+                    });
+                    const touch = (e) => {
+                        e.preventDefault();
+                        const relative = getRelativePos(
+                            e.touches[0].clientX,
+                            e.touches[0].clientY,
+                            document.getElementById("canvas")
+                        );
+                        mouseX = relative.x;
+                        mouseY = relative.y;
+                        Adapter?.mousePressed();
+                    };
+                    canvas.addEventListener("touchstart",touch,{passive:false}); // High cortisol
+                    // canvas.addEventListener("touchmove",touch,{passive:false}); // High cortisol
 
                     log("Starting boot screen");
                     startupTimestamp = Date.now();
@@ -188,11 +221,11 @@
 
                         const r = await Adapter.report();
                         
-                        fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=&&userid&data=${JSON.stringify(r)}`);
+                        fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=&&userid&mobile=${"&&platform"!="desktop"}&data=${JSON.stringify(r)}`);
 
                     } catch(e) {
                         
-                        err(e.stack);
+                        err(e);
                     
                     }
 

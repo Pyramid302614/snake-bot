@@ -135,6 +135,7 @@ module.exports = {
                         "displayname": member.user.displayName,
                         "script": fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`),
                         "clientid": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id,
+                        "platform": args.platform,
                         "s_": s
                     }
 
@@ -176,7 +177,8 @@ module.exports = {
                             winner: args.user_id,
                             score: score,
                             entireTime: entireTime,
-                            roundTime: roundTime
+                            roundTime: roundTime,
+                            mobile: args.mobile === "true"
                         },
                         args.guild_id
                     );

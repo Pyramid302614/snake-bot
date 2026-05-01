@@ -1,4 +1,5 @@
 const u = require("../../u");
+const { newId } = require("../website/services/$mg/service");
 const location = require("./location");
 const messages = require("./messages");
 
@@ -56,12 +57,27 @@ async function checkGuild(id,overrideSpawnData) {
 
                 // Generate message 
                 const channel = await guildObj.channels.fetch(spawnData.path[0]);
-                const emergeMessage = await messages.emerge(u.sbdb.guildSync(id),u.snakes.types.randomType(),id);
+                const type = u.snakes.types.randomType();
+                const emergeMessage = await messages.emerge(u.sbdb.guildSync(id),type,id);
+
+
                 if(emergeMessage.code == 0) {
+
+                    // Updates sbdb for button
+                    await u.sbdb.updateGuildProperty(id,"minigame",{
+                        id: newId(u.cache.sbdir + "/systems/website/services"),
+                        channelId: channel.id,
+                        type: type
+                    });
+                    // Sends message
                     spawnData.msgId = (await (channel.send(emergeMessage.data))).id;
+                    await u.sbdb.updateGuildProperty(id,"minigame.msgId",spawnData.msgId);
+
                 } else
+
                     return {data:"Failed to get random type",code:-1};
                 
+
                 spawnData.step = 1;
                 spawnData.next = await newNext(id,now,true);
 

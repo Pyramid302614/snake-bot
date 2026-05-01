@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const u = require("../../u");
 const { ButtonBuilder } = require("@discordjs/builders");
-const { ButtonStyle, ContainerBuilder, TextDisplayBuilder } = require("discord.js");
+const { ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require("discord.js");
 const { newMinigame } = require("./minigame");
 
 const defaultEmerge0 = `
@@ -14,7 +14,7 @@ const defaultSlither = `
 A <type> has slithered into <channel>! Press "Catch" to catch it before it slithers away!
 `;
 const defaultCatch = `
-<user> has caught a <type> in <entire-time>
+### <user> has caught a <type> in <entire-time>
 Minigame round time: <round-time>
 New amount: <amount> <type>s.
 `;
@@ -35,13 +35,6 @@ module.exports = {
             data: "No type provided.",
             code: -1
         };
-
-        await u.sbdb.updateGuildProperty(interaction.guild.id,"minigame",{
-            id: newId(u.cache.sbdir + "/systems/website/services"),
-            msgId: (await interaction.fetchReply()).id,
-            channelId: interaction.channel.id,
-            type: u.snakes.types.randomType()
-        });
 
         return {
             data: {
@@ -85,6 +78,8 @@ module.exports = {
 
     },
 
+
+    // Handles message as well
     async catch(guildData,data,guildId) {
 
         const minigame = u.sbdb.getGuildProperty(guildId,"minigame");
@@ -97,36 +92,27 @@ module.exports = {
         const snake = data.snake;
 
         const catchMessage = guildData?.settings?.spawning?.messages?.catch ?? defaultCatch;
-        const titleBuffer = catchMessage.split("\n")[0];
-        console.log(titleBuffer);
         const evaluationArguments = {
             user: winner.displayName,
-            tpye: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
+            type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
             channel: (channel.displayName ?? channel.id ?? "unknown"),
             amount: 1, // Feature foreshadowing.......
             "entire-time": data.entireTime,
             "round-time": data.roundTime
         };
-
-        var title = evaluate(
-            titleBuffer,
-            evaluationArguments
-        );
-        var description = evaluate(
-            catchMessage.slice(titleBuffer.length),
-            evaluationArguments
-        );
-        if(typeof title != "string" || title == "") { title = description; description = null; }
-
+        const content = evaluate(catchMessage,evaluationArguments);
         message.edit({
             components: [],
             content: "",
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle(title)
-                    .setDescription(description)
-                    .setColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
-            ]
+            components: [
+                new ContainerBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(content + (data.mobile?"-# Completed on a mobile device":""))
+                    )
+                    .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
+            ],
+            flags: [MessageFlags.IsComponentsV2]
         });
 
         u.sbdb.updateGuildProperty(guildId,"minigame",{});
