@@ -159,7 +159,7 @@ module.exports = {
 
                 try {
 
-                    const minigame = u.sbdb.getGuildProperty(guildId,"minigame") ?? {};
+                    const minigame = u.sbdb.getGuildProperty(args.guild_id,"minigame") ?? {};
                     
                     const data = JSON.parse(args.data
                         .replaceAll("%22","\"")
@@ -179,10 +179,10 @@ module.exports = {
 
                     const guild = (u.cache.client.guilds.cache.get(args.guild_id)) ?? (await u.cache.client.guilds.fetch(args.guild_id));
                     const channel = (guild.channels.cache.get(minigame.channelId)) ?? (await guild.channels.fetch(minigame.channelId));
-                    const message = (channel.messages.cache.get(minigame.msdId)) ?? (await channel.messages.fetch(minigame.msgId));
-
                     // World's top 10 best variable names
-                    const messageWithTheButton = await require("../../../spawning/messages.js").catch(
+                    const messageWithTheButton = (channel.messages.cache.get(minigame.msdId)) ?? (await channel.messages.fetch(minigame.msgId));
+
+                    const message = await require("../../../spawning/messages.js").catch(
                         u.sbdb.guildSync(args.guild_id),
                         {
                             snake: type,
@@ -197,6 +197,9 @@ module.exports = {
                         guild,
                         channel
                     );
+                    if(message.code != 0) return "<g>";
+                    
+                    messageWithTheButton.edit(message.data);
                     
 
                     // Updates SBDB
