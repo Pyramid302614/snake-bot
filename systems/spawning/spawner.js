@@ -13,7 +13,7 @@ module.exports = {
                 const ids = u.sbdb.getAllIDs();
                 for(const id of ids) checkGuild(id); // Asynchornously callsS
 
-            },10000) // Every 10 seconds
+            },u.time.minutes(5))
         );
 
     },
@@ -44,6 +44,9 @@ async function checkGuild(id,overrideSpawnData) {
         }
 
         if(spawnData.path.length == 0) return {data:"No channels selected",code:1};
+
+
+        var spawnDataSync = false; // Should I re-sync after?
 
 
         // Fetches guild object
@@ -80,6 +83,7 @@ async function checkGuild(id,overrideSpawnData) {
 
                 spawnData.step = 1;
                 spawnData.next = await newNext(id,now,true);
+                spawnDataSync = true;
 
                 returnObject = {data:"Emerged",code:0};
 
@@ -90,6 +94,7 @@ async function checkGuild(id,overrideSpawnData) {
             if(now >= spawnData.next) {
 
                 spawnData.step++;
+                spawnDataSync = true;
 
                 // Deletes old message
                 if(spawnData.msgId) {
@@ -127,13 +132,14 @@ async function checkGuild(id,overrideSpawnData) {
 
             spawnData = await newSpawnData(id,false);
             spawnData.next = newNext(id,now,true);
+            spawnDataSync = true;
 
             returnObject =  {data:"Caught and regenerated spawn data",code:0};
 
         }            
 
         // Re-sync spawn data
-        u.sbdb.updateGuildProperty(id,"spawning",spawnData);
+        if(spawnDataSync) u.sbdb.updateGuildProperty(id,"spawning",spawnData);
 
         return returnObject;
 

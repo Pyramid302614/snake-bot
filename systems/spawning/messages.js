@@ -19,14 +19,6 @@ Minigame round time: <round-time>
 New amount: <amount> <type>s.
 `;
 
-// Key: key of snake data
-// value value of snake data
-function defaultArguments(key,value) {
-    return {
-        name: value.pretty ?? key
-    }
-}
-
 module.exports = {
 
     async emerge(guildData,snake,guildId) {
@@ -39,10 +31,9 @@ module.exports = {
         return {
             data: {
                 content: evaluate(
-                    guildData?.settings?.spawning?.messages?.emerge ??
-                        guildData?.settings?.spawning?.slithering?.enabled ?
-                            defaultEmerge0:
-                            defaultEmerge1,
+                    guildData?.settings?.spawning?.slithering?.enabled ?
+                        newEmerge0Message():
+                        newEmerge1Message(),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase()
                     }
@@ -66,12 +57,17 @@ module.exports = {
         return {
             data: {
                 content: evaluate(
-                    guildData?.settings?.spawning?.messages?.slither ??
-                        defaultSlither,
+                    newSlitherMessage(),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase()
                     }
-                )
+                ),
+                components: [{type:1,components:[
+                    new ButtonBuilder()
+                        .setLabel("Catch")
+                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId("action:1092")
+                ]}]
             },
             code: 0
         };
@@ -80,42 +76,55 @@ module.exports = {
 
 
     // Handles message as well
-    async catch(guildData,data,guildId) {
+    async catch(guildData,data,guild,channel) {
 
-        const minigame = u.sbdb.getGuildProperty(guildId,"minigame");
+        const guildId = guild.id;
 
-        const guild = (u.cache.client.guilds.cache.get(guildId)) ?? (await u.cache.client.guilds.fetch(guildId));
-        const channel = (guild.channels.cache.get(minigame.channelId)) ?? (await guild.channels.fetch(minigame.channelId));
-        const message = (channel.messages.cache.get(minigame.msdId)) ?? (await channel.messages.fetch(minigame.msgId));
+       try {
 
-        const winner = (await guild.members.fetch(data.winner)).user;
-        const snake = data.snake;
+            const winner = (await guild.members.fetch(data.winner)).user;
+            const snake = data.snake;
 
-        const catchMessage = guildData?.settings?.spawning?.messages?.catch ?? defaultCatch;
-        const evaluationArguments = {
-            user: winner.displayName,
-            type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
-            channel: (channel.displayName ?? channel.id ?? "unknown"),
-            amount: 1, // Feature foreshadowing.......
-            "entire-time": data.entireTime,
-            "round-time": data.roundTime
-        };
-        const content = evaluate(catchMessage,evaluationArguments);
-        message.edit({
-            components: [],
-            content: "",
-            components: [
-                new ContainerBuilder()
-                    .addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(content + (data.mobile?"-# Completed on a mobile device":""))
-                    )
-                    .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
-            ],
-            flags: [MessageFlags.IsComponentsV2]
-        });
+            const catchMessage = newCatchMessage();
+            const evaluationArguments = {
+                user: winner.displayName,
+                type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
+                channel: (channel.displayName ?? channel.id ?? "unknown"),
+                amount: data.amount, // Feature foreshadowing.......
+                "entire-time": u.time.format(data.entireTime), // Uses default time format
+                "round-time": u.time.format(data.roundTime)
+            };
+            const content = evaluate(catchMessage,evaluationArguments);
+            
+            return {
 
-        u.sbdb.updateGuildProperty(guildId,"minigame",{});
+                data: {
+                    components: [],
+                    content: "",
+                    components: [
+                        new ContainerBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(content + (data.mobile?"-# Completed on a mobile device":""))
+                            )
+                            .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
+                    ],
+                    flags: [MessageFlags.IsComponentsV2]
+                },
+                code: 0
+
+            };
+
+        } catch(e) {
+
+            return {
+
+                data: e,
+                code: -1
+
+            }
+
+        }
 
     }
 
@@ -128,49 +137,15 @@ function evaluate(string,args) {
 
 }
 
-// function catchButton(guildId,snake,catching,userCatching) {
-
-//         catching = catching ?? false;
-//         if(!snake) return "No type provided.";
-    
-//         return u.msgelem.messageElement(
-//             new ButtonBuilder()
-//                 .setLabel(catching?`${userCatching.displayName} is catching...`:"Catch me")
-//                 .setStyle(ButtonStyle.Primary)
-//                 .setDisabled(catching),
-//             async (del,interaction,data) => {
-
-//                 if(catching) {
-//                     interaction.update({});
-//                     return;
-//                 }
-
-//                 // Updates instance asynchronously
-//                 u.sbdb.updateGuildProperty(guildId,"spawning.instance.caught",true);
-
-//                 // Updates count asynchronously
-//                 let amount = 1; // 1 snake
-//                 let path = `inventories.${interaction.user.id}.snakes.${snake.name}`;
-//                 const currentAmount = (u.sbdb.getGuildProperty(
-//                     guildId,
-//                     path
-//                 ) ?? 0);
-//                 u.sbdb.updateGuildProperty(
-//                     guildId,
-//                     path,
-//                     currentAmount + amount
-//                 );
-
-//                 newMinigame(interaction,guildId); // Responds to the message
-                
-//                 del();
-//                 interaction.update({
-//                     components: {type:1,components:[catchButton(guildId,snake,true,interaction.user)]}
-//                 });
-
-//             },
-//             catching?[userCatching.id]:"everyone"
-//         )
-
-// }
-
+function newCatchMessage() {
+    return defaultCatch;
+}
+function newEmerge0Message() {
+    return defaultEmerge0;
+}
+function newEmerge1Message() {
+    return defaultEmerge1;
+}
+function newSlitherMessage() {
+    return defaultSlither;
+}
