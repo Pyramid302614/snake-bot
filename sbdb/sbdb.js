@@ -6,7 +6,16 @@ const sectors = 10;
 const fs = require("fs");
 const { objectProperty } = require("../utilities/values.js");
 
+const format = require("../snakelet/adapter.js")?.config30?.sbdb?.format;
+const caching = require("../snakelet/adapter.js")?.config30?.sbdb?.caching;
+
+const legacy = format === "legacy";
+const literal = format === "literal";
+
 var requestsHeap = [];
+
+const cache = []; // Stores sectors where index = sector
+var lookupCache = {};
 
 module.exports = {
     
@@ -69,13 +78,22 @@ module.exports = {
         );
 
     },
+
+    sectorAmount: sectors,
+
     backupAllSectors: backupAllSectors,
     restoreAllNullSectors: restoreAllNullSectors,
     forceRestore: forceRestore,
     cleanup: cleanup,
 
+    convertToLegacy: convertToLegacy,
+    convertToLiteral: convertToLiteral,
+
     configure() {
 
+        if(caching) {
+            reCacheLookup();
+        }
         require("../snakelet/adapter.js").intervals.push(setInterval(backupAllSectors,2*24*60*60*1000)); // every two days
         require("../snakelet/adapter.js").intervals.push(setInterval(processAllRequests,1000)); // every one second
 
@@ -88,7 +106,8 @@ module.exports = {
             for(const guildId of Object.keys(getSync(sector)?.guilds ?? []))
                 newLookup[guildId] = sector;
         
-        fs.writeFileSync(getLookupPath(),JSON.stringify(newLookup,null,2),"utf-8");
+        fs.writeFileSync(getLookupPath(),JSON.stringify(newLookup,null,legacy?2:0),"utf-8");
+        if(caching) lookupCache = newLookup;
 
     }
 
@@ -96,6 +115,7 @@ module.exports = {
 
 function lookup(guildId) {
 
+    if(caching) return lookupCache[guildId];
     const data = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
     return data[guildId];
 
@@ -104,18 +124,33 @@ function addToLookup(guildId,sector) {
 
     var data = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
     data[guildId] = sector;
-    fs.writeFileSync(getLookupPath(),JSON.stringify(data,null,2),"utf-8");
+    if(caching) fs.writeFileSync(getLookupPath(),JSON.stringify(data,null,legacy?2:0),"utf-8");
+    lookupCache = data;
 
 }
 
 function getSync(sector) {
     try {
+        if(caching) {
+            if(cache[sector] == null) {
+                reCache(sector);
+                return cache[sector];
+            }
+            return cache[sector];
+        }
         return JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8")??"{}");
     } catch(ignored) {
         return null;
     }
 }
 async function get(sector,then) {
+    if(caching) {
+        if(cache[sector] == null) {
+            reCache(sector);
+            return then(null,cache[sector]);
+        }
+        return then(null,cache[sector]);
+    }
     fs.readFile(getSectorPath(sector),"utf-8",(err,dat) => then(err,JSON.parse(dat??"{}")));
 }
 async function write(sector,path,value) {
@@ -142,6 +177,16 @@ function getBackupPath(sector) {
 }
 
 
+function reCache(sector) {
+    cache[sector] = JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8"));
+}
+function reCacheAllSectors() {
+    for(let sector = 0; sector < sectors; sector++) reCache(sector);
+}
+function reCacheLookup() {
+    lookupCache = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
+}
+
 
 function processAllRequests() {
 
@@ -157,18 +202,19 @@ function processAllRequests() {
 
     for(const request of heap)
         datas[request.sector+""] = require("../utilities/values.js").modifyObject(
-                datas[request.sector+""] ?? getSync(request.sector) ?? {},
-                request.data.path,
-                request.data.value
+            datas[request.sector+""] ?? getSync(request.sector) ?? {},
+            request.data.path,
+            request.data.value
         );
 
     for(const sector of Object.keys(datas)) {
 
-        fs.writeFileSync(getSectorPath(sector),JSON.stringify(datas[sector],null,2),"utf-8");
+        fs.writeFileSync(getSectorPath(sector),JSON.stringify(datas[sector],null,legacy?2:0),"utf-8");
 
     }
     
-    for(const request of heap) if(request.resolve) request.resolve();
+    for(const request of heap) request?.resolve?.();
+    for(let sector = 0; sector < sectors; sector++) cache[sector] = null;
     
 }
 
@@ -182,7 +228,7 @@ function backupAllSectors() {
         try {
             data = getSync(sector); // Does this so if getSync() fails (which everything uses), then it wont backup
             if(data) {
-                fs.writeFileSync(getBackupPath(sector),JSON.stringify({data:data,timestamp:Date.now()},null,2),"utf-8");
+                fs.writeFileSync(getBackupPath(sector),JSON.stringify({data:data,timestamp:Date.now()},null,legacy?2:0),"utf-8");
                 backedUp.push(sector);
             } else notBackedUp.push(sector);
         } catch(ignored) {
@@ -216,9 +262,10 @@ function restoreAllNullSectors() {
 }
 function forceRestore(sector,password) {
 
-    if(!sector) return "Usage: forceRestore <sector>";
+    if(sector === undefined) return "Usage: forceRestore <sector>";
+    if(typeof sector == "string") sector = parseInt(sector);
 
-    if(password != require("../snakelet/adapter.js").config30.admin_password) return "Unauthorized";
+    if(password != (require("../snakelet/adapter.js")?.config30?.admin_password ?? "beantato")) return "Unauthorized";
 
     try {
         restore(sector);
@@ -231,9 +278,76 @@ function forceRestore(sector,password) {
 function restore(sector) {
     var file = fs.readFileSync(getBackupPath(sector),"utf-8");
     var backup = JSON.parse(file==""||!file?"{}":file);
-    fs.writeFileSync(getSectorPath(sector),JSON.stringify(backup?.data??{},null,2),"utf-8");
+    fs.writeFileSync(getSectorPath(sector),JSON.stringify(backup?.data??{},null,legacy?2:0),"utf-8");
 }
 
 function cleanup() {
 
 }
+
+
+
+
+
+
+
+
+
+
+// function convertToLegacy() {
+
+//     const Priority = priority ?? process.argv[3];
+//     if(!Priority) return "Cannot find current literal's priority.";
+
+//     for(let sector = 0; sector < sectors; sector++) {
+
+//         const data = JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8"));
+
+//         var newObj = {};
+//         for(const property of Object.keys(data)) {
+//             newObj = require("../utilities/values.js").modifyObject(newObj,property,data[property]);
+//         }
+//         if(Priority == "storage") newObj = data;
+        
+//         fs.writeFileSync(getSectorPath(sector),JSON.stringify(newObj,null,2),"utf-8");
+
+//     }
+
+// }
+
+function convertToLegacy() {
+
+    for(let sector = 0; sector < sectors; sector++) fs.writeFileSync(getSectorPath(sector),JSON.stringify(JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8"),null,2)),"utf-8");
+    return "Converted SBDB to legacy format.";
+
+}
+
+function convertToLiteral() {
+
+    for(let sector = 0; sector < sectors; sector++) fs.writeFileSync(getSectorPath(sector),JSON.stringify(JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8"),null,0)),"utf-8");
+    return "Converted SBDB to literal format.";
+    
+}
+// function convertToLiteral() {
+
+//         const Priority = priority ?? process.argv[3];
+//         if(!Priority) return "Cannot find priority.";
+
+//         for(let sector = 0; sector < sectors; sector++) {
+
+//             const data = JSON.parse(fs.readFileSync(getSectorPath(sector),"utf-8"));
+
+//             var newObj = {};
+//             const traverse_speed = (value,path) => {
+//                 if(typeof value === "object" && value && value?.length === undefined) {
+//                     for(const key of Object.keys(value)) traverse_speed(value[key],(path??"")+(path?".":"")+key);
+//                 }
+//                 else newObj[path??value] = value;
+//             }
+//             if(Priority == "speed") traverse_speed(data); else newObj = data;
+
+//             fs.writeFileSync(getSectorPath(sector),JSON.stringify(newObj,null,0),"utf-8");
+            
+//         }
+
+// }

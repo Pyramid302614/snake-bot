@@ -144,6 +144,13 @@ module.exports = {
         require("../../systems/website/gateway.js").request_untimeout(ip);
         return `Lifted timeout from ip ${ip.split(".")[0]}.${ip.split(".")[1]}.***.***`; // Pointless censor but eh idk
 
+    },
+
+    async updateGuildProperty(msg,args) {
+
+        u.sbdb.updateGuildProperty(args[0],args[1],args[2]);
+        return "Operation completed.";
+
     }
 
 }
