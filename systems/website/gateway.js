@@ -13,10 +13,14 @@ const maxRequestsPerFrame = 30;
 
 module.exports = {
 
+    idle: false,
+
     request_untimeout(ip) {
         requests[ip] = 0;
     },
     host() {
+
+        if(this.idle) return;
 
         const port = u.adapter.config30.ports.port;
         const wsport = u.adapter.config30.ports.wsport;
@@ -63,11 +67,12 @@ module.exports = {
     },
 
     async request(req,res) {
-        
+                
         const ip = req.socket.remoteAddress;
 
         if(processRateLimit(ip)) return; // Returns true if it needs to ghost you
 
+        if(this.idle && req.url != "/") return "Sorry, the server is currently idle right now due to an issue. Come back soon";
 
         const response = await (async () => {
             try {

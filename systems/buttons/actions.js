@@ -4,7 +4,7 @@ const { MessageFlags } = require("discord.js");
 
 module.exports = {
     "1092": async (interaction) => {
-        if(u.sbdb.getGuildProperty(interaction.guild.id,"minigame.finished")) {
+        if(!u.sbdb.getGuildProperty(interaction.guild.id,"minigame.id")) {
             interaction.update({});
             return;
         }
@@ -16,6 +16,7 @@ module.exports = {
             });
         } catch(e) {
             var msg = "An error has occurred while trying to open that activity.";
+            if(u.adapter.config30.chosen_ones.includes(interaction.user.id)) msg += "\n```"+e.stack+"```";
             switch(e.code) {
                 case 50230: msg = "You cannot open activities in your current client. (If you are on the website on a mobile device, this is probably the case)"; break;
             }

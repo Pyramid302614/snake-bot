@@ -21,7 +21,7 @@ New amount: <amount> <type>s.
 
 module.exports = {
 
-    async emerge(guildData,snake,guildId) {
+    async emerge(guildData,snake,channel,guildId) {
 
         if(!snake.name) return {
             data: "No type provided.",
@@ -35,7 +35,8 @@ module.exports = {
                         newEmerge0Message():
                         newEmerge1Message(),
                     {
-                        type: (snake.data.pretty ?? snake.name).toLowerCase()
+                        type: (snake.data.pretty ?? snake.name).toLowerCase(),
+                        channel: (channel.displayName ?? channel.id ?? "unknown")
                     }
                 ),
                 components: [{type:1,components:[
@@ -59,7 +60,8 @@ module.exports = {
                 content: evaluate(
                     newSlitherMessage(),
                     {
-                        type: (snake.data.pretty ?? snake.name).toLowerCase()
+                        type: (snake.data.pretty ?? snake.name).toLowerCase(),
+                        channel: (channel.displayName ?? channel.id ?? "unknown")
                     }
                 ),
                 components: [{type:1,components:[
@@ -90,7 +92,7 @@ module.exports = {
                 user: winner.displayName,
                 type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
                 channel: (channel.displayName ?? channel.id ?? "unknown"),
-                amount: data.amount, // Feature foreshadowing.......
+                amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
                 "entire-time": u.time.format(data.entireTime), // Uses default time format
                 "round-time": u.time.format(data.roundTime)
             };

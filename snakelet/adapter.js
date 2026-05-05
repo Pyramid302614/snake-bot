@@ -52,7 +52,9 @@ module.exports = {
 
         console.log("Configuring spawn timers");
         require("../systems/spawning/spawner.js").configure();
+
         require("../systems/website/gateway.js").host();
+        require("../systems/website/gateway.js").idle = false;
 
     },
     async stopSnakeBot() {
@@ -67,6 +69,8 @@ module.exports = {
 
         await require("../cache.js").client.removeAllListeners();
         await require("../cache.js").client.destroy();
+
+        require("../systems/website/gateway.js").idle = true;
 
     },
     async set_chosen_ones(v) {

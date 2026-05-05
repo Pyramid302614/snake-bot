@@ -10,8 +10,11 @@ var proxy = null;
 
 module.exports = {
 
+    justTrueRoot: false,
     newId: newId,
     async init() {
+
+        if(proxy) return;
 
         const viteport = u.adapter.config30.ports.vite;
         const vite_target = `http://localhost:${viteport}`;
@@ -70,6 +73,8 @@ module.exports = {
         res.setHeader("Access-Control-Allow-Origin", "*");
         // res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         // res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+        if(this.justTrueRoot && url.req != "/") return "Sorry, the server is currently idle right now due to an issue. Come back later :)";
 
         if(!proxy) return "Cannot reach vite client; Proxy is null";
         
@@ -207,7 +212,7 @@ module.exports = {
                     await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"minigame.inventories."+args.user_id+".snakes."+type.name)??0)+amount)
 
                 } catch(ignored) {
-                    console.log(ignored);
+                    // console.log(ignored);
                 }
 
                 return "<g>";

@@ -12,7 +12,7 @@ module.exports = {
         // Forces no duplicates
         if(this.client) return;
 
-        const token = adapter.chip?adapter.config30.chipmunk_token:adapter.config30.snakelet_token;
+        const token = adapter.chip?adapter.config30.beetroot_token:adapter.config30.snakebot_token;
 
         this.client = new Client({
             "intents": [
