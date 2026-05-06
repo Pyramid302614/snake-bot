@@ -31,7 +31,7 @@ module.exports = {
             const channel = channels[i];
             const channelObj = await guildObj.channels.fetch(channel);
             let messages = Array.from(await channelObj.messages.fetch());
-            if(now > messages[messages.length-1-selectMessage][1].createdTimestamp+messageAge)
+            if(messages?.[messages.length-1-selectMessage] === undefined > selectMessage || now > messages?.[messages.length-1-selectMessage]?.[1].createdTimestamp+messageAge)
                 path.push(channel);
 
         }
