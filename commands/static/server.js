@@ -10,14 +10,7 @@ module.exports = {
 
     async execute(interaction) {
 
-        interaction.reply({
-            components: [
-                new ContainerBuilder()
-                    .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-                        ""
-                    ))
-            ]
-        })
+        interaction.reply("Join to be a part of the Snake Bot fam:\nhttps://discord.gg/FyP3URTdEqs");
 
     }
 
