@@ -19,6 +19,24 @@ module.exports = {
                     code: 200
                 };
 
+            case "/invite":
+
+                return {
+                    type: "text/html",
+                    msg: "<html><head><title>Snake Bot - compete with friends for snakes</title><meta name=\"theme-color\" content=\"#00ff40\"><meta name=\"description\" content=\"Snake Bot Invite Link - Redirects to https://discord.com/oauth2/authorize?client_id=1481114874343063677\"></head><body><script>//window.location.href='https://discord.com/oauth2/authorize?client_id=1481114874343063677';</script></body></html>",
+                    code: 200
+                };
+
+
+            case "/server":
+
+                return {
+                    type: "text/html",
+                    msg: "<html><head><title>Snake Bot Server</title><meta name=\"theme-color\" content=\"#00ff40\"><meta name=\"description\" content=\"Snake Bot Server Invite Link - Redirects to https://discord.gg/yzE8zyPtRx\"></head><body><script>//window.location.href='https://discord.gg/yzE8zyPtRx';</script></body></html>",
+                    code: 200
+                };
+
+
             case "/favicon.ico":
 
                 return {

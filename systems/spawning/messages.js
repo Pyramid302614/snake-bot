@@ -61,7 +61,7 @@ module.exports = {
                     newSlitherMessage(),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
-                        channel: (channel.displayName ?? channel.id ?? "unknown")
+                        channel: (channel.name ?? channel.id ?? "unknown")
                     }
                 ),
                 components: [{type:1,components:[
@@ -91,7 +91,7 @@ module.exports = {
             const evaluationArguments = {
                 user: winner.displayName,
                 type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
-                channel: (channel.displayName ?? channel.id ?? "unknown"),
+                channel: (channel.name ?? channel.id ?? "unknown"),
                 amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
                 "entire-time": u.time.format(data.entireTime), // Uses default time format
                 "round-time": u.time.format(data.roundTime)

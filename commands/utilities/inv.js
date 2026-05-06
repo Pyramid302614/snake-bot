@@ -30,7 +30,7 @@ module.exports = {
                         })
                         .setImage("attachment://son.jpg")
                 ],
-                files: [u.assets.path("images/misc/son.jpg")],
+                files: [u.assets.path("images/memes/son.jpg")],
                 flags: !visible?[MessageFlags.Ephemeral]:[]        
             });
             return;

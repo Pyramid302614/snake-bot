@@ -9,7 +9,7 @@ module.exports = {
     async execute(message) {
 
         if(!message.author.bot && message.content == "giss") {
-            const filePath = u.cache.sbdir + "/assets/images/misc/yunoball.png";
+            const filePath = u.cache.sbdir + "/assets/images/memes/yunoball.png";
             return await message.reply({
                 files: [new AttachmentBuilder().setFile(filePath)]
             });
