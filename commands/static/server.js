@@ -10,7 +10,7 @@ module.exports = {
 
     async execute(interaction) {
 
-        interaction.reply("Join to be a part of the Snake Bot fam:\nhttps://discord.gg/FyP3URTdEqs");
+        interaction.reply("Join the Snake Bot army:\nhttps://discord.gg/FyP3URTdEq");
 
     }
 
