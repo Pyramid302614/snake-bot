@@ -37,6 +37,25 @@ module.exports = {
                 };
 
 
+            case "/tos":
+            case "/terms-of-service":
+
+                return {
+                    type: "text/html",
+                    msg: fs.readFileSync(hostedDir + "/$/tos.html"),
+                    code: 200
+                };
+
+
+            case "/pp":
+            case "/privacy-policy":
+
+                return {
+                    type: "text/html",
+                    msg: fs.readFileSync(hostedDir + "/$/pp.html"),
+                    code: 200
+                };
+
             case "/favicon.ico":
 
                 return {
