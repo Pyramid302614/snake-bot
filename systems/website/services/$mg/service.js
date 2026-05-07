@@ -187,7 +187,7 @@ module.exports = {
                     // World's top 10 best variable names
                     const messageWithTheButton = (channel.messages.cache.get(minigame.msdId)) ?? (await channel.messages.fetch(minigame.msgId));
 
-                    const message = await require("../../../spawning/messages.js").catch(
+                    const message = await require("../../../spawning/messages/messages.js").catch(
                         u.sbdb.guildSync(args.guild_id),
                         {
                             snake: type,
@@ -209,6 +209,7 @@ module.exports = {
 
                     // Updates SBDB
                     u.sbdb.updateGuildProperty(args.guild_id,"minigame",{});
+                    u.sbdb.updateGuildProperty(args.guild_id,"spawning.step",-1);
                     await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"minigame.inventories."+args.user_id+".snakes."+type.name)??0)+amount)
 
                 } catch(ignored) {

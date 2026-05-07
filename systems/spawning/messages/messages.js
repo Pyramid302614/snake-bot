@@ -1,23 +1,21 @@
 const { EmbedBuilder } = require("@discordjs/builders");
-const u = require("../../u");
+const u = require("../../../u");
 const { ButtonBuilder } = require("@discordjs/builders");
 const { ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require("discord.js");
-const { newMinigame } = require("./minigame");
+const { newMinigame } = require("../minigame");
+const fs = require("fs");
+const { minigames } = require("../spawner");
 
-const defaultEmerge0 = `
-A <type> has spawned! Press "Catch" to catch it before it slithers away!
-`;
-const defaultEmerge1 = `
-A <type> has spawned! Press "Catch" to catch it!
-`;
-const defaultSlither = `
-A <type> has slithered into <channel>! Press "Catch" to catch it before it slithers away!
-`;
-const defaultCatch = `
-### <user> has caught a <type> in <entire-time>
-Minigame round time: <round-time>
-New amount: <amount> <type>s.
-`;
+const messagesDir = "snake-bot/systems/spawning/messages";
+
+const emerge_noslithers = fs.readFileSync(messagesDir + "/emerge-noslither.txt","utf-8").split(">>");
+const emerge_slithers = fs.readFileSync(messagesDir + "/emerge-slither.txt","utf-8").split(">>");
+const slithers = fs.readFileSync(messagesDir + "/slither.txt","utf-8").split(">>");
+const catches = fs.readFileSync(messagesDir + "/catch.txt","utf-8").split(">>");
+
+const newM = (array) => {
+    return array[Math.floor(Math.random()*array.length)];
+};
 
 module.exports = {
 
@@ -32,8 +30,8 @@ module.exports = {
             data: {
                 content: evaluate(
                     guildData?.settings?.spawning?.slithering?.enabled ?
-                        newEmerge0Message():
-                        newEmerge1Message(),
+                        newM(emerge_slithers):
+                        newM(emerge_noslithers),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
                         channel: (channel.displayName ?? channel.id ?? "unknown")
@@ -58,7 +56,7 @@ module.exports = {
         return {
             data: {
                 content: evaluate(
-                    newSlitherMessage(),
+                    newM(slithers),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
                         channel: (channel.name ?? channel.id ?? "unknown")
@@ -87,14 +85,15 @@ module.exports = {
             const winner = (await guild.members.fetch(data.winner)).user;
             const snake = data.snake;
 
-            const catchMessage = newCatchMessage();
+            const catchMessage = newM(catches);
             const evaluationArguments = {
                 user: winner.displayName,
                 type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
                 channel: (channel.name ?? channel.id ?? "unknown"),
                 amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
                 "entire-time": u.time.format(data.entireTime), // Uses default time format
-                "round-time": u.time.format(data.roundTime)
+                "round-time": u.time.format(data.roundTime),
+                minigame: minigames[data.id]
             };
             const content = evaluate(catchMessage,evaluationArguments);
             
@@ -137,17 +136,4 @@ function evaluate(string,args) {
     for(let i = 0; i < Object.keys(args).length; i++) string = string.replaceAll(`<${Object.keys(args)[i]}>`,Object.values(args)[i]);
     return string;
 
-}
-
-function newCatchMessage() {
-    return defaultCatch;
-}
-function newEmerge0Message() {
-    return defaultEmerge0;
-}
-function newEmerge1Message() {
-    return defaultEmerge1;
-}
-function newSlitherMessage() {
-    return defaultSlither;
 }

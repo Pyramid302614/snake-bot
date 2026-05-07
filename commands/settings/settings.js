@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags, ButtonBuilder, ButtonStyle, StringSelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags, ButtonBuilder, ButtonStyle, StringSelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, ContainerBuilder, TextDisplayBuilder } = require("discord.js");
 const { execute } = require("../../events/messageUpdate");
 const { traverse, traverseArray, traverseObject } = require("../../utilities/dir");
 const u = require("../../u");
@@ -31,15 +31,23 @@ module.exports = {
         await t(u.settings.settingsJSON);
 
         await interaction.reply({
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle("Settings for **" + interaction.guild.name + "**")
-                    .setDescription(list)
-                    .setFooter({text:"Fun fact: Your guild is stored in sector " + u.sbdb.lookup(interaction.guild.id)})
-                    .setColor(u.color.rgb("#00f351"))
+            components: [
+                 new ContainerBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(
+`### Seettings for **${interaction.guild.name}**
+${list}
+
+-# Fun fact: Your guild is stored in sector ${u.sbdb.lookup(interaction.guild.id)}`
+                            )
+                    )
+                    .setAccentColor(u.color.rgb("#00f351"))
             ],
-            flags: [MessageFlags.Ephemeral]
-        });     
+            flags: [MessageFlags.IsComponentsV2,MessageFlags.Ephemeral]
+        });
+
+       
 
     }
 }

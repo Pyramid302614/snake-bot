@@ -1,0 +1,3 @@
+### <user> has caught a <type> in <entire-time>
+Minigame round time: <round-time>
+New amount: <amount> <type>s.

@@ -1,0 +1,8 @@
+A <type> has entered the premises.
+A <type> has been deployed.
+A <type> has arrived at the scene.
+A <type> has been added to the environment.
+A <type> has appeared.
+A <type> has materialized.
+A <type> has wandered in.
+A <type> has been summoned.

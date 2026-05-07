@@ -51,7 +51,7 @@ async function prettyValue(settingData,value) {
             case "array":
             case "object": return JSON.parse(value,null,2);
             case "channel": return `<#${value}>`;
-            case "channels": var result = ""; for(const channel of value) result += `\n     <#${channel}>`; return result;
+            case "channels": return "<#" + value.join(">, <#") + ">";
             case "guild": return `**$${(await require("../../cache.js").client.guilds.fetch(value)).name}`;
             case "guilds": var result = ""; for(const guild of value) result += `\n     **$${(await require("../../cache.js").client.guilds.fetch(guild)).name}`; return result;
             default: return value; // Returns same value if invalid type
