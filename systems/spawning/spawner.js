@@ -3,13 +3,8 @@ const { newId } = require("../website/services/$mg/service");
 const location = require("./location");
 const messages = require("./messages/messages");
 
-const minigames = [
-    "Snake"
-];
 
 module.exports = {
-
-    minigames: minigames,
 
     configure() {
 

@@ -4,8 +4,6 @@ const { ButtonBuilder } = require("@discordjs/builders");
 const { ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require("discord.js");
 const { newMinigame } = require("../minigame");
 const fs = require("fs");
-const { minigames } = require("../spawner");
-
 const messagesDir = "snake-bot/systems/spawning/messages";
 
 const emerge_noslithers = fs.readFileSync(messagesDir + "/emerge-noslither.txt","utf-8").split(">>");
@@ -16,6 +14,10 @@ const catches = fs.readFileSync(messagesDir + "/catch.txt","utf-8").split(">>");
 const newM = (array) => {
     return array[Math.floor(Math.random()*array.length)];
 };
+
+const minigames = [
+    "Snake"
+];
 
 module.exports = {
 
@@ -89,7 +91,7 @@ module.exports = {
             const evaluationArguments = {
                 user: winner.displayName,
                 type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
-                channel: (channel.name ?? channel.id ?? "unknown"),
+                channel: `<#${channel.id}>`,
                 amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
                 "entire-time": u.time.format(data.entireTime), // Uses default time format
                 "round-time": u.time.format(data.roundTime),

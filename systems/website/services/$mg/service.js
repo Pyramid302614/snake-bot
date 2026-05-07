@@ -160,7 +160,7 @@ module.exports = {
 
             case "/report":
 
-                if(args.s != u.sbdb.getGuildProperty(args.guild_id,"minigame.s")) return "<g>";
+                if(args.s != u.sbdb.getGuildProperty(args.guild_id,"minigame.s") + "") return "<g>";
 
                 try {
 
@@ -202,6 +202,7 @@ module.exports = {
                         guild,
                         channel
                     );
+                    console.log(message);
                     if(message.code != 0) return "<g>";
                     
                     messageWithTheButton.edit(message.data);

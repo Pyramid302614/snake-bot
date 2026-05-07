@@ -3,10 +3,10 @@ Read everything carefully before doing anything.
 
 # New Lines
 
-Use $$ for new lines\
-$$ like this\
-$$ and this!\
-$$ But dont include it on the very first one as I did above
+Use >> for new lines\
+\>> like this\
+\>> and this!\
+\>> But dont include it on the very first one as I did above
 
 # Variables
 
@@ -32,3 +32,8 @@ Variables usable in catch.txt\
 `emerge-noslither.txt` - Emerging, but when slithering is turned off, meaning it will not slither away\
 `emerge-slither.txt` - Emerging, but when slithering is turned on, meaning it will slither away. ("catch it before it slithers away")\
 `slither.txt` - Slithering into another channel ("catch it before it slithers away")
+
+# Additional Notes
+In `emerge-slither.txt`, you can change the messages. I just appended " catch it before it slithers away" because I need to put something in rn because im testing stuff
+
+In `slither.txt`, the message in it is just so I can test things, you can remove it
