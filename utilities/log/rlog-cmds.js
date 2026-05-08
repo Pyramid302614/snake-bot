@@ -151,6 +151,12 @@ module.exports = {
         u.sbdb.updateGuildProperty(args[0],args[1],args[2]);
         return "Operation completed.";
 
+    },
+
+    async msgelem_cache(msg,args) {
+
+        return "```" + JSON.stringify(Object.keys(u.msgelem.elements),null,2) + "```";
+        
     }
 
 }

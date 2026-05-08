@@ -95,7 +95,9 @@ module.exports = {
                 amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
                 "entire-time": u.time.format(data.entireTime), // Uses default time format
                 "round-time": u.time.format(data.roundTime),
-                minigame: minigames[data.id]
+                minigame: minigames[data.id],
+                "social-credit": data.socialCredit,
+                "scpre": data.score
             };
             const content = evaluate(catchMessage,evaluationArguments);
             

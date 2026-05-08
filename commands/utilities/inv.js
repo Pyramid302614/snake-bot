@@ -36,6 +36,8 @@ module.exports = {
             return;
         }
 
+
+        // Snakes
         const snakes = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${person.id}.snakes`) ?? {};
         var snakesList = "";
         for(let i = 0; i < Object.keys(snakes).length; i++) {
@@ -47,6 +49,8 @@ module.exports = {
         if(snakesList.length != 0) snakesList = snakesList.slice(1); // Removes first new line
         else snakesList = interaction.user.id == person.id?"You haven't caught any snakes yet :(":"This person has not collected any snakes yet :(";
 
+
+        // Shards
         const shards = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${person.id}.shards`) ?? {};
         var shardsList = "";
         for(let i = 0; i < Object.keys(shards).length; i++) {
@@ -57,16 +61,25 @@ module.exports = {
         }
         if(shardsList.length != 0) shardsList = shardsList.slice(1); // Removes first new line
         else shardsList = interaction.user.id == person.id?"You haven't crafted any shards yet :(\n-# (Protip: `/wb`)":"This person has not crafted any shards yet :(";
+
+
+        // Social Credit
+        const socialCredit = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${person.id}.socialCredit`) ?? 0;
+
         interaction.reply({
             embeds: [
                 new EmbedBuilder()
                     // .setTitle("Inventory" + (person.id != interaction.user.id?(" of " + person.displayName):""))
-                    .setTitle("Inventory")
+                    .setTitle("Inventory⠀⠀⠀⠀⠀⠀")
                     .setAuthor({
                         name: person.displayName,
                         iconURL: await person.avatarURL()
                     })
                     .setDescription(`
+
+                        **Social Credit:**
+                        ${socialCredit}
+
                         **Snakes:**
                         ${snakesList}
 

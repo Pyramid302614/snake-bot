@@ -5,7 +5,7 @@ const wb = require("../../../systems/workbench/wb.js");
 
 module.exports = {
 
-    container(interaction,station,stations) {
+    container(interaction,station,stations,dels) {
 
         // Variables and stuff
         const options = [];
@@ -33,7 +33,7 @@ module.exports = {
 
         return new ContainerBuilder()
 
-            .addActionRowComponents(wb.fetchToolbar(interaction,station,stations))
+            .addActionRowComponents(wb.fetchToolbar(interaction,station,stations,dels))
             .addSeparatorComponents(new SeparatorBuilder())
 
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(`
@@ -48,13 +48,13 @@ module.exports = {
                 [{
                     type: 1,
                     components: [
-                        dropdown(interaction,station,stations,options).data,
+                        dropdown(interaction,station,stations,options,dels).data,
                     ],
                 },
                 {
                     type: 1,
                     components: [
-                        craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes).data,
+                        craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes,dels).data,
                     ]
                 }]
             )
@@ -90,14 +90,16 @@ module.exports = {
 
 }
 
-function craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes) {
+function craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes,dels) {
 
-    return u.msgelem.messageElement(
+    const obj = u.msgelem.messageElement(
         new ButtonBuilder()
             .setLabel(stations[station].selected?sufficientSnakes?`Craft 1 ${(data.shardPretty??stations[station].selected).toLowerCase()}`:(`Need ${5-amount} more ${data.pretty??stations[station].selected}${5-amount==1?"":"s"}`):"Craft")
             .setStyle(sufficientSnakes?ButtonStyle.Success:ButtonStyle.Secondary)
             .setDisabled(!sufficientSnakes),
         async (del,interaction) => {
+
+            for(const Del of dels) Del();
 
             const currentAmountOfShards = (u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.shards.${stations[station].selected}`) ?? 0);
 
@@ -109,7 +111,7 @@ function craftButton(interaction,station,stations,data,snakes,amount,sufficientS
             );
 
             await interaction.update({
-                components: [wb.getContainer(interaction,station,stations)],
+                components: [wb.getContainer(interaction,station,stations,dels)],
                 flags: [MessageFlags.IsComponentsV2]
             });
 
@@ -122,18 +124,18 @@ function craftButton(interaction,station,stations,data,snakes,amount,sufficientS
                 ],
                 flags: [MessageFlags.Ephemeral]
             });
-            
-            del();
 
         },
         [interaction.user.id] // Almost forgot to do this lmaos
     );
+    dels.push(obj.del);
+    return obj;
 
 }
 
-function dropdown(interaction,station,stations,options,) {
+function dropdown(interaction,station,stations,options,dels) {
 
-    return u.msgelem.messageElement(
+    const obj = u.msgelem.messageElement(
         new StringSelectMenuBuilder()
             .setPlaceholder(
                 options.length == 0 ? "Failed to load inventory." : 
@@ -146,13 +148,18 @@ function dropdown(interaction,station,stations,options,) {
             .setOptions(options.length == 0?[{label:"hi",value:"hi"}]:options)
             .setRequired(true),
         async (del,interaction,data) => {
+
+            for(const Del of dels) Del();
+
             stations[station].selected = interaction.values[0]; // Should always be 1 in length
             await interaction.update({
-                components: [wb.getContainer(interaction,station,stations)]
+                components: [wb.getContainer(interaction,station,stations,dels)]
             });
-            del();
+
         },
         [interaction.user.id]
-    )
+    );
+    dels.push(obj.del);
+    return obj;
 
 }

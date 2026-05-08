@@ -2,6 +2,8 @@ module.exports = {
     
     rgb(hex) {
 
+        if(hex == "#snake-bot") return [0,219,99]; // #00db63
+
         if(hex.charAt(0)=="#") hex = hex.slice(1); // Chops off #
 
         return [

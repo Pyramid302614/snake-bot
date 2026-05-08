@@ -175,6 +175,16 @@ module.exports = {
                     const entireTime = data[0];
                     const roundTime = data[1];
 
+                    const socialCreditAmount = 
+                        Math.round(
+                            mobile
+                                ?(roundTime/entireTime)+(1-roundTime/entireTime)*0.8
+                                :(roundTime/entireTime)+(1-roundTime/entireTime)*0.6
+                        )
+                        *score*33;
+
+                    if(![0,1,2,3].includes(score)) return "<g>";
+                    
                     const type = u.sbdb.getGuildProperty(args.guild_id,"minigame.type");
                     const amount = 1;
                     
@@ -197,7 +207,9 @@ module.exports = {
                             entireTime: entireTime,
                             roundTime: roundTime,
                             mobile: args.mobile === "true",
-                            amount: amount
+                            amount: amount,
+                            score: score,
+                            socialCredit: socialCreditAmount
                         },
                         guild,
                         channel
@@ -205,12 +217,12 @@ module.exports = {
                     if(message.code != 0) return "<g>";
                     
                     messageWithTheButton.edit(message.data);
-                    
-
+                        
                     // Updates SBDB
                     u.sbdb.updateGuildProperty(args.guild_id,"minigame",{});
                     u.sbdb.updateGuildProperty(args.guild_id,"spawning.step",-1);
-                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"minigame.inventories."+args.user_id+".snakes."+type.name)??0)+amount)
+                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"minigame.inventories."+args.user_id+".snakes."+type.name)??0)+amount);
+                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".socialCredit",(u.sbdb.getGuildProperty(args.guild_id,args.guild_id,"inventories."+args.user_id+".socialCredit")??0)+socialCreditAmount);
 
                 } catch(ignored) {
                     // console.log(ignored);

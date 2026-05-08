@@ -22,7 +22,7 @@ module.exports = {
         
         const msg = await interaction.reply({
             components: [
-                wb.getContainer(interaction,0,stations)
+                wb.getContainer(interaction,0,stations,[])
             ],
             flags: [MessageFlags.IsComponentsV2,MessageFlags.Ephemeral]
         });

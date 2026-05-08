@@ -20,13 +20,14 @@ module.exports = {
             execute: execute ?? function() {},
             data: data,
             del: () => {
+                console.log(eid);
                 var index = Object.keys(this.elements).indexOf(eid.toString());
                 if(index == -1) return;
                 delete this.elements[eid];
             }
         };
         this.elements[eid] = elementData;
-        if(expire) require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,10*60*1000)); // 10 minutes
+        if(expire) require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,require("../time.js").minutes(5)));
         return elementData;
 
     },
