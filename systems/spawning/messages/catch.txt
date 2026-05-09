@@ -1,3 +1,3 @@
-### <user> has caught a <type> in <entire-time>
-Minigame round time: <round-time>
-New amount: <amount> <type>s.
+### <user> has caught a <type> in <round-time>
++1 <type> (New amount: <amount>)
++ <social-credit> social credit

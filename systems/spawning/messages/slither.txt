@@ -1,20 +1,9 @@
-A <type> has slithered into <channel>
-Catch it before it slithers away!
->>A <type> heard a strange noise in <channel>
-Catch it before it finds out it was just a floor creak!
->>A <type> found a stanger with candy in <channel>
-Catch it before it remembers what its mom told it!
->>A <type> has entered the McDonald's line in <channel>
-Catch it before it orders!
->>A <type> has joined the game in the lobby <channel>
-Catch it before it gets eliminated!
->>ssss <type> sssssssss sss ssssss ssss <channel>
-ss sssss sss ssss ssssss ssss sss ssssss!
->><type> go <channel>
-u grab now
->>A <type> has rudely interrupted your conversation in <channel>
-Catch him before he can insults you and runs away!
->>A <type> has walked into <channel>
-Catch it before it— wait a minute, it can walk?!
->>A <type> has poked its head through the wall in <channel>
-Catch it before it hides once again!
+A <type> has slithered into <channel>, catch it before it slithers away!
+>> A <type> has slithered into <channel>, catch it before it slithers away!
+>> A <type> has slithered into <channel>, catch it before it slithers away!
+>> A <type> has slithered into <channel>, catch it before it slithers away!
+>> A <type> has slithered into <channel>, catch it before it slithers away!
+>>A <type> heard something in <channel>, catch it before it wanders away!
+>>ssss <type> sssssssss sss ssssss ssss <channel>, ss sssss sss ssss ssssss ssss sss ssssss!
+>><type> go <channel> u grab now
+>>A <type> has walked into <channel>, catch it before it— pause

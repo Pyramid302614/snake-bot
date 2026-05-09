@@ -36,7 +36,7 @@ module.exports = {
                         newM(emerge_noslithers),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
-                        channel: (channel.displayName ?? channel.id ?? "unknown")
+                        channel: `<#${channel.id}>`
                     }
                 ),
                 components: [{type:1,components:[
@@ -61,7 +61,7 @@ module.exports = {
                     newM(slithers),
                     {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
-                        channel: (channel.name ?? channel.id ?? "unknown")
+                        channel: `<#${channel.id}>`
                     }
                 ),
                 components: [{type:1,components:[
@@ -97,7 +97,7 @@ module.exports = {
                 "round-time": u.time.format(data.roundTime),
                 minigame: minigames[data.id],
                 "social-credit": data.socialCredit,
-                "scpre": data.score
+                "score": data.score
             };
             const content = evaluate(catchMessage,evaluationArguments);
             
