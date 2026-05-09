@@ -25,3 +25,4 @@ The test version of Snake Bot, used to test code before updating it to the offic
 Snake Bot is an indirect competitor of Cat Bot
 Snake's real name is actually Sna Kig Uess, which is a Snakean language that only 3 tribes speak today.
 Pyramid's real name is actually Pyram Id30 2614, which comes from ancient egyptian hyroglyphs.
+Snake and Pyramid both hate portobello mushrooms.
