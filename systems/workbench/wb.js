@@ -61,11 +61,11 @@ function homeButton(interaction,station,stations,dels) {
             .setStyle(ButtonStyle.Danger)
             .setDisabled(disabled),
         async (del,interaction,data) => {
-            for(const Del of dels) Del();
             await interaction.update({
                 components: [getContainer(interaction,0,stations,dels)],
                 flags: [MessageFlags.IsComponentsV2]
             });
+            for(const Del of dels) Del();
         },
         [interaction.user.id]
     )
@@ -83,13 +83,13 @@ function stationButton(interaction,station,stations,dels) {
             .setLabel(stationNames[station] ?? "?")
             .setStyle(ButtonStyle.Secondary),
         async (del,interaction,data) => {
-            for(const Del of dels) Del();
             await interaction.update({
                 components: [
                     getContainer(interaction,station,stations,dels)
                 ],
                 flags: [MessageFlags.IsComponentsV2]
             });
+            for(const Del of dels) Del();
         },
         [interaction.user.id]
     );

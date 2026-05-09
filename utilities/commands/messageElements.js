@@ -20,7 +20,6 @@ module.exports = {
             execute: execute ?? function() {},
             data: data,
             del: () => {
-                console.log(eid);
                 var index = Object.keys(this.elements).indexOf(eid.toString());
                 if(index == -1) return;
                 delete this.elements[eid];
