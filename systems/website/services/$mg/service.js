@@ -177,7 +177,7 @@ module.exports = {
 
                     const socialCreditAmount = 
                         Math.round(
-                            mobile
+                            data.mobile
                                 ?(roundTime/entireTime)+(1-roundTime/entireTime)*0.8
                                 :(roundTime/entireTime)+(1-roundTime/entireTime)*0.6
                         )
@@ -225,7 +225,7 @@ module.exports = {
                     await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".socialCredit",(u.sbdb.getGuildProperty(args.guild_id,args.guild_id,"inventories."+args.user_id+".socialCredit")??0)+socialCreditAmount);
 
                 } catch(ignored) {
-                    // console.log(ignored);
+                    console.log(ignored);
                 }
 
                 return "<g>";
