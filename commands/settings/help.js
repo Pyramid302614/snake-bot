@@ -16,11 +16,8 @@ module.exports = {
             embeds: [
                 new EmbedBuilder()
                     .setAuthor({
-                        name: interaction.guild.name,
-                        iconURL: await interaction.guild.iconURL({
-                            dynamic: false, // No GIF
-                            size: 64
-                        })
+                        name: u.cache.client.user.displayName,
+                        iconURL: await u.cache.client.user.avatarURL()
                     })
                     .setTitle("Get started with `/setup`")
                     .setDescription("For tutorials on what you can do with Snake Bot, feel free to join the `/server`, where there is a full channel just for tutorials.\nTo configure your guild, use `/setup`.")

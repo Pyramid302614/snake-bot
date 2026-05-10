@@ -27,7 +27,7 @@ async function checkGuild(id,overrideSpawnData) {
 
     try {
 
-        if(!u.sbdb.guildExists(id)) return {data:"Nonexistant guild.",code:-1};
+        if(!u.sbdb.guildExists(id)) return {data:"Nonexistant guild. Run /setup to spawn snakes.",code:-1};
         
         const now = Date.now();
 
