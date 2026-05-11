@@ -110,7 +110,7 @@ module.exports = {
                         new ContainerBuilder()
                             .addTextDisplayComponents(
                                 new TextDisplayBuilder()
-                                    .setContent(content + (data.mobile?"-# Completed on a mobile device":""))
+                                    .setContent(content + (data.mobile?"\n-# Completed on a mobile device":""))
                             )
                             .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
                     ],

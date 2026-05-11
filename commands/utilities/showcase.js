@@ -101,7 +101,8 @@ function menu(interaction,data) {
                 .setPlaceholder((data?.guild?.name?"Selected server: ":"") + (data?.guild?.name ?? "Select server here..."))
                 .setMinValues(1)
                 .setMaxValues(1)
-                .addOptions(guildSelectOptions.length==0?[{value:"beantato",label:"You haven't collected any items in any servers."}]:guildSelectOptions),
+                .addOptions(guildSelectOptions.length==0?[{value:"beantato",label:"You haven't collected any items in any servers."}]:guildSelectOptions)
+                .setDisabled(guildSelectOptions.length==0),
             async (del,interaction) => {
                 data.guild = u.cache.client.guilds.cache.get(interaction.values[0]) ?? u.cache.client.guilds.fetch(interaction.values[0]);
                 await interaction.update(menu(interaction,data));
