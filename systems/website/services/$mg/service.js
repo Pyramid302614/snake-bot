@@ -179,8 +179,8 @@ module.exports = {
                         Math.round(
                             (
                                 data.mobile
-                                    ?(roundTime/entireTime)+(1-roundTime/entireTime)*0.6
-                                    :(roundTime/entireTime)+(1-roundTime/entireTime)*0.4
+                                    ?((roundTime/entireTime)+(1-roundTime/entireTime)*0.6)
+                                    :((roundTime/entireTime)+(1-roundTime/entireTime)*0.4)
                             ) *score*33
                         );
 
