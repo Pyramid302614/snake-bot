@@ -178,10 +178,10 @@ module.exports = {
                     const socialCreditAmount = 
                         Math.round(
                             data.mobile
-                                ?(roundTime/entireTime)+(1-roundTime/entireTime)*0.8
-                                :(roundTime/entireTime)+(1-roundTime/entireTime)*0.6
-                        )
-                        *score*33;
+                                ?(roundTime/entireTime)+(1-roundTime/entireTime)*0.6
+                                :(roundTime/entireTime)+(1-roundTime/entireTime)*0.4
+                            *score*33
+                        );
 
                     if(![0,1,2,3].includes(score)) return "<g>";
                     
