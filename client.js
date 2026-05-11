@@ -57,6 +57,9 @@ module.exports = {
             }
 
         });
+        // const newCommandsData = [];
+        // for(let i = 0; i < commandsData.length; i++) { newCommandsData[i] = commandsData[i].toJSON(); delete newCommandsData[i].contexts; }
+        // console.log("{\"commands\":"+JSON.stringify(newCommandsData)+"}");
 
         // Adds event listeners for the commands
         u.log.log("Configuring event listeners");

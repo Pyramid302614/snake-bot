@@ -6,8 +6,9 @@ module.exports = {
     once: false,
     async execute(guild) {
 
+        u.log.log("<@801895100443131976> Somebody has added the bot: " + guild.name);
         if(!u.sbdb.guildExists(guild.id))
-        u.sbdb.registerGuild(guild);
+            u.sbdb.registerGuild(guild);
 
     }
 }
