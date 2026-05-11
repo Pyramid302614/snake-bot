@@ -137,7 +137,7 @@ module.exports = {
                         "guildid": args.guild_id,
                         "instanceid": args.instance_id,
                         "userid": member.user.id,
-                        "displayname": member.user.displayName,
+                        // "displayname": member.user.displayName,
                         "script": fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`),
                         "clientid": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id,
                         "platform": args.platform,
