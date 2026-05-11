@@ -93,8 +93,8 @@ module.exports = {
                 type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
                 channel: `<#${channel.id}>`,
                 amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
-                "entire-time": u.time.format(data.entireTime), // Uses default time format
-                "round-time": u.time.format(data.roundTime),
+                "entire-time": u.time.format(data.entireTime*1000), // Uses default time format
+                "round-time": u.time.format(data.roundTime*1000),
                 minigame: minigames[data.id],
                 "social-credit": data.socialCredit,
                 "score": data.score
