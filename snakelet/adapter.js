@@ -58,6 +58,10 @@ module.exports = {
         require("../systems/website/gateway.js").idle = false;
         
         try {
+            require("../cache.js").client.user.setPresence({
+                activities: [],
+                status: "online" // Do not disturb (Others: "online", "idle", "invisible")
+            });
             const split = this.config30.ids.status[this.chip?0:1].split(":");
             (await (await (await require("../idleclient/idle-client.js").client.guilds.fetch(split[0])).channels.fetch(split[1])).messages.fetch(split[2])).edit({
                 content: null,
@@ -98,7 +102,7 @@ module.exports = {
                 flags: [MessageFlags.IsComponentsV2]
             });
         } catch(ignored) {
-            console.log(ignored);
+            // console.log(ignored);
         }
 
     },

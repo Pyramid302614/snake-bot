@@ -48,6 +48,11 @@ function menu(interaction,data) {
                 value: "shard:"+shards[shard]+":"+shard, label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard) + " (Amount: " + shards[shard] + ")"
             });
         }
+        const socialCredit = u.sbdb.getGuildProperty(data.guild.id,"inventories."+interaction.user.id+".socialCredit");
+        snakeSelectOptions.push({
+            value: "socialCredit:"+socialCredit,
+            label: "Social Credit (Amount: " + socialCredit + ")"
+        });
     }
     const guildSelectOptions = [];
     for(const guild of data.guilds) {
@@ -56,20 +61,15 @@ function menu(interaction,data) {
         });
     }
 
+    // Ellipsifying them
     for(var i = 0; i < snakeSelectOptions.length; i++) {
-        if(snakeSelectOptions[i].value.length > 25) {
-            snakeSelectOptions[i].value = snakeSelectOptions[i].value.slice(-3)+"...";
-        }
-        if(snakeSelectOptions[i].label.length > 25) {
-            snakeSelectOptions[i].label = snakeSelectOptions[i].label.slice(-3)+"...";
+        if(snakeSelectOptions[i].label.length > 100) {
+            snakeSelectOptions[i].label = snakeSelectOptions[i].label.slice(0,-3)+"...";
         }
     }
     for(var i = 0; i < guildSelectOptions.length; i++) {
-        if(guildSelectOptions[i].value.length > 25) {
-            guildSelectOptions[i].value = guildSelectOptions[i].value.slice(-3)+"...";
-        }
-        if(guildSelectOptions[i].label.length > 25) {
-            guildSelectOptions[i].label = guildSelectOptions[i].label.slice(-3)+"...";
+        if(guildSelectOptions[i].label.length > 100) {
+            guildSelectOptions[i].label = guildSelectOptions[i].label.slice(0,-3)+"...";
         }
     }
 
@@ -196,9 +196,10 @@ function menu(interaction,data) {
 
 function parseItem(v) { // Value
     let am = v.split(":")[1]; // Amount
-    let a = v.split(":")[2]; // After
+    let a = v.split(":")?.[2]; // After
     switch(v.split(":")[0]) {
         case "snake": return `${am} ${u.snakes.types.getTypeData(a).pretty.toLowerCase()}${am!="1"?"s":""}`;
         case "shard": return `${am} ${u.snakes.types.getTypeData(a).shardPretty.toLowerCase()}${am!="1"?"s":""}`;
+        case "socialCredit": return `${am} social credit`;
     }
 }
