@@ -1,4 +1,5 @@
 const log = () => { return require("../utilities/log/log.js"); };
+const { MessageFlags, ContainerBuilder, TextDisplayBuilder } = require("discord.js");
 const { parseValue } = require("../utilities/values.js");
 
 module.exports = {
@@ -55,6 +56,19 @@ module.exports = {
 
         require("../systems/website/gateway.js").host();
         require("../systems/website/gateway.js").idle = false;
+        
+        try {
+            const split = this.config30.ids.status[this.chip?0:1].split(":");
+            (await (await (await require("../idleclient/idle-client.js").client.guilds.fetch(split[0])).channels.fetch(split[1])).messages.fetch(split[2])).edit({
+                content: null,
+                components: [
+                    new ContainerBuilder()
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent("# 🟢 Snake Bot is **Online**"))
+                        .setAccentColor([0,255,0])
+                ],
+                flags: [MessageFlags.IsComponentsV2]
+            });
+        } catch(ignored) {}
 
     },
     async stopSnakeBot() {
@@ -71,6 +85,21 @@ module.exports = {
         await require("../cache.js").client.destroy();
 
         require("../systems/website/gateway.js").idle = true;
+
+        try {
+            const split = this.config30.ids.status[this.chip?0:1].split(":");
+            (await (await (await require("../idleclient/idle-client.js").client.guilds.fetch(split[0])).channels.fetch(split[1])).messages.fetch(split[2])).edit({
+                content: null,
+                components: [
+                    new ContainerBuilder()
+                        .addTextDisplayComponents(new TextDisplayBuilder().setContent("# 🔴 Snake Bot is **Offline**\n"+(require("../snakelet/client.js").stopReason ?? "No reason provided :P")))
+                        .setAccentColor([255,0,0])
+                ],
+                flags: [MessageFlags.IsComponentsV2]
+            });
+        } catch(ignored) {
+            console.log(ignored);
+        }
 
     },
     async set_chosen_ones(v) {

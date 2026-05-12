@@ -31,18 +31,7 @@ module.exports = {
                     case "stop":
                         if(adapter.started == true) {
                             try {
-                                try {
-                                    const split = adapter.config30.ids.status[adapter.chip?0:1].split(":");
-                                    (await (await (await require("../idleclient/idle-client.js").client.guilds.fetch(split[0])).channels.fetch(split[1])).messages.fetch(split[2])).edit({
-                                        content: null,
-                                        components: [
-                                            new ContainerBuilder()
-                                                .addTextDisplayComponents(new TextDisplayBuilder().setContent("# 🔴 Snake Bot is **Offline**\n"+interaction.options.getString("reason")))
-                                                .setAccentColor([255,0,0])
-                                        ],
-                                        flags: [MessageFlags.IsComponentsV2]
-                                    });
-                                } catch(ignored) {}
+                                this.stopReason = interaction.options.getString("reason");
                                 await adapter.stopSnakeBot();
                                 interaction.reply({
                                     embeds: [
@@ -81,18 +70,6 @@ module.exports = {
                     case "start":
                         if(adapter.started != true) {
                             try {
-                                try {
-                                    const split = adapter.config30.ids.status[adapter.chip?0:1].split(":");
-                                    (await (await (await require("../idleclient/idle-client.js").client.guilds.fetch(split[0])).channels.fetch(split[1])).messages.fetch(split[2])).edit({
-                                        content: null,
-                                        components: [
-                                            new ContainerBuilder()
-                                                .addTextDisplayComponents(new TextDisplayBuilder().setContent("# 🟢 Snake Bot is **Online**"))
-                                                .setAccentColor([0,255,0])
-                                        ],
-                                        flags: [MessageFlags.IsComponentsV2]
-                                    });
-                                } catch(ignored) {}
                                 await adapter.startSnakeBot(token);
                                 require("../idleclient/idle-client.js").client.user.setPresence({
                                     activities: [],
