@@ -89,9 +89,10 @@ function menu(interaction,data) {
                 .setDisabled(!data.guild)
                 .setRequired(true),
             async (del,interaction) => {
+                for(const Del of dels) Del();
+                dels = [];
                 data.item = interaction.values[0];
                 await interaction.update(menu(interaction,data));
-                for(const Del of dels) Del();
             },
             [interaction.user.id]
         );
@@ -104,9 +105,10 @@ function menu(interaction,data) {
                 .addOptions(guildSelectOptions.length==0?[{value:"beantato",label:"You haven't collected any items in any servers."}]:guildSelectOptions)
                 .setDisabled(guildSelectOptions.length==0),
             async (del,interaction) => {
+                for(const Del of dels) Del();
+                dels = [];
                 data.guild = u.cache.client.guilds.cache.get(interaction.values[0]) ?? u.cache.client.guilds.fetch(interaction.values[0]);
                 await interaction.update(menu(interaction,data));
-                for(const Del of dels) Del();
             },
             [interaction.user.id]
         );
@@ -117,6 +119,9 @@ function menu(interaction,data) {
                 .setStyle(ButtonStyle.Success)
                 .setDisabled(!data.item),
             async (del,int) => {
+
+                for(const Del of dels) Del();
+                dels = [];
 
                 // Acknowledges button
                 int.update({
@@ -148,8 +153,6 @@ function menu(interaction,data) {
                             .setColor(u.color.rgb("#snake-bot"))
                     ]
                 });
-
-                for(const Del of dels) Del();
 
             }
         )

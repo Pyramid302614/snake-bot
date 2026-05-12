@@ -99,6 +99,9 @@ function craftButton(interaction,station,stations,data,snakes,amount,sufficientS
             .setDisabled(!sufficientSnakes),
         async (del,interaction) => {
 
+            for(const Del of dels) Del();
+            dels = [];
+            
             const currentAmountOfShards = (u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.shards.${stations[station].selected}`) ?? 0);
 
             u.sbdb.updateGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.snakes.${stations[station].selected}`,
@@ -122,9 +125,6 @@ function craftButton(interaction,station,stations,data,snakes,amount,sufficientS
                 ],
                 flags: [MessageFlags.Ephemeral]
             });
-
-            for(const Del of dels) Del();
-
         },
         [interaction.user.id] // Almost forgot to do this lmaos
     );
@@ -149,12 +149,13 @@ function dropdown(interaction,station,stations,options,dels) {
             .setRequired(true),
         async (del,interaction,data) => {
 
+            for(const Del of dels) Del();
+            dels = [];
+            
             stations[station].selected = interaction.values[0]; // Should always be 1 in length
             await interaction.update({
                 components: [wb.getContainer(interaction,station,stations,dels)]
             });
-            
-            for(const Del of dels) Del();
 
         },
         [interaction.user.id]

@@ -20,8 +20,7 @@ module.exports = {
             execute: execute ?? function() {},
             data: data,
             del: () => {
-                var index = Object.keys(this.elements).indexOf(eid.toString());
-                if(index == -1) return;
+                if(this.elements[eid] === undefined) return;
                 delete this.elements[eid];
             }
         };
@@ -70,7 +69,6 @@ module.exports = {
         else if(data.executors == "everyone" || data.executors.includes(interaction.user.id)) {
 
             data.execute(data.del,interaction,data);
-            this.elements[interaction.customId.slice("eid:".length)] = data; // Re-sync
 
         } else interaction.update({});
 
