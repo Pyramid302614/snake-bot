@@ -35,6 +35,15 @@ module.exports = {
         "#ff00d9"
     ],
 
+    declinedTradePack: [
+        "How sad",
+        "How unfortunate",
+        "Maybe next time...",
+        "Welp",
+        "Aw",
+        "That sucks"
+    ],
+
     newTitle(name) {
         return this[name][Math.floor(Math.random()*this[name].length)];
     }

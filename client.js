@@ -83,13 +83,9 @@ module.exports = {
                 if(interaction.deferred || interaction.replied) interaction.followUp(msg);
                 else interaction.reply(msg);
             }
-
-            if(interaction.isChannelSelectMenu() || interaction.isAnySelectMenu() || interaction.isButton()) {
                 
-                if(interaction.customId.startsWith("eid:")) require("./utilities//commands/messageElements.js").interaction(interaction);
-                else if(interaction.customId.startsWith("action:")) require("./systems/buttons/actions.js")[interaction.customId.slice("action:".length)](interaction);
-
-            }
+            if(interaction.customId?.startsWith("eid:")) require("./utilities//commands/messageElements.js").interaction(interaction);
+            else if(interaction.customId?.startsWith("action:")) require("./systems/buttons/actions.js")[interaction.customId.slice("action:".length)](interaction);
 
         });
 

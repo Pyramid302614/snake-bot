@@ -194,12 +194,4 @@ function menu(interaction,data) {
 
 }
 
-function parseItem(v) { // Value
-    let am = v.split(":")[1]; // Amount
-    let a = v.split(":")?.[2]; // After
-    switch(v.split(":")[0]) {
-        case "snake": return `${am} ${u.snakes.types.getTypeData(a).pretty.toLowerCase()}${am!="1"?"s":""}`;
-        case "shard": return `${am} ${u.snakes.types.getTypeData(a).shardPretty.toLowerCase()}${am!="1"?"s":""}`;
-        case "socialCredit": return `${am} social credit`;
-    }
-}
+const parseItem = u.values.parseItem;

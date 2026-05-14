@@ -4,11 +4,36 @@
         "regular": {
             "pretty": "Regular Snake",
             "shardPretty": "Regular Shard",
-            "chance": 0.50
+            "chance": 0.60
         },
         "rare": {
             "pretty": "Rare Snake",
             "shardPretty": "Rare Shard",
+            "chance": 0.60
+        },
+        "strange": {
+            "pretty": "Strange Snake",
+            "shardPretty": "Strange Shard",
+            "change": 0.60
+        },
+        "coral": {
+            "pretty": "Coral Snake",
+            "shardPretty": "Coral Shard",
+            "chance": 0.60
+        },
+        "angry": {
+            "pretty": "Angry Snake",
+            "shardPretty": "Angry Shard",
+            "chance": 0.60
+        },
+        "happy": {
+            "pretty": "Happy Snake",
+            "shardPretty": "Happy Shard",
+            "chance": 0.90
+        },
+        "squared": {
+            "pretty": "Snake²",
+            "shardPretty": "Shard²",
             "chance": 1
         }
     }

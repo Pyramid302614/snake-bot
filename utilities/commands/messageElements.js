@@ -25,7 +25,7 @@ module.exports = {
             }
         };
         this.elements[eid] = elementData;
-        if(expire) require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,require("../time.js").minutes(5)));
+        if(expire) require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,require("../time.js").minutes(10))); else require("../../snakelet/adapter.js").timeouts.push(setTimeout(elementData.del,require("../time.js").hours(24)));
         return elementData;
 
     },
