@@ -19,6 +19,20 @@ module.exports = {
 
         const person = interaction.options.getUser("person") ?? interaction.user;
 
+        if(visible && person.id == u.cache.client.user.id) {
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Inventory")
+                        .setAuthor({
+                            name: person.displayName,
+                            iconURL: await person.avatarURL()
+                        })
+                        .setDescription("I have all the best loot\nyou'll just have to trust me on that")
+                ]
+            });
+            return;
+        }
         if(person.bot) {
             await interaction.reply({
                 embeds: [

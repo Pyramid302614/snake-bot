@@ -19,6 +19,11 @@ module.exports = {
         const tradewith = interaction.options.getUser("person");
         const trader = interaction.user;
 
+        // if(trader.id == tradewith.id) {
+        //     interaction.reply("schitz ahh");
+        //     return;
+        // }
+
         var dels = [];
         const acceptButton =
             u.msgelem.messageElement(
@@ -44,7 +49,7 @@ module.exports = {
             u.msgelem.messageElement(
                 new ButtonBuilder()
                     .setLabel("No trade")
-                    .setEmoji('❌')
+                    .setEmoji('✖️')
                     .setStyle(ButtonStyle.Danger),
                 (del,b_interaction,data) => {
 
@@ -99,6 +104,33 @@ module.exports = {
 
 function tradeUI(interaction,data,trader,tradewith) {
 
+    var traderOfferings = (data.traderOfferings.length==0?[" "]:data.traderOfferings).map(i => u.values.parseItem(i)).join("\n");
+    var tradewithOfferings = (data.tradewithOfferings.length==0?[" "]:data.tradewithOfferings).map(i => u.values.parseItem(i)).join("\n");
+
+    if(data.traderAccepted && data.tradewithAccepted) {
+        return {
+            components: [
+                new ContainerBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(
+                                `
+### Trade completed!
+${trader.displayName} got:
+\`\`\`
+${tradewithOfferings}
+\`\`\`
+${tradewith.displayName} got:
+\`\`\`
+${traderOfferings}
+\`\`\``
+                            )
+                    )
+                    .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
+            ]
+        }
+    }
+
     var dels = [];
 
     const offerButton =
@@ -108,11 +140,18 @@ function tradeUI(interaction,data,trader,tradewith) {
                 .setStyle(ButtonStyle.Primary),
             (del,b_interaction,d) => {
                 b_interaction.reply(offerUI(b_interaction,{offered:b_interaction.user.id==trader.id?data.traderOfferings:data.tradewithOfferings},(item) => {
+
                     for(const Del of dels) Del();
                     dels = [];
+
                     if(b_interaction.user.id == trader.id) data.traderOfferings.push(item);
                     else data.tradewithOfferings.push(item);
+                    
+                    data.traderAccepted = false;
+                    data.tradewithAccepted = false;
+
                     interaction.editReply(tradeUI(interaction,data,trader,tradewith));
+
                 }));
             },
             [trader.id,tradewith.id]
@@ -124,8 +163,10 @@ function tradeUI(interaction,data,trader,tradewith) {
                 .setStyle(ButtonStyle.Secondary),
             (del,b_interaction,d) => {
                 b_interaction.reply(removeUI(b_interaction,{offered:b_interaction.user.id==trader.id?data.traderOfferings:data.tradewithOfferings},(item) => {
+
                     for(const Del of dels) Del();
                     dels = [];
+
                     if(b_interaction.user.id == trader.id) {
                         const index = data.traderOfferings.indexOf(item);
                         data.traderOfferings = data.traderOfferings.slice(index,index);
@@ -133,53 +174,119 @@ function tradeUI(interaction,data,trader,tradewith) {
                         const index = data.tradewithOfferings.indexOf(item);
                         data.tradewithOfferings = data.tradewithOfferings.slice(index,index);
                     }
+
+                    data.traderAccepted = false;
+                    data.tradewithAccepted = false;
+
                     interaction.editReply(tradeUI(interaction,data,trader,tradewith));
+
                 }));
+            },
+            [trader.id,tradewith.id]
+        );
+    const acceptButton =
+        u.msgelem.messageElement(
+            new ButtonBuilder()
+                .setLabel("Accept Trade")
+                .setStyle(ButtonStyle.Success),
+            (del,b_interaction,d) => {
+                
+                for(const Del of dels) Del();
+                dels = [];
+
+                if(b_interaction.user.id == trader.id) data.traderAccepted = !data.traderAccepted;
+                else data.tradewithAccepted = !data.tradewithAccepted;
+
+                b_interaction.update(tradeUI(interaction,data,trader,tradewith));
+
+            },
+            [trader.id,tradewith.id]
+        );
+    const declineButon =
+        u.msgelem.messageElement(
+            new ButtonBuilder()
+                .setLabel("Decline Trade")
+                .setStyle(ButtonStyle.Danger),
+            (del,b_interaction,d) => {
+
+                for(const Del of dels) Del();
+                dels = [];
+
+                b_interaction.update({
+                    components: [
+                        new ContainerBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent(
+                                        `### ${u.errTitles.newTitle("declinedTradePack")}\n${b_interaction.user.displayName} has declined the trade.`
+                                    )
+                            )
+                            .setAccentColor([255,0,0])
+                    ]
+                });
+
             },
             [trader.id,tradewith.id]
         );
 
     dels.push(offerButton.del);
     dels.push(removeButton.del);
+    dels.push(acceptButton.del);
+    dels.push(declineButon.del);
 
-    var traderOfferings = (data.traderOfferings.length==0?[" "]:data.traderOfferings).map(i => u.values.parseItem(i)).join("\n");
-    var tradewithOfferings = (data.tradewithOfferings.length==0?[" "]:data.tradewithOfferings).map(i => u.values.parseItem(i)).join("\n");
-
-    return {
-
-        components: [
-            new ContainerBuilder()
-                .addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(
-                            `
+    const components = [
+        new ContainerBuilder()
+            .addTextDisplayComponents(
+                new TextDisplayBuilder()
+                    .setContent(
+                        `
 ### <@${trader.id}>'s offerings
 \`\`\`
 ${traderOfferings}
 \`\`\``)
-                        )
-                .addSeparatorComponents(new SeparatorBuilder())
-                .addTextDisplayComponents(
-                    new TextDisplayBuilder()
-                        .setContent(`
+                    )
+            .addSeparatorComponents(new SeparatorBuilder())
+            .addTextDisplayComponents(
+                new TextDisplayBuilder()
+                    .setContent(`
 ### <@${tradewith.id}>'s offerings
 \`\`\`
 ${tradewithOfferings}
 \`\`\``
+                    )
+            )
+            .addSeparatorComponents(new SeparatorBuilder())
+            .addActionRowComponents(
+                new ActionRowBuilder()
+                    .addComponents(
+                        offerButton.data,
+                        removeButton.data
+                    ),
+                new ActionRowBuilder()
+                    .addComponents(
+                        acceptButton.data,
+                        declineButon.data
+                    )
+            )
+
+    ];
+
+    if(data.traderAccepted || data.tradewithAccepted) {
+        components.push(
+            new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder()
+                        .setContent(
+                            `✅ ${data.traderAccepted?trader.displayName:tradewith.displayName} has accepted the trade.\nPress "Accept Trade" to finish the trade.\n-# To ${data.traderAccepted?trader.displayName:tradewith.displayName}: To de-accept press the button again.`
                         )
                 )
-                .addSeparatorComponents(new SeparatorBuilder())
-                .addActionRowComponents([
-                    {
-                        type: 1,
-                        components: [
-                            offerButton.data,
-                            removeButton.data
-                        ]
-                    }
-                ])
+                .setAccentColor([0,255,0])
+        )
+    }
+    
+    return {
 
-        ],
+        components: components,
         flags: [MessageFlags.IsComponentsV2]
 
     };
@@ -386,7 +493,7 @@ function removeUI(interaction,data,removeFunction) {
             new StringSelectMenuBuilder()
                 .setPlaceholder(data.selected?u.values.parseItem(data.selected):(data.offered?"Select item to remove...":"You don't have anything to remove!"))
                 .setDisabled(data.offered === undefined)
-                .setOptions(itemSelectOptions)
+                .setOptions(itemSelectOptions.length==0?[{value:"beantato",label:"Why hello there again"}]:itemSelectOptions)
                 .setMinValues(1)
                 .setMaxValues(1),
             (del,b_interaction,d) => {
