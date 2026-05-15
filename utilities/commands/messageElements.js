@@ -34,7 +34,7 @@ module.exports = {
         
         var result = null;
         for(var i = 0; !result || Object.keys(this.elements).includes(result); i++) {
-            result = Math.floor(Math.random()*10_000);
+            result = Math.floor(Math.random()*10_000_000_000).toString(16);
             if(i > 1000) {
                 log().err("[CODE 12] Element ID overflow","","code");
                 return null;

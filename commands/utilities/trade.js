@@ -108,6 +108,22 @@ function tradeUI(interaction,data,trader,tradewith) {
     var tradewithOfferings = (data.tradewithOfferings.length==0?[" "]:data.tradewithOfferings).map(i => u.values.parseItem(i)).join("\n");
 
     if(data.traderAccepted && data.tradewithAccepted) {
+        
+        // Transactions
+        for(const offering of traderOfferings) {
+            const split = offering.split(":");
+            const path = `inventories.${trader.id}.${split[0]}`+(split[0] == "socialCredit"?"":split[1]);
+            u.sbdb.updateGuildProperty(interaction.guild.id,path,(u.sbdb.getGuildProperty(interaction.guild.id,path)??0)-parseInt(split[1]));
+            u.sbdb.updateGuildProperty(interaction.guild.id,path.replaceAll(trader.id,tradewith.id),(u.sbdb.getGuildProperty(interaction.guild.id,path.replaceAll(trader.id,tradewith.id))??0)+parseInt(split[1]));
+        }
+        for(const offering of tradewithOfferings) {
+            const split = offering.split(":");
+            const path = `inventories.${tradewith.id}.${split[0]}`+(split[0] == "socialCredit"?"":split[1]);
+            u.sbdb.updateGuildProperty(interaction.guild.id,path,(u.sbdb.getGuildProperty(interaction.guild.id,path)??0)-parseInt(split[1]));
+            u.sbdb.updateGuildProperty(interaction.guild.id,path.replaceAll(tradewith.id,trader.id),(u.sbdb.getGuildProperty(interaction.guild.id,path.replaceAll(tradewith.id,trader.id))??0)+parseInt(split[1]));
+        }
+
+        // Message
         return {
             components: [
                 new ContainerBuilder()
@@ -129,6 +145,7 @@ ${traderOfferings}
                     .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
             ]
         }
+
     }
 
     var dels = [];
@@ -144,12 +161,15 @@ ${traderOfferings}
                     for(const Del of dels) Del();
                     dels = [];
 
+                    // Adds to offerings
                     if(b_interaction.user.id == trader.id) data.traderOfferings.push(item);
                     else data.tradewithOfferings.push(item);
                     
+                    // Resets accepted-s
                     data.traderAccepted = false;
                     data.tradewithAccepted = false;
 
+                    // Message
                     interaction.editReply(tradeUI(interaction,data,trader,tradewith));
 
                 }));
@@ -167,6 +187,7 @@ ${traderOfferings}
                     for(const Del of dels) Del();
                     dels = [];
 
+                    // Removes from offerings
                     if(b_interaction.user.id == trader.id) {
                         const index = data.traderOfferings.indexOf(item);
                         data.traderOfferings = data.traderOfferings.slice(index,index);
@@ -175,9 +196,11 @@ ${traderOfferings}
                         data.tradewithOfferings = data.tradewithOfferings.slice(index,index);
                     }
 
+                    // Resets accepted-s
                     data.traderAccepted = false;
                     data.tradewithAccepted = false;
 
+                    // Message
                     interaction.editReply(tradeUI(interaction,data,trader,tradewith));
 
                 }));
@@ -194,9 +217,11 @@ ${traderOfferings}
                 for(const Del of dels) Del();
                 dels = [];
 
+                // Inverts accepted value
                 if(b_interaction.user.id == trader.id) data.traderAccepted = !data.traderAccepted;
                 else data.tradewithAccepted = !data.tradewithAccepted;
 
+                // Message
                 b_interaction.update(tradeUI(interaction,data,trader,tradewith));
 
             },
@@ -315,13 +340,14 @@ function offerUI(interaction,data,offerFunction) {
         label: "Social Credit (Available Amount: " + socialCredit + ")"
     });
 
+    // Constant variables
     var itemName = "?";
     var itemAmount = 0;
     let newItemSelectOptions = [];
     for(let i = 0; i < itemSelectOptions.length; i++) {
         const option = itemSelectOptions[i];
         var usedAlready = false;
-        data.offered.forEach(e => {
+        data.offered.forEach(e => { // Removes entries that are already offered
             if(e.replaceAll(/:\d+:/g,"") == option.value.replaceAll(/:\d+:/g,"")) {
                 usedAlready = true;
             }
@@ -332,7 +358,7 @@ function offerUI(interaction,data,offerFunction) {
             itemAmount = parseInt(option.value.split(":")[1]);
         }
     }
-    if(newItemSelectOptions.length > 0) itemSelectOptions=  newItemSelectOptions;
+    if(newItemSelectOptions.length > 0) itemSelectOptions = newItemSelectOptions;
 
     var itemNameNoNumberPlural = "";
     var itemNameNoNumberNonPlural = "";
@@ -414,12 +440,20 @@ function offerUI(interaction,data,offerFunction) {
                 .setMinValues(1)
                 .setMaxValues(1),
             (del,b_interaction,d) => {
+
                 for(const Del of dels) Del();
                 dels = [];
+
+                // Resets amount variables
                 data.amount = undefined;
                 data.amountError = undefined;
+
+                // Adds to selection
                 data.selected = b_interaction.values[0];
+
+                // Message
                 b_interaction.update(offerUI(interaction,data,offerFunction));
+
             },
             [interaction.user.id]
         );
@@ -510,10 +544,16 @@ function removeUI(interaction,data,removeFunction) {
                 .setDisabled(data.selected === undefined)
                 .setStyle(data.selected === undefined?ButtonStyle.Secondary:ButtonStyle.Danger),
             (del,b_interaction,d) => {
+
                 for(const Del of dels) Del();
                 dels = [];
+                
+                // Calls remove function back at trade ui
                 removeFunction(data.selected);
+
+                // Deletes the remove ui
                 interaction.deleteReply("@original");
+                
             }
         );
 
