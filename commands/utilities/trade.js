@@ -110,13 +110,13 @@ function tradeUI(interaction,data,trader,tradewith) {
     if(data.traderAccepted && data.tradewithAccepted) {
         
         // Transactions
-        for(const offering of traderOfferings) {
+        for(const offering of data.traderOfferings) {
             const split = offering.split(":");
             const path = `inventories.${trader.id}.${split[0]}`+(split[0] == "socialCredit"?"":split[1]);
             u.sbdb.updateGuildProperty(interaction.guild.id,path,(u.sbdb.getGuildProperty(interaction.guild.id,path)??0)-parseInt(split[1]));
             u.sbdb.updateGuildProperty(interaction.guild.id,path.replaceAll(trader.id,tradewith.id),(u.sbdb.getGuildProperty(interaction.guild.id,path.replaceAll(trader.id,tradewith.id))??0)+parseInt(split[1]));
         }
-        for(const offering of tradewithOfferings) {
+        for(const offering of data.tradewithOfferings) {
             const split = offering.split(":");
             const path = `inventories.${tradewith.id}.${split[0]}`+(split[0] == "socialCredit"?"":split[1]);
             u.sbdb.updateGuildProperty(interaction.guild.id,path,(u.sbdb.getGuildProperty(interaction.guild.id,path)??0)-parseInt(split[1]));
@@ -325,16 +325,16 @@ function offerUI(interaction,data,offerFunction) {
     const snakes = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".snakes") ?? {};
     for(const snake of Object.keys(snakes)) {
         itemSelectOptions.push({
-            value: "snake:"+snakes[snake]+":"+snake, label: (u.snakes.types.getTypeData(snake).pretty ?? snake) + " (Available Amount: " + snakes[snake] + ")"
+            value: "snake:"+snakes[snake]+":"+snake, label: (u.snakes.types.getTypeData(snake).pretty ?? snake) + " (Available Amount: " + (snakes[snake]??0) + ")"
         });
     }
     const shards = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".shards") ?? {};
     for(const shard of Object.keys(shards)) {
         itemSelectOptions.push({
-            value: "shard:"+shards[shard]+":"+shard, label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard) + " (Available Amount: " + shards[shard] + ")"
+            value: "shard:"+shards[shard]+":"+shard, label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard) + " (Available Amount: " + (shards[shard]??0) + ")"
         });
     }
-    const socialCredit = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".socialCredit");
+    const socialCredit = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".socialCredit") ?? 0;
     itemSelectOptions.push({
         value: "socialCredit:"+socialCredit,
         label: "Social Credit (Available Amount: " + socialCredit + ")"

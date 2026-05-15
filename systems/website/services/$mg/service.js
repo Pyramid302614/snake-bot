@@ -215,7 +215,10 @@ module.exports = {
                         guild,
                         channel
                     );
-                    if(message.code != 0) return "<g>";
+                    if(message.code != 0) {
+                        console.log(message);
+                        return "<g>";
+                    }
                     
                     messageWithTheButton.edit(message.data);
                         
