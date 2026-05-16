@@ -201,12 +201,13 @@ function processAllRequests() {
     var datas = {};
 
     for(const request of heap)
-        datas[request.sector+""] = require("../utilities/values.js").modifyObject(
-            datas[request.sector+""] ?? getSync(request.sector) ?? {},
-            request.data.path,
-            request.data.value
-        );
-
+        try {
+            datas[request.sector+""] = require("../utilities/values.js").modifyObject(
+                datas[request.sector+""] ?? getSync(request.sector) ?? {},
+                request.data.path,
+                request.data.value
+            );
+        } catch(ignored) {}
     for(const sector of Object.keys(datas)) {
 
         fs.writeFileSync(getSectorPath(sector),JSON.stringify(datas[sector],null,legacy?2:0),"utf-8");
