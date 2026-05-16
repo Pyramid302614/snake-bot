@@ -15,6 +15,7 @@ module.exports = {
                             new TextDisplayBuilder()
                                 .setContent(`
 ### Thank you for adding Snake Bot to your server, ${owner.displayName}!
+I am glad to be a part of ${guild.name}! Heres how you set me up:
 To get started, run \`/setup\`, and then you can run \`/add-channels\` in the channels
 you would like Snakes to spawn in and/or slither around. (Slithering can be disabled in \`/settings\`)
 
