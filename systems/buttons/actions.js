@@ -15,6 +15,8 @@ module.exports = {
                 "application_id": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id
             });
         } catch(e) {
+            interaction.update({});
+            return;
             var msg = "An error has occurred while trying to open that activity.";
             if(u.adapter.config30.chosen_ones.includes(interaction.user.id)) msg += "\n```"+e.stack+"```";
             switch(e.code) {

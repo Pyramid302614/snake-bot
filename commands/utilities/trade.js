@@ -112,13 +112,13 @@ function tradeUI(interaction,data,trader,tradewith) {
         // Transactions
         for(const offering of data.traderOfferings) {
             const split = offering.split(":");
-            const path = `inventories.${trader.id}.${split[0]}`+(split[0] == "socialCredit"?"":split[1]);
+            const path = `inventories.${trader.id}.${split[0]}`+(split[0] == "socialCredit"?"":("s." + split[2]));
             u.sbdb.updateGuildProperty(interaction.guild.id,path,(u.sbdb.getGuildProperty(interaction.guild.id,path)??0)-parseInt(split[1]));
             u.sbdb.updateGuildProperty(interaction.guild.id,path.replaceAll(trader.id,tradewith.id),(u.sbdb.getGuildProperty(interaction.guild.id,path.replaceAll(trader.id,tradewith.id))??0)+parseInt(split[1]));
         }
         for(const offering of data.tradewithOfferings) {
             const split = offering.split(":");
-            const path = `inventories.${tradewith.id}.${split[0]}`+(split[0] == "socialCredit"?"":split[1]);
+            const path = `inventories.${tradewith.id}.${split[0]}`+(split[0] == "socialCredit"?"":("s." + split[2]));
             u.sbdb.updateGuildProperty(interaction.guild.id,path,(u.sbdb.getGuildProperty(interaction.guild.id,path)??0)-parseInt(split[1]));
             u.sbdb.updateGuildProperty(interaction.guild.id,path.replaceAll(tradewith.id,trader.id),(u.sbdb.getGuildProperty(interaction.guild.id,path.replaceAll(tradewith.id,trader.id))??0)+parseInt(split[1]));
         }
