@@ -13,7 +13,7 @@ I'm always open for pull requests! I made this code to be easily modded and chan
 - **Change this repo** - Forking this repo, but then submitting a pull request to make your instance the actuall instance
 
 **Design:** Every color, body of text, and little detail is carefully designed. Expect changes to your pull request or rejection if you are changing visible things!\
-**Code:** All code in Snake Bot was intended to be easy to read and modify, but also to be fast and efficient. Once again, revisions and rejections can occur, but pretty unlikely for rejections if it's just a new utility or something. **Learn the code before changing it!**\
+**Code:** All code in Snake Bot was intended to be easy to read and modify, but also to be fast and efficient. Once again, revisions and rejections can occur, but pretty unlikely for rejections if it's just a new utility or something. **Learn the code before changing it!**
 
 
 # What it's runs on
@@ -33,17 +33,17 @@ It also needs a directory outside the snake-bot directory to store the database.
 
 # 
 
-## Unecessary credits
-Me - My mom (genuinely who is 'me')\
+## Unecessary Credits
 My computer - MinisForum\
-My OS - Binbows Michaelsoft\
-Snake - Snake's mom\
-Pyramid - Pyramid's mom\
-My keyboard - Razer\
-My keyboard's number lock key - Razer\
-My fingers - My mom\
+My OS - Binbows Michaelsoft (Considering linux over upcoming win 12 ai slop)\
+My IDE - VSCode man\
+Langwej - Freaky Javascript (python is literally non-existant, it's factual do some research)
+Snake - Snake's parents\
+Pyramid - Pyramid's parents\
+My keyboard - Razer (optional, I use brainwaves most of the time)\
+My keyboard's number lock key - Also Razer\
+My keyboard's F3 key - Logitech - Just kidding its also Razer\
 "An eyeinator for an eyeintaor will make the world go blindinator." - My man ghandinator\
-My mom - My grandma\
 Github - idk\
 My house - idk\
 Snake Bot - All of us fr ❤️\
