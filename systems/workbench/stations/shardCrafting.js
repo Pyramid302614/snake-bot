@@ -138,7 +138,7 @@ function dropdown(interaction,station,stations,options,dels) {
     const obj = u.msgelem.messageElement(
         new StringSelectMenuBuilder()
             .setPlaceholder(
-                options.length == 0 ? "Failed to load inventory." : 
+                options.length == 0 ? "You have no items! :(" : 
                 !stations[station]?.selected ? "Select snake type here..." :
                 (u.snakes.types.getTypeData(stations[station].selected)?.pretty ?? stations[station].selected) // Gives the illusion of it being selected so it can refresh and not revert
             )

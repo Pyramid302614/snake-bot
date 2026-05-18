@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const u = require("../../u");
-const { MessageFlags } = require("discord.js");
+const { MessageFlags, ContainerBuilder, TextDisplayBuilder } = require("discord.js");
 
 module.exports = {
     "1092": async (interaction) => {
@@ -34,5 +34,27 @@ module.exports = {
             return;
         }
         u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users",users);
+    },
+    "6767": async (interaction) => {
+        const channelIDs = u.settings.get(interaction.guild.id,"channels.spawnable");
+        if(channelIDs.includes(interaction.channel.id)) {
+            return interaction.reply({
+                components: [
+                    new ContainerBuilder()
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder()
+                                .setContent(
+`### Hmmmmmmm
+This channel is already added. Perhaps you pressed this button twice on accident?
+
+-# (Protip: Run \`/settings\` to see what channels you've added)`
+                                )
+                        )
+                        .setAccentColor(u.color.rgb("#ffbb00"))
+                ],
+                flags: [MessageFlags.Ephemeral,MessageFlags.IsComponentsV2]
+            });
+        }
+        require("../../commands/settings/add-channel.js").execute(interaction); // Forwards to /add-channel
     }
 }

@@ -31,6 +31,9 @@ module.exports = {
     // Returns a pretty value for it that is formatted instead of raw IDs
     prettyValue: prettyValue,
 
+    // Returns an object a 'message' and 'success' property. Success indicates if it was parsed, and message is either the result or the error message if 'success' is false.
+    parsePrettyValue: parsePrettyValue,
+
     settingsJSON: require("./settings.json")
 
 }
@@ -61,6 +64,44 @@ async function prettyValue(settingData,value) {
     }
 
 }
+function parsePrettyValue(value,type) {
+    try {
+        switch(type) {
+            case "integer":
+            case "number":
+                if(type=="integer" && value.includes(".")) {
+                    return {
+                        message: "Decimals are not allowed for this value.",
+                        success: false
+                    };
+                }
+                const result = (type=="integer"?parseInt:parseFloat)(value.replaceAll(",",""));
+                if(isNaN(result)) {
+                    return {
+                        message: "That is not a valid number. Please try again :)",
+                        success: false
+                    };
+                } else {
+                    return {
+                        message: result,
+                        success: true
+                    };
+                }
+            case "boolean":
+                return {
+                    message: value.toLowerCase() === "yes",
+                    success: true
+                };
+            default: return value;
+        }
+    } catch(e) {
+        return {
+            message: "An error occured: `"+e.message+"`",
+            success: false
+        };
+    }
+}
+
 function prettyName(settingData) {
 
     return `**${settingData.n}**`;

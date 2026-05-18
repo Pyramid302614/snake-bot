@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags, ButtonStyle, Emoji } = require("discord.js");
-const u = require("../../u");
+const u = require("../u.js");
 const { ButtonBuilder } = require("@discordjs/builders");
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
                             .setLabel("🚀 Setup")
                             .setStyle(ButtonStyle.Primary),
                         async (del,interaction,data) => {
-                            await require("./setup.js").execute(interaction); // Forwards interaction to /setup 
+                            await require("../commands/settings/setup.js").execute(interaction); // Forwards interaction to /setup 
                             del();
                         },
                         [interaction.user.id]

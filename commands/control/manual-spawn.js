@@ -1,6 +1,8 @@
 const { EmbedBuilder } = require("@discordjs/builders");
-const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags, ContainerBuilder, TextDisplayBuilder, ActionRow, ButtonStyle } = require("discord.js");
 const u = require("../../u.js");
+const { ActionRowBuilder } = require("@discordjs/builders");
+const { ButtonBuilder } = require("@discordjs/builders");
 
 module.exports = {
 
@@ -12,6 +14,34 @@ module.exports = {
     contexts: [],
 
     async execute(interaction) {
+
+        if((u.settings.get(interaction.guild.id,"channels.spawnable")??[]).length == 0) {
+            return interaction.reply({
+                components: [
+                    new ContainerBuilder()
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder()
+                                .setContent(
+`### Uh oh!
+You don't have any spawnable channels yet.
+Run \`/add-channel\` to fix that :)
+To see your added channels, run \`/settings\``
+                                )
+                        )
+                        .addActionRowComponents(
+                            new ActionRowBuilder()
+                                .addComponents(
+                                    new ButtonBuilder()
+                                        .setLabel("Add this channel")
+                                        .setStyle(ButtonStyle.Primary)
+                                        .setCustomId("action:6767")
+                                )
+                        )
+                        .setAccentColor([255,0,0])
+                ],
+                flags: [MessageFlags.Ephemeral,MessageFlags.IsComponentsV2]
+            })
+        } 
 
         await interaction.deferReply();
 

@@ -19,10 +19,10 @@ module.exports = {
         const tradewith = interaction.options.getUser("person");
         const trader = interaction.user;
 
-        // if(trader.id == tradewith.id) {
-        //     interaction.reply("schitz ahh");
-        //     return;
-        // }
+        if(trader.id == tradewith.id) {
+            interaction.reply("schitz ahh");
+            return;
+        }
 
         var dels = [];
         const acceptButton =

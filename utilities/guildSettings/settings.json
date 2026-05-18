@@ -1,15 +1,15 @@
 {
     "configured": {"n":"Configured","s":false,"d":false,"t":"boolean","de":"Weither not your server has been configured or not."},
     "channels": {
-        "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels","de":"All channels that can have snakes spawn."}
+        "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels","de":"All channels that can have snakes spawn and/or slither.","mc":"Change this setting with `/add-channel` and `/remove-channel`!"}
     },
     "spawning": {
-        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"integer","de":"The amount of snakes that can spawn within 24 hours."},
-        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snake Bot should spawn snakes."},
+        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"integer","de":"The amount of snakes that can spawn within 24 hours.","mc":true},
+        "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Enables/Disables spawning of snakes.","mc":true},
         "slithering": {
-            "enabled": {"n":"Slithering enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snakes will slither to other channels after it spawns."},
-            "speed": {"n": "Slithering speed (Minutes)","s":true,"t":"number","de":"How many minutes will have to pass before Snakes will slither again."},
-            "amount": {"n": "Slithering amount","s":true,"d":3,"t":"number","de":"Approximately how many times a snake can slither before it goes away."}
+            "enabled": {"n":"Slithering enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snakes will slither to other spawnable channels after it spawns.","mc":true},
+            "speed": {"n": "Slithering speed (Minutes)","d":5,"s":true,"t":"number","de":"How many minutes will have to pass before Snakes will slither again.","mc":true},
+            "amount": {"n": "Slithering amount","s":true,"d":3,"t":"integer","de":"Approximately how many times a snake can slither before it goes away.","mc":true}
         }
     }
 }
