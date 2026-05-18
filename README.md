@@ -37,7 +37,7 @@ It also needs a directory outside the snake-bot directory to store the database.
 My computer - MinisForum\
 My OS - Binbows Michaelsoft (Considering linux over upcoming win 12 ai slop)\
 My IDE - VSCode man\
-Langwej - Freaky Javascript (python is literally non-existant, it's factual do some research)
+Langwej - Freaky Javascript (python is literally non-existant, it's factual do some research)\
 Snake - Snake's parents\
 Pyramid - Pyramid's parents\
 My keyboard - Razer (optional, I use brainwaves most of the time)\
