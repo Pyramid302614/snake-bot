@@ -18,6 +18,7 @@ module.exports = {
             return;
 
         }
+        u.settings.set(interaction.guild.id,"configured",true);
 
         // If not configured ===========================
             
