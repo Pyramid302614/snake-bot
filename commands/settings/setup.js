@@ -3,6 +3,7 @@ const u = require("../../u.js");
 const { EmbedBuilder } = require("@discordjs/builders");
 const { ButtonBuilder } = require("@discordjs/builders");
 const { ChannelSelectMenuBuilder } = require("@discordjs/builders");
+const { guildExists } = require("../../sbdb/sbdb.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,13 +13,12 @@ module.exports = {
     contexts: [],
     async execute(interaction) {
 
-        if(u.settings.get(interaction.guild.id,"configured")) {
+        if(guildExists(interaction.guild.id)) {
 
             require("./settings.js").execute(interaction); // Forwards it to settings
             return;
 
         }
-        u.settings.set(interaction.guild.id,"configured",true);
 
         // If not configured ===========================
             
