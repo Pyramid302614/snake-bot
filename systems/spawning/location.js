@@ -22,8 +22,14 @@ module.exports = {
 
         const path = [];
 
-        const direction = Math.floor(Math.random()*2) == 0;
-        for(var i = direction?0:(channels.length-1); direction?(i < channels.length):(i >= 0); direction?(i++):(i--)) {
+        var checked = [];
+        for(var I = 0; I < channels.length; I++) {
+            
+            var i = -1;
+            while(i == -1 || checked.includes(i)) {
+                i = Math.floor(Math.random()*channels.length);
+            }
+            checked.push(i);
             
             //         slithering disabled check                  slithering enabled check
             if((!slitheringEnabled && path.length == 1) || (path.length >= 1+slitheringAmount)) break; // 1 = emerge message, slitheringAmount = slither messages
@@ -36,7 +42,15 @@ module.exports = {
 
         }
 
-        if(path.length == 0) path.push(channels[Math.floor(Math.random()*channels.length)]); // Selects random channels if none are usable
+        checked = [];
+        while(path.length < Math.min(1+slitheringAmount,channels.length)) {
+            var i = -1;
+            while(i == -1 || path.includes(channels?.[i])) {
+                i = Math.floor(Math.random()*channels.length);
+            }
+            checked.push(i);
+            path.push(channels[Math.floor(Math.random()*channels.length)]); // Selects random channels if none are usable
+        }
 
         return path;
         

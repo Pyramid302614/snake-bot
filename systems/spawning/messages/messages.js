@@ -38,7 +38,7 @@ module.exports = {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
                         channel: `<#${channel.id}>`
                     }
-                )+"\n(ℹ️ Minigame will take a while to load after opened, and will be improved in future updates)",
+                )+"(ℹ️ New Minigames coming very soon!)",
                 components: [{type:1,components:[
                     new ButtonBuilder()
                         .setLabel("Catch")
@@ -63,7 +63,7 @@ module.exports = {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
                         channel: `<#${channel.id}>`
                     }
-                )+"\n(ℹ️ Minigame will take a while to load after opened, and will be improved in future updates)",
+                )+"(ℹ️ New Minigames coming very soon!)",
                 components: [{type:1,components:[
                     new ButtonBuilder()
                         .setLabel("Catch")

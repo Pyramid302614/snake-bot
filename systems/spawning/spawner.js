@@ -14,7 +14,7 @@ module.exports = {
                 const ids = u.sbdb.getAllIDs();
                 for(const id of ids) checkGuild(id); // Asynchornously callsS
 
-            },u.time.minutes(5))
+            },u.time.minutes(0.1))
         );
 
     },
@@ -32,7 +32,7 @@ async function checkGuild(id,overrideSpawnData) {
         const now = Date.now();
 
         // Fetches and/or regenerates spawn data if necessary
-        var spawnData = overrideSpawnData ?? u.sbdb.getGuildProperty(id,"spawning");
+        var spawnData = overrideSpawnData ?? (u.sbdb.getGuildProperty(id,"spawning")??{});
         if(now % 5000 < 2000) { // Every 3-5 seconds (Safely)
             const channels = u.settings.get(id,"channels.spawnable");
             if(!channels || channels.length == 0) return {data:"No channels selected",code:1}; // Checks if path size has changed
@@ -42,16 +42,17 @@ async function checkGuild(id,overrideSpawnData) {
             // Step will always be in a healthy spawn data, so I used this for diagnostic
             spawnData = await newSpawnData(id,false);
             spawnData.next = newNext(id,now,true);
+            spawnDataSync = true;
         }
 
         if(spawnData.path.length == 0) return {data:"No channels selected",code:1};
 
 
-        var spawnDataSync = false; // Should I re-sync after?
+        var spawnDataSync = spawnDataSync ?? false; // Should I re-sync after?
 
 
         // Fetches guild object
-        const guildObj = await u.cache.client.guilds.fetch(id);
+        const guildObj = u.cache.client.guilds.cache.get(id) ?? await u.cache.client.guilds.fetch(id);
         if(!guildObj) return {data:"Guild does not exist within discord",code:-1};
 
         var returnObject = {data:"No return object",code:1};

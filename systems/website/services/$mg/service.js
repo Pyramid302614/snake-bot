@@ -92,14 +92,14 @@ module.exports = {
 
                 if(
                     args.instance_id &&
-                    args.location_id &&
-                    args.launch_id &&
-                    // Removed because mobile does not have these parameters
+                    // args.location_id &&
+                    // args.launch_id &&
+                    // Removed because mobile does not have these parameters (refferer_id and custom_id)
                     // args.referrer_id &&
                     // args.custom_id &&
                     args.guild_id &&
-                    args.channel_id &&
-                    args.frame_id &&
+                    // args.channel_id &&
+                    // args.frame_id &&
                     args.platform
                 ) {
 
@@ -150,7 +150,7 @@ module.exports = {
                     }
 
                     req.headers["x-ambervar-test"] = "beantato";
-
+                    
                     // Forwards request to vite client
                     proxy.web(req,res);
 
@@ -233,6 +233,14 @@ module.exports = {
                 }
 
                 return "<g>";
+
+            case "/vite/monologo":
+                
+                return {
+                    type: "image/png",
+                    msg: fs.readFileSync(u.cache.sbdir + "/assets/images/profile/pfp/pfp-gen3-2048-mono.png"),
+                    code: 200
+                }
 
 
             default:

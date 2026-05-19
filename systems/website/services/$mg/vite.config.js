@@ -7,7 +7,7 @@ const ambervars_parser_plugin = {
     enforce: "pre",
     configureServer(server) {
         server.middlewares.use((req,res,next) => {
-            lastRequestHeaders = req.headers;
+            if(req.url == "/$mg/vite/root") lastRequestHeaders = req.headers;
             next();
         });
     },

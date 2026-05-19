@@ -19,6 +19,8 @@
         <span id="display" style="font-family:monospace;color:white;">Loading...</span>
         <canvas id="canvas" style="position:fixed;top:0;left:50%;top:50%;transform:translate(-50%,-50%);" width="50px" height="50px"></canvas>
 
+        <!-- <div style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);"><img id="monologo" src="/monologo" width="100px" height="100px"></img></div> -->
+
         <script>
             
             function overrideDisplay(msg) {
@@ -101,10 +103,14 @@
                 var startupCompleted = false;
                 let startupTimestamp = 0;
                 function startupDraw() {
+
                     const now = Date.now();
                     let length = 3000;
-                    if(now - startupTimestamp >= length) startupCompleted = true;
-                    else {
+                    if(now - startupTimestamp >= length) {
+                        // document.getElementById("monologo").style.visibility = "hidden";
+                        startupCompleted = true;
+                    } else {
+
                         fill(0,0,0);
                         rect(0,0,canvas.width,canvas.height);
                         fill(255,255,255);
@@ -113,7 +119,8 @@
                         text("Snake Bot ME",canvas.width/2-g.measureText("Snake Bot ME").width/2,canvas.height/2+((50/2-10)*Adapter.scale));
                         textFamily("dm_sans");
                         textSize(30*Adapter.scale);
-                        text("InDev 4",canvas.width/2-g.measureText("InDev 4").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
+                        text("InDev 5",canvas.width/2-g.measureText("InDev 5").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
+                    
                     }
                 }
 
@@ -203,6 +210,7 @@
                             log("Waiting for SDK dap...");
                             await sdk.ready();
                             log("SDK dapped ("+Math.floor(Math.random()*100)+"% resonant)");
+                            console.log(sdk.guildId + ", " + sdk.instanceId)
                             if(sdk.guildId != "&&guildid" || sdk.instanceId != "&&instanceid") {
                                 err("Error verifying URL IDs.");
                                 return;

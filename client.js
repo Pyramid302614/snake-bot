@@ -113,6 +113,9 @@ module.exports = {
             );
 
 
+        // TopGG command payload!
+        // console.log(JSON.stringify(commandsData.map(i => i.toJSON())));
+
         u.log.log("Pushed " + commandsData.length + " application commands.");
 
     }
