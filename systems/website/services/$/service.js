@@ -90,7 +90,37 @@ module.exports = {
                     msg: fs.readFileSync(u.cache.sbdir + "/assets/images/profile/pfp/pfp-gen3-2048-mono.png"),
                     code: 200
                 }
-                
+
+            case "/navi":
+
+                (async () => {
+                    
+                    if(req.socket.remoteAddress != u.adapter.config30.pyshomecomputer && req.socket.remoteAddress != "127.0.0.1") return;
+
+                    const guild_id = args.guild_id;
+                    const channel_id = args.channel_id;
+
+                    const server = u.cache.client.guilds.cache.get(guild_id) ?? await u.cache.client.guilds.fetch(guild_id);
+                    const channel = channel_id ? (server.channels.cache.get(channel_id) ?? await server.channels.fetch(channel_id)) : undefined;
+                     
+                    res.writeHead(200,{"Content-Type":"text/plain; charset="+(args.charset??"utf-8")});
+                    res.end(
+`===== ${server.name} =====
+
+Channels:
+
+${(await server.channels.fetch()).map(i => `${i.id} - ${i.name}`).join("\n")}
+
+~~~~~~~~~~ Messages ~~~~~~~~~~
+
+${channel?(await channel.messages.fetch()).map(i => `${i.id} - ${i.content ?? "[No content]"}`).join("\n"):"No channel selected."}
+
+`
+                    );
+                })();
+
+                return "<g>";
+
             default: return {code:404};
 
         }
