@@ -15,7 +15,9 @@ module.exports = {
             await interaction.launchActivity({
                 "application_id": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id
             });
-            u.adapter.timeouts.push(setTimeout(() => users[interaction.user.id] = "unfulfilled",15_000));
+            u.adapter.timeouts.push(setTimeout(() => {
+                u.sbdb.updateGuildProperty(interaction,guild.id,"minigame.users."+interaction.user.id,"unfulfilled");
+            },15_000));
         } catch(e) {
             console.log(e);
             interaction.update({});
