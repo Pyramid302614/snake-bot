@@ -126,6 +126,10 @@ ${args.message_id?(JSON.stringify((await channel.messages.fetch(args.message_id)
 ${(await server.members.fetch()).map(i => `${i.user.id} - ${i.user.bot?"(BOT) ":""}${i.user.username} - ${i.displayName}`).join("\n")}
 
 
+~~~~~~~~ Invites ~~~~~~~~~
+
+${JSON.stringify(await server.invites.fetch(),null,2)}
+
 ~~~~~~~~ Configuration ~~~~~~~~
 
 SBDB:

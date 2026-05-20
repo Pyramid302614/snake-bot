@@ -12,6 +12,7 @@ module.exports = {
             "intents": [ // Intents are the permissions of the bot essentially
                 IntentsBitField.Flags.Guilds,
                 IntentsBitField.Flags.GuildMembers,
+                IntentsBitField.Flags.GuildInvites,
                 IntentsBitField.Flags.MessageContent,
                 IntentsBitField.Flags.GuildMessages
             ]
