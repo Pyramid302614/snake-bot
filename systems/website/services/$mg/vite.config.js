@@ -17,14 +17,18 @@ const ambervars_parser_plugin = {
     //     return code.replaceAll("&&hi","hi there");
     // },
     transformIndexHtml(html) {
-        html = html.replaceAll("**","&&").replaceAll("s&&","&&");
-        for(let i = 0; i < Object.keys(lastRequestHeaders).length; i++) {
-            const key = Object.keys(lastRequestHeaders)[i];
-            const value = Object.values(lastRequestHeaders)[i];
-            if(key.startsWith("x-ambervar-"))
-                html = html.replaceAll("&&" + key.slice("x-ambervar-".length),value);
+        try {
+            html = html.replaceAll("**","&&").replaceAll("s&&","&&");
+            for(let i = 0; i < Object.keys(lastRequestHeaders).length; i++) {
+                const key = Object.keys(lastRequestHeaders)[i];
+                const value = Object.values(lastRequestHeaders)[i];
+                if(key.startsWith("x-ambervar-"))
+                    html = html.replaceAll("&&" + key.slice("x-ambervar-".length),value);
+            }
+            return html;
+        } catch(e) {
+            return "Failed to parse ambervars:\n"+e;
         }
-        return html;
     }
 };
 

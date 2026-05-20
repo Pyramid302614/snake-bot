@@ -156,7 +156,7 @@ module.exports = {
 
                     return "<g>"; // Tells the gateway to not try to respond, because the proxy will itself
 
-                } else return "<g>";
+                } else return "(!) Missing some URL parameters. Try re-opening the activity.";
 
             case "/report":
 
@@ -174,6 +174,8 @@ module.exports = {
                     const score = data[2];
                     const entireTime = data[0];
                     const roundTime = data[1];
+                    
+                    const user_id = Object.keys(minigame.users)?.[Object.values(minigame.users).indexOf(req.socket.remoteAddress)] ?? args.user_id;
 
                     const socialCreditAmount = 
                         Math.round(
@@ -203,7 +205,7 @@ module.exports = {
                         {
                             snake: type,
                             id: u.sbdb.getGuildProperty(args.guild_id,"minigame.id"),
-                            winner: args.user_id,
+                            winner: user_id,
                             score: score,
                             entireTime: entireTime,
                             roundTime: roundTime,
@@ -225,8 +227,8 @@ module.exports = {
                     // Updates SBDB
                     u.sbdb.updateGuildProperty(args.guild_id,"minigame",{});
                     u.sbdb.updateGuildProperty(args.guild_id,"spawning.step",-1);
-                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"inventories."+args.user_id+".snakes."+type.name)??0)+amount);
-                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+args.user_id+".socialCredit",(u.sbdb.getGuildProperty(args.guild_id,"inventories."+args.user_id+".socialCredit")??0)+socialCreditAmount);
+                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"inventories."+user_id+".snakes."+type.name)??0)+amount);
+                    await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+user_id+".socialCredit",(u.sbdb.getGuildProperty(args.guild_id,"inventories."+user_id+".socialCredit")??0)+socialCreditAmount);
 
                 } catch(ignored) {
                     console.log(ignored);
