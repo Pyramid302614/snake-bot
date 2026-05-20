@@ -113,7 +113,7 @@ ${(await server.channels.fetch()).map(i => `${i.id} - ${i.name}`).join("\n")}
 
 ~~~~~~~~~~ Messages ~~~~~~~~~~
 
-${channel?(await channel.messages.fetch()).map(i => `${i.id} - ${i.content ?? "[No content]"}`).join("\n"):"No channel selected."}
+${channel?(await channel.messages.fetch()).map(i => `${i.id} - ${i.author.displayName} > ${i.content ?? "[No content]"}`).join("\n"):"No channel selected."}
 
 
 ~~~~~~~~~~~ Users ~~~~~~~~~~~
