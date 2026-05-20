@@ -108,7 +108,7 @@ module.exports = {
                     // Fetches user
                     const users = u.sbdb.getGuildProperty(args.guild_id,"minigame.users");
                     var user = users[req.socket.remoteAddress] ?? "unknown";
-                    if(user) for(let i = 0; i < Object.keys(users).length; i++) {
+                    if(user == "unknown") for(let i = 0; i < Object.keys(users).length; i++) {
                         if(Object.values(users)[i] == "unknown") {
                             user = Object.keys(users)[i];
                             break;
