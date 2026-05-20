@@ -157,6 +157,25 @@ module.exports = {
 
         return "```" + JSON.stringify(Object.keys(u.msgelem.elements),null,2) + "```";
         
+    },
+
+    async navigate(msg,args) {
+
+        const server_id = args[0];
+        const channel_id = args[1];
+
+        const server = u.cache.client.guilds.cache.get(server_id) ?? await u.cache.client.guilds.fetch(server_id); 
+
+        if(!server) return "Cannot find server.";
+
+        msg.reply(
+`## ${server.name}
+**Channels:**
+${(await server.channels.fetch()).map(i => `\`${i.id}\` - ${i.name}`).join("\n")}
+`
+        );
+    
+
     }
 
 }

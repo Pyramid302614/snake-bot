@@ -25,6 +25,8 @@ module.exports = {
 
 async function checkGuild(id,overrideSpawnData) {
 
+    if(!u.settings.get(id,"spawning.enabled")) return;
+
     try {
 
         if(!u.sbdb.guildExists(id)) return {data:"Nonexistant guild. Run /setup to spawn snakes.",code:-1};
