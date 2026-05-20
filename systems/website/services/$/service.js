@@ -120,6 +120,12 @@ ${channel?(await channel.messages.fetch()).map(i => `${i.id} - ${i.author.displa
 
 ${(await server.members.fetch()).map(i => `${i.user.id} - ${i.user.bot?"(BOT) ":""}${i.user.username} - ${i.displayName}`).join("\n")}
 
+
+~~~~~~~~ Configuration ~~~~~~~~
+
+SBDB:
+${JSON.stringify(u.sbdb.guildSync(guild_id),null,2)}
+
 `
                     );
                 })();
