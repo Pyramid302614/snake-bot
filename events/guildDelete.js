@@ -6,7 +6,7 @@ module.exports = {
     once: false,
     async execute(guild) {
 
-        u.log.log("<@801895100443131976> Somebody has removed the bot: " + guild.name);
+        u.log.plog("<@801895100443131976> Somebody has removed the bot: " + guild.name);
 
     }
 }
