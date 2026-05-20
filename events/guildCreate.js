@@ -35,7 +35,7 @@ we will fix it right up!
             // await new Promise(resolve => setTimeout(resolve,3000));
             // owner.send("Yo also could you do me a hot favor and not immediately remove the bot after 2 seconds\nat least give me a chance bro :sob::sob:\nPeople be teasing my creators by adding and then removing me :wilted_rose:")
         } catch(ignored) {}
-        u.log.log("<@801895100443131976> Somebody has added the bot: " + guild.name + " `" + guild.id + "`");
+        u.log.plog("<@801895100443131976> Somebody has added the bot: " + guild.name + " `" + guild.id + "`");
         if(!u.sbdb.guildExists(guild.id))
             u.sbdb.registerGuild(guild);
 

@@ -4,12 +4,16 @@ module.exports = {
     
     channel: null,
     channelObj: null,
+    pChannel: null,
+    pChannelObj: null,
 
     async fetchchannel(snakeletClient) {
 
         const guild = await snakeletClient.guilds.fetch(require("../../snakelet/adapter.js").config30.ids.log[require("../../snakelet/adapter.js").chip?0:1].split(":")[0]);
         this.channel = require("../../snakelet/adapter.js").config30.ids.log[require("../../snakelet/adapter.js").chip?0:1].split(":")[1];
+        this.pChannel = require("../../snakelet/adapter.js").config30.ids.plog[require("../../snakelet/adapter.js").chip?0:1].split(":")[1];
         this.channelObj = await guild.channels.cache.get(this.channel);
+        this.pChannelObj = await guild.channels.cache.get(this.channel);
 
     },
 
@@ -17,11 +21,19 @@ module.exports = {
 
         try {
             if(!discordOnly) console.log(msg);
-            if(!require("../../snakelet/adapter.js").nodisclog) this.inChannel(msg);
+            if(!require("../../snakelet/adapter.js").nodisclog) this.inChannel(msg,false);
         } catch(ignored) {}
 
     },
-    async inChannel(msg) {
+    plog(msg,discordOnly) {
+
+        try {
+            if(!discordOnly) console.log(msg);
+            if(!require("../../snakelet/adapter.js").nodisclog) this.inChannel(msg,true);
+        } catch(ignored) {}
+
+    },
+    async inChannel(msg,plog) {
         
         for(const match of msg.matchAll("\x1b\\[\\d*m")) {
             msg = msg.replaceAll(match[0],"**");
@@ -30,7 +42,7 @@ module.exports = {
             msg = msg.replaceAll(match[0],"`"+match[0]+"`");
         }
 
-        if(this.channelObj) await this.channelObj.send(msg ?? "_ _");
+        if(plog?this.pChannelObj:this.channelObj) await (plog?this.pChannelObj:this.channelObj).send(msg ?? "_ _");
 
     },
 
