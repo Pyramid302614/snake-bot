@@ -13,9 +13,9 @@ module.exports = {
 
     contexts: [],
 
-    async execute(interaction) {
+    async execute(interaction,silent) { // silent = no interaction, just do the code
 
-        if((u.settings.get(interaction.guild.id,"channels.spawnable")??[]).length == 0) {
+        if(!silent) if((u.settings.get(interaction.guild.id,"channels.spawnable")??[]).length == 0) {
             return interaction.reply({
                 components: [
                     new ContainerBuilder()
@@ -43,7 +43,7 @@ To see your added channels, run \`/settings\``
             })
         } 
 
-        await interaction.deferReply();
+        if(!silent) await interaction.deferReply();
 
         const now =  Date.now();
         var path = await require("../../systems/spawning/location.js").newPath(interaction.guild,now);
@@ -58,7 +58,7 @@ To see your added channels, run \`/settings\``
         });
         const ok = response.code >= 0;
 
-        await interaction.editReply({
+        if(!silent) await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle(ok?"✅ Started spawn":"❌ Failed to spawn")

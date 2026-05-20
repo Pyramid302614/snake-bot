@@ -22,7 +22,9 @@ module.exports = {
 
         const channel = interaction.options?.getChannel?.("channel") ?? interaction.channel;
 
+        var newGuy = false;
         if(!u.sbdb.guildExists(interaction.guild.id)) {
+            newGuy = true;
             await u.sbdb.registerGuild(interaction.guild);
         }
 
@@ -91,6 +93,10 @@ module.exports = {
             ],
             flags: [MessageFlags.Ephemeral]
         });
+
+        if(newGuy) {
+            require("../../commands/control/manual-spawn.js").execute(interaction,true);
+        }
 
     }
 

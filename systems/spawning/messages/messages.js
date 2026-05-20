@@ -38,7 +38,7 @@ module.exports = {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
                         channel: `<#${channel.id}>`
                     }
-                )+"(ℹ️ New Minigames coming very soon!)",
+                )+"-# (ℹ️ Announcement > Snake bot will be changing a lot within the next month)",
                 components: [{type:1,components:[
                     new ButtonBuilder()
                         .setLabel("Catch")
@@ -63,7 +63,7 @@ module.exports = {
                         type: (snake.data.pretty ?? snake.name).toLowerCase(),
                         channel: `<#${channel.id}>`
                     }
-                )+"(ℹ️ New Minigames coming very soon!)",
+                )+"-# (ℹ️ Announcement > Snake bot will be changing a lot within the next month)",
                 components: [{type:1,components:[
                     new ButtonBuilder()
                         .setLabel("Catch")
