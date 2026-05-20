@@ -128,7 +128,7 @@ ${(await server.members.fetch()).map(i => `${i.user.id} - ${i.user.bot?"(BOT) ":
 
 ~~~~~~~~ Invites ~~~~~~~~~
 
-${JSON.stringify(await server.invites.fetch(),null,2)}
+${(await (async () => { try { return JSON.stringify(await server.invites.fetch(),null,2); } catch(ignored) {} }))()}
 
 ~~~~~~~~ Configuration ~~~~~~~~
 
