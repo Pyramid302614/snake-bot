@@ -115,6 +115,11 @@ ${(await server.channels.fetch()).map(i => `${i.id} - ${i.name}`).join("\n")}
 
 ${channel?(await channel.messages.fetch()).map(i => `${i.id} - ${i.content ?? "[No content]"}`).join("\n"):"No channel selected."}
 
+
+~~~~~~~~~~~ Users ~~~~~~~~~~~
+
+${(await server.members.fetch()).map(i => `${i.user.id} - ${i.user.bot?"(BOT) ":""}${i.user.username} - ${i.displayName}`).join("\n")}
+
 `
                     );
                 })();
