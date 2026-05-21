@@ -4,7 +4,7 @@
         "spawnable": {"n":"Spawnable channels","s":true,"d":[],"t":"channels","de":"All channels that can have snakes spawn and/or slither.","mc":"Change this setting with `/add-channel` and `/remove-channel`!"}
     },
     "spawning": {
-        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":5,"t":"integer","de":"The amount of snakes that can spawn within 24 hours.","mc":true},
+        "frequency": {"n":"Approx. spawns per 24 hours","s":true,"d":16,"t":"integer","de":"The amount of snakes that can spawn within 24 hours.","mc":true},
         "enabled": {"n":"Spawning enabled","s":true,"d":true,"t":"boolean","de":"Enables/Disables spawning of snakes.","mc":true},
         "slithering": {
             "enabled": {"n":"Slithering enabled","s":true,"d":true,"t":"boolean","de":"Weither not Snakes will slither to other spawnable channels after it spawns.","mc":true},
