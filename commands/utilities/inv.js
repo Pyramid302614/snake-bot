@@ -58,7 +58,7 @@ module.exports = {
             const key = Object.keys(snakes)[i];
             const value = Object.values(snakes)[i];
             const prettyName = u.snakes.types.getTypeData(key).pretty ?? key; // If no pretty name, use key name (e.g., 'rare', 'regular' instead of 'Rare Snake', 'Regular Snake')
-            snakesList += `\n${value} ${prettyName}s`;
+            snakesList += `\n${value} ${prettyName}${value==1?"":"s"}`;
         }
         if(snakesList.length != 0) snakesList = snakesList.slice(1); // Removes first new line
         else snakesList = interaction.user.id == person.id?"You haven't caught any snakes yet :(":"This person has not collected any snakes yet :(";
@@ -71,7 +71,7 @@ module.exports = {
             const key = Object.keys(shards)[i];
             const value = Object.values(shards)[i];
             const prettyName = u.snakes.types.getTypeData(key).shardPretty ?? key; // If no pretty name, use key name (e.g., 'rare', 'regular' instead of 'Rare Snake', 'Regular Snake')
-            shardsList += `\n${value} ${prettyName}s`;
+            shardsList += `\n${value} ${prettyName}${value==1?"":"s"}`;
         }
         if(shardsList.length != 0) shardsList = shardsList.slice(1); // Removes first new line
         else shardsList = interaction.user.id == person.id?"You haven't crafted any shards yet :(\n-# (Protip: `/wb`)":"This person has not crafted any shards yet :(";
