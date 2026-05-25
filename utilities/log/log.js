@@ -13,7 +13,7 @@ module.exports = {
         this.channel = require("../../snakelet/adapter.js").config30.ids.log[require("../../snakelet/adapter.js").chip?0:1].split(":")[1];
         this.pChannel = require("../../snakelet/adapter.js").config30.ids.plog[require("../../snakelet/adapter.js").chip?0:1].split(":")[1];
         this.channelObj = await guild.channels.cache.get(this.channel);
-        this.pChannelObj = await guild.channels.cache.get(this.channel);
+        this.pChannelObj = await guild.channels.cache.get(this.pChannel);
 
     },
 
