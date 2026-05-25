@@ -67,8 +67,8 @@ module.exports = {
     },
 
     async request(req,res) {
-                
-        const ip = req.socket.remoteAddress;
+
+        const ip = req.headers["cf-connecting-ip"];// ?? req.socket.remoteAddress;
 
         if(processRateLimit(ip)) return; // Returns true if it needs to ghost you
 
