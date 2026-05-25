@@ -16,7 +16,7 @@
 
     <body style="background-color:black">
 
-        <span id="display" style="font-family:monospace;color:white;">Loading...</span>
+        <span id="display" style="font-family:monospace;color:white;"></span>
         <canvas id="canvas" style="position:fixed;top:0;left:50%;top:50%;transform:translate(-50%,-50%);" width="50px" height="50px"></canvas>
 
         <!-- <div style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);"><img id="monologo" src="/monologo" width="100px" height="100px"></img></div> -->
@@ -24,11 +24,11 @@
         <script>
             
             function overrideDisplay(msg) {
-                document.getElementById("display").innerHTML = msg;
+                // document.getElementById("display").innerHTML = msg;
             }
             function log(msg,override) {
                 console.log(msg);
-                document.getElementById("display").innerHTML += `<br/>[INF] ${msg}`;
+                // document.getElementById("display").innerHTML += `<br/>[INF] ${msg}`;
             }
             function err(m) {
                 console.error(m);
@@ -53,8 +53,8 @@
 
                 s&&script
 
-                window.addEventListener("error",(e) => err(e));
-                window.addEventListener("unhandledrejection",(r) => err(r));
+                window.addEventListener("error",(e) => err(e.message));
+                window.addEventListener("unhandledrejection",(r) => err(r.message));
 
                 const canvas = document.getElementById("canvas");
                 const g = canvas.getContext("2d");
@@ -72,11 +72,19 @@
                     if(a !== undefined) g.fillStyle = `rgba(${r},${g_},${b},${Math.round(a/255*100)/100})`;
                     else g.fillStyle = `rgb(${r},${g_},${b})`;
                 }
-                function noStroke() {
-
+                function noFill() {
+                    // idek
                 }
-                function rect(x,y,w,h) {
-                    g.fillRect(x,y,w,h);
+                function noStroke() {
+                
+                }
+                function rect(x,y,w,h,r) {
+                    if(!r) g.fillRect(x,y,w,h);
+                    else {
+                        g.beginPath();
+                        g.roundRect(x,y,w,h,r);
+                        g.fill();
+                    }
                 }
                 function ellipse(x,y,w,h) {
                     g.beginPath();
@@ -99,27 +107,86 @@
                 function updateFont() {
                     g.font = `${fontSize}px ${fontFamily}`;
                 }
+                function textWidth(t) {
+                    return g.measureText(t).width;
+                }
 
                 var startupCompleted = false;
+                var startupCompletedTimestamp = 0;
                 let startupTimestamp = 0;
+                var mgNameYOffset = [0,0]; // T, C
+                var mgGoalYOffset = [0,0]; // T, C
+                var mgInfoYOffset = [0,0]; // T, C;
+                var mgNameOpacity = [1,1]; // T, C (0-1)
+                var mgGoalOpacity = [1,1]; // T, C (0-1)
+                var mgInfoOpacity = [1,1]; // T, C (0-1)
+                const fadeToMg = true;
                 function startupDraw() {
 
                     const now = Date.now();
-                    let length = 3000;
+                    let length = 10000;
                     if(now - startupTimestamp >= length) {
                         // document.getElementById("monologo").style.visibility = "hidden";
                         startupCompleted = true;
+                        startupCompletedTimestamp = now;
                     } else {
+
+                        const frac = (now - startupTimestamp) / length;
+                        const perc = frac * 100;
+
+                        if(perc >= 60) {
+                            mgNameYOffset[0] = -30; mgNameOpacity[0] = 1;
+                            mgGoalYOffset[0] = 60; mgGoalOpacity[0] = 0;
+                            mgInfoYOffset[0] = 30; mgInfoOpacity[0] = 1;
+                        } else if(perc >= 25) {
+                            mgNameYOffset[0] = -30; mgNameOpacity[0] = 1;
+                            mgGoalYOffset[0] = 30; mgGoalOpacity[0] = 1;
+                            mgInfoYOffset[0] = 0; mgInfoOpacity[0] = 0;
+                        } else {
+                            mgNameYOffset[0] = 0; mgNameOpacity[0] = 1;
+                            mgGoalYOffset[0] = 0; mgGoalOpacity[0] = 0;
+                            mgInfoYOffset[0] = 0; mgInfoOpacity[0] = 0;
+                            mgNameYOffset[1] = 0; mgNameOpacity[1] = 1;
+                            mgGoalYOffset[1] = 0; mgGoalOpacity[1] = 0;
+                            mgInfoYOffset[1] = 0; mgInfoOpacity[1] = 0;
+                        }
+                        
+                        mgNameYOffset[1] += (mgNameYOffset[0]-mgNameYOffset[1])/10;
+                        mgGoalYOffset[1] += (mgGoalYOffset[0]-mgGoalYOffset[1])/10;
+                        mgInfoYOffset[1] += (mgInfoYOffset[0]-mgInfoYOffset[1])/10;
+                        mgNameOpacity[1] += (mgNameOpacity[0]-mgNameOpacity[1])/10;
+                        mgGoalOpacity[1] += (mgGoalOpacity[0]-mgGoalOpacity[1])/10;
+                        mgInfoOpacity[1] += (mgInfoOpacity[0]-mgInfoOpacity[1])/10;
+
 
                         fill(0,0,0);
                         rect(0,0,canvas.width,canvas.height);
-                        fill(255,255,255);
+
+                        const textFill = 
+                            fadeToMg
+                            ? (((length - (now - startupTimestamp)) <= 2_000)
+                                ? ((length - (now - startupTimestamp)) / 2_000 * 255)
+                                : 255
+                            )
+                            : 255
+
+                        fill(textFill,textFill,textFill,mgNameOpacity[1]*255);
                         textFamily("reem_kufi");
                         textSize(50*Adapter.scale);
-                        text("Snake Bot ME",canvas.width/2-g.measureText("Snake Bot ME").width/2,canvas.height/2+((50/2-10)*Adapter.scale));
+                        text(Adapter.name,canvas.width/2-textWidth(Adapter.name)/2,canvas.height/2+((50/2+mgNameYOffset[1])*Adapter.scale));
+
+                        fill(textFill,textFill,textFill,mgGoalOpacity[1]*255);
                         textFamily("dm_sans");
                         textSize(30*Adapter.scale);
-                        text("InDev 5",canvas.width/2-g.measureText("InDev 5").width/2,canvas.height/2+((30/2+40)*Adapter.scale));
+                        text((Adapter.goalMsg),canvas.width/2-textWidth(Adapter.goalMsg)/2,canvas.height/2+((30/2+mgGoalYOffset[1])*Adapter.scale));
+
+                        const lines = Adapter.info.split("<nl>");
+                        textSize(30*Adapter.scale/(lines.length+(1-lines.length)/1.5));
+                        for(var i = 0; i < lines.length; i++) {
+                            fill(textFill,textFill,textFill,mgInfoOpacity[1]*255);
+                            textFamily("dm_sans");
+                            text((lines[i]),canvas.width/2-textWidth(lines[i])/2,canvas.height/2+((30/2+mgInfoYOffset[1]+(i*32/(lines.length+(1-lines.length)/1.5)))*Adapter.scale));
+                        }
                     
                     }
                 }
@@ -144,6 +211,14 @@
                     Adapter.mobile = "&&platform" != "desktop";
                     log("Platform: &&platform");
                     log("Detected mobile: " + Adapter.mobile);
+
+                    log("Starting boot screen");
+                    startupTimestamp = Date.now();
+                    await new Promise(resolve => { let i = setInterval(() => {
+                    if(startupCompleted) { clearInterval(i); resolve(); }
+                    else startupDraw(); 
+                    }, 1000/60)});
+
                     log("Hooking event listeners");
                     window.addEventListener("resize",updateCanvasSize);
                     window.addEventListener("keydown",(k) => Adapter?.keyPressed?.(k.keyCode));
@@ -157,7 +232,17 @@
                         mouseX = relative.x;
                         mouseY = relative.y;
                         Adapter?.mousePressed();
+                        // log(mouseY + "," + document.getElementById('canvas').height)
                     });
+                    window.addEventListener("mousemove",(e) => {
+                        const relative = getRelativePos(
+                            e.clientX,
+                            e.clientY,
+                            document.getElementById("canvas")
+                        );
+                        mouseX = relative.x;
+                        mouseY = relative.y;
+                    })
                     const touch = (e) => {
                         e.preventDefault();
                         const relative = getRelativePos(
@@ -170,14 +255,7 @@
                         Adapter?.mousePressed();
                     };
                     canvas.addEventListener("touchstart",touch,{passive:false}); // High cortisol
-                    // canvas.addEventListener("touchmove",touch,{passive:false}); // High cortisol
-
-                    log("Starting boot screen");
-                    startupTimestamp = Date.now();
-                    await new Promise(resolve => { let i = setInterval(() => {
-                    if(startupCompleted) { clearInterval(i); resolve(); }
-                    else startupDraw(); 
-                    }, 1000/60)});
+                    // canvas.addEventListener("touchmove",touch,{passive:false}); // <-- this lags a lot
 
                     log("Migrated to minigame");
                     overrideDisplay("");
@@ -190,6 +268,13 @@
                             document.body.style.backgroundColor = `rgb(${Adapter.background[0]-(Adapter.background[0]-(255/2))/5},${Adapter.background[1]-(Adapter.background[1]-(255/2))/5},${Adapter.background[2]-(Adapter.background[2]-(255/2))/5})`;
                         }
                         pBackground = bSum;
+                        const now = Date.now();
+                        if(fadeToMg && now - startupCompletedTimestamp <= 2_000) {
+                            const opacity = (now-startupCompletedTimestamp)/2_000;
+                            fill(0,0,0,255-opacity*255);
+                            document.body.style.backgroundColor = `rgb(${(Adapter.background[0]-(Adapter.background[0]-(255/2))/5)*opacity},${(Adapter.background[1]-(Adapter.background[1]-(255/2))/5)*opacity},${(Adapter.background[2]-(Adapter.background[2]-(255/2))/5)*opacity})`;
+                            rect(0,0,Adapter.canvas[0],Adapter.canvas[1]);
+                        }
                     } ,1000/Adapter.frameRate);
 
                 }
@@ -198,8 +283,8 @@
                     
                     try {
 
-                        log("Executing SDK startup delay");
-                        await new Promise(resolve => setTimeout(resolve,1_000));
+                        // log("Executing SDK startup delay");
+                        // await new Promise(resolve => setTimeout(resolve,1_000));
 
                         const { DiscordSDK } = window;
                         var sdk = false;
