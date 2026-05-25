@@ -95,7 +95,7 @@ module.exports = {
 
                 (async () => {
                     
-                    if(req.socket.remoteAddress != u.adapter.config30.pyshomecomputer && req.socket.remoteAddress != "127.0.0.1") return;
+                    if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer && req.socket.remoteAddress != "127.0.0.1") return;
 
                     const guild_id = args.guild_id;
                     const channel_id = args.channel_id;

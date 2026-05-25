@@ -52,7 +52,7 @@ module.exports = {
         const wss = new WebSocket.Server({ port: wsport },u.log.log("Websocket hosted on port " + wsport));
         wss.on("connection",(ws,req) => {
             ws.on("message",(m) => {
-                if(processRateLimit(req.socket.remoteAddress)) return;
+                if(processRateLimit(req.headers["cf-connecting-ip"])) return;
                 m = m.toString();
                 if(/\$.*:.*/.test(m)) {
                     const service = m.split(":")[0];

@@ -107,7 +107,7 @@ module.exports = {
 
                     // Fetches user
                     const users = u.sbdb.getGuildProperty(args.guild_id,"minigame.users");
-                    var user = users[req.socket.remoteAddress] ?? "unknown";
+                    var user = users[req.headers["cf-connecting-ip"]] ?? "unknown";
                     if(user == "unknown") for(let i = 0; i < Object.keys(users).length; i++) {
                         if(Object.values(users)[i] == "unknown") {
                             user = Object.keys(users)[i];
@@ -121,7 +121,7 @@ module.exports = {
                     };
 
                     // Adds you to the whitelist
-                    u.sbdb.updateGuildProperty(args.guild_id,`minigame.users.${user}`,req.socket.remoteAddress);
+                    u.sbdb.updateGuildProperty(args.guild_id,`minigame.users.${user}`,req.headers["cf-connecting-ip"]);
                     
                     // Fetches minigame ID
                     const id = u.sbdb.getGuildProperty(args.guild_id,"minigame.id");
@@ -175,7 +175,7 @@ module.exports = {
                     const entireTime = data[0];
                     const roundTime = data[1];
                     
-                    // const user_id = Object.keys(minigame.users)?.[Object.values(minigame.users).indexOf(req.socket.remoteAddress)] ?? args.user_id;
+                    // const user_id = Object.keys(minigame.users)?.[Object.values(minigame.users).indexOf(req.headers["cf-connecting-ip"])] ?? args.user_id;
                     const user_id = args.user_id;
 
                     const socialCreditAmount = 
