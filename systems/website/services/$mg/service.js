@@ -175,7 +175,8 @@ module.exports = {
                     const entireTime = data[0];
                     const roundTime = data[1];
                     
-                    const user_id = Object.keys(minigame.users)?.[Object.values(minigame.users).indexOf(req.socket.remoteAddress)] ?? args.user_id;
+                    // const user_id = Object.keys(minigame.users)?.[Object.values(minigame.users).indexOf(req.socket.remoteAddress)] ?? args.user_id;
+                    const user_id = args.user_id;
 
                     const socialCreditAmount = 
                         Math.round(
@@ -183,7 +184,7 @@ module.exports = {
                                 data.mobile
                                     ?((roundTime/entireTime)+(1-roundTime/entireTime)*0.6)
                                     :((roundTime/entireTime)+(1-roundTime/entireTime)*0.4)
-                            ) *score*33
+                            ) *score*(require("./minigames.json").minigames[minigame.id].max_sc/3)
                         );
 
                     if(![0,1,2,3].includes(score)) return "<g>";

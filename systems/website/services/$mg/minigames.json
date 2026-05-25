@@ -1,0 +1,12 @@
+{
+    "minigames": [
+        {
+            "name": "Snake",
+            "max_sc": 100
+        },
+        {
+            "name": "Pong",
+            "max_sc": 150
+        }
+    ]
+}
