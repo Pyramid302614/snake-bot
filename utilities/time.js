@@ -1,4 +1,4 @@
-const defaultFormat = "<<!y years, >><<!w weeks, >><<!h hours, >><<!min minutes, >><</and >>!s.!ms seconds";
+const defaultFormat = "<<!y years, >><<!w weeks, >><<!h hours, >><<!min minutes, >><</and >>!s<<.!ms>> seconds";
 
 module.exports = {
 
