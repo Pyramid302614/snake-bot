@@ -84,7 +84,7 @@ module.exports = {
 
        try {
 
-            const winner = (await guild.members.fetch(data.winner)).user;
+            const winner = (await guild.members.fetch(data.winner));
             const snake = data.snake;
 
             const catchMessage = newM(catches);
@@ -92,7 +92,7 @@ module.exports = {
                 user: winner.displayName,
                 type: (snake.data.pretty ?? snake.name ?? "unknown").toLowerCase(),
                 channel: `<#${channel.id}>`,
-                amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
+                amount: (u.sbdb.getGuildProperty(guildId,`inventories.${winner.user.id}.snakes.${data.snake.name}`)??0) + data.amount, // Feature foreshadowing.......
                 "entire-time": u.time.format(data.entireTime*1000), // Uses default time format
                 "round-time": u.time.format(data.roundTime*1000),
                 minigame: minigames[data.id],
