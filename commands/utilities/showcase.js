@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ContainerBuilder, StringSelectMenuBuilder, MessageFlags, ButtonBuilder, ButtonStyle, TextDisplayBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, ContainerBuilder, StringSelectMenuBuilder, MessageFlags, ButtonBuilder, ButtonStyle, TextDisplayBuilder, EmbedBuilder, SeparatorBuilder, SeparatorSpacingSize } = require("discord.js");
 const u = require("../../u");
 
 module.exports = {
@@ -35,25 +35,29 @@ function menu(interaction,data) {
 
     // Options
     const snakeSelectOptions = [];
+    const shardSelectOptions = [];
+    var socialCreditButton = undefined;
+    const socialCredit = u.sbdb.getGuildProperty(data.guild.id,"inventories."+interaction.user.id+".socialCredit");
     if(data.guild) {
         const snakes = u.sbdb.getGuildProperty(data.guild.id,"inventories."+interaction.user.id+".snakes") ?? {};
         for(const snake of Object.keys(snakes)) {
-            snakeSelectOptions.push({
-                value: "snake:"+snakes[snake]+":"+snake, label: (u.snakes.types.getTypeData(snake).pretty ?? snake) + " (Amount: " + snakes[snake] + ")"
+            if(snakes[snake] != 0) snakeSelectOptions.push({
+                value: "snake:"+snakes[snake]+":"+snake,
+                label: (u.snakes.types.getTypeData(snake).pretty ?? snake),
+                description: "Amount: " + snakes[snake]
             });
         }
         const shards = u.sbdb.getGuildProperty(data.guild.id,"inventories."+interaction.user.id+".shards") ?? {};
         for(const shard of Object.keys(shards)) {
-            snakeSelectOptions.push({
-                value: "shard:"+shards[shard]+":"+shard, label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard) + " (Amount: " + shards[shard] + ")"
+            if(shards[shard] != 0) shardSelectOptions.push({
+                value: "shard:"+shards[shard]+":"+shard,
+                label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard),
+                description: "Amount: " + shards[shard]
             });
         }
-        const socialCredit = u.sbdb.getGuildProperty(data.guild.id,"inventories."+interaction.user.id+".socialCredit");
-        snakeSelectOptions.push({
-            value: "socialCredit:"+socialCredit,
-            label: "Social Credit (Amount: " + socialCredit + ")"
-        });
+        if(socialCredit != 0) socialCreditButton = "Social Credit (Amount: " + socialCredit + ")";
     }
+
     const guildSelectOptions = [];
     for(const guild of data.guilds) {
         guildSelectOptions.push({
@@ -65,6 +69,11 @@ function menu(interaction,data) {
     for(var i = 0; i < snakeSelectOptions.length; i++) {
         if(snakeSelectOptions[i].label.length > 100) {
             snakeSelectOptions[i].label = snakeSelectOptions[i].label.slice(0,-3)+"...";
+        }
+    }
+    for(var i = 0; i < shardSelectOptions.length; i++) {
+        if(shardSelectOptions[i].label.length > 100) {
+            shardSelectOptions[i].label = shardSelectOptions[i].label.slice(0,-3)+"...";
         }
     }
     for(var i = 0; i < guildSelectOptions.length; i++) {
@@ -82,12 +91,11 @@ function menu(interaction,data) {
     const snakeSelect =
         u.msgelem.messageElement(
             new StringSelectMenuBuilder()
-                .setPlaceholder(data.item?("Selected item: " + parseItem(data.item)):data.guild?"Select item here...":"Select a server first")
+                .setPlaceholder((data?.item?.startsWith?.("snake"))?("Selected item: " + parseItem(data.item)):data.guild?(snakeSelectOptions.length == 0?"Snakes would be selected here if you had any":"Snakes can be selected here"):"Select a server first")
                 .addOptions(snakeSelectOptions.length == 0?[{value:"baked freaking beans",label:"With mashes freaking potatoes"}]:snakeSelectOptions)
                 .setMinValues(1)
                 .setMaxValues(1)
-                .setDisabled(!data.guild)
-                .setRequired(true),
+                .setDisabled(!data.guild || snakeSelectOptions.length == 0),
             async (del,interaction) => {
                 for(const Del of dels) Del();
                 dels = [];
@@ -96,6 +104,36 @@ function menu(interaction,data) {
             },
             [interaction.user.id]
         );
+    const shardSelect =
+        u.msgelem.messageElement(
+            new StringSelectMenuBuilder()
+                .setPlaceholder((data?.item?.startsWith?.("shard"))?("Selected item: " + parseItem(data.item)):data.guild?(shardSelectOptions.length == 0?"Shards would be selected here if you had any":"Shards can be selected here"):"Select a server first")
+                .addOptions(shardSelectOptions.length == 0?[{value:"baked freaking beans",label:"With mashes freaking potatoes"}]:shardSelectOptions)
+                .setMinValues(1)
+                .setMaxValues(1)
+                .setDisabled(!data.guild || shardSelectOptions.length == 0),
+            async (del,interaction) => {
+                for(const Del of dels) Del();
+                dels = [];
+                data.item = interaction.values[0];
+                await interaction.update(menu(interaction,data));
+            },
+            [interaction.user.id]
+        );
+    const socialCreditSelect =
+        u.msgelem.messageElement(
+            new ButtonBuilder()
+                .setLabel((data?.item?.startsWith?.("socialCredit"))?("Selected item: " + parseItem(data.item)):data.guild?(socialCredit == 0?"Broke ahh dont have social credit 👎":"Social credit can be selected here"):"Select a server first")
+                .setStyle(ButtonStyle.Secondary)
+                .setDisabled(!data.guild || socialCredit == 0),
+            async (del,interaction) => {
+                for(const Del of dels) Del();
+                dels = [];
+                data.item = "socialCredit:"+socialCredit;
+                await interaction.update(menu(interaction,data));
+            },
+            [interaction.user.id]
+        ); 
     const guildSelect =
         u.msgelem.messageElement(
             new StringSelectMenuBuilder()
@@ -157,6 +195,8 @@ function menu(interaction,data) {
             }
         )
     dels.push(snakeSelect.del);
+    dels.push(shardSelect.del);
+    dels.push(socialCreditSelect.del);
     dels.push(guildSelect.del);
     dels.push(showcaseButton.del);
 
@@ -167,19 +207,38 @@ function menu(interaction,data) {
                     new TextDisplayBuilder()
                         .setContent(data.guild?"### What would you like to showcase?":"### Which inventory would you like to showcase from?")
                 )
+                .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large))
                 .addActionRowComponents([{
                     type: 1,
                     components: [
                         guildSelect.data
                     ]
-                },
-                {
+                }])
+                .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large))
+                .addTextDisplayComponents(
+                        new TextDisplayBuilder()
+                            .setContent(data.item?("**Selected item:**\n"+parseItem(data.item)):"**Selected item:**\nYou haven't selected anything yet. Choose any of the 3 select menus below to choose something.")
+                )
+                .addActionRowComponents([{
                     type: 1,
                     components: [
                         snakeSelect.data
                     ]
                 },
                 {
+                    type: 1,
+                    components: [
+                        shardSelect.data
+                    ]
+                },
+                {
+                    type: 1,
+                    components: [
+                        socialCreditSelect.data
+                    ]
+                }])
+                .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large))
+                .addActionRowComponents([{
                     type: 1,
                     components: [
                         showcaseButton.data
