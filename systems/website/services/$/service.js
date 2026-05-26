@@ -144,11 +144,11 @@ ${JSON.stringify(u.sbdb.guildSync(guild_id),null,2)}
 
             case "/cleanup":
 
+                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return req.headers["cf-connecting-ip"];
+
                 u.sbdb.fileWrites = false;
 
                 const removed = [];
-
-                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return "No access";
                 
                 for(const id of u.sbdb.getAllIDs()) {
                     var exists = false;
