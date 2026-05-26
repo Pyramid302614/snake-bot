@@ -255,7 +255,16 @@
                         Adapter?.mousePressed();
                     };
                     canvas.addEventListener("touchstart",touch,{passive:false}); // High cortisol
-                    // canvas.addEventListener("touchmove",touch,{passive:false}); // <-- this lags a lot
+                    canvas.addEventListener("touchmove",(e) => {
+                        e.preventDefault();
+                        const relative = getRelativePos(
+                            e.touches[0].clientX,
+                            e.touches[0].clientY,
+                            document.getElementById("canvas")
+                        );
+                        mouseX = relative.x;
+                        mouseY = relative.y;
+                    },{passive:false});
 
                     log("Migrated to minigame");
                     overrideDisplay("");
