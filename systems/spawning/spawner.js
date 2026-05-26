@@ -100,21 +100,20 @@ async function checkGuild(id,overrideSpawnData) {
                 spawnData.step++;
                 spawnDataSync = true;
 
+                // Deletes old message
+                if(spawnData.msgId) {
+                    const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-2]));
+                    if(channel) (await channel.messages.fetch(spawnData.msgId)).delete();
+                    spawnData.msgId = null;
+                }
+
                 // Checks if it needs to despawn
                 if(!spawnData.path?.[spawnData.step-1]) { // Step will always be 1 higher than the index
-                    // if(spawnData.path.length == 1) spawnData = await newSpawnData(id,false);
-                    // else spawnData = await newSpawnData(id,true,spawnData);
-                    // spawnData.next = newNext(id,now);
-                    // returnObject = {data:"Despawned and regenerated spawn data",code:0};
+                    if(spawnData.path.length == 1) spawnData = await newSpawnData(id,false);
+                    else spawnData = await newSpawnData(id,true,spawnData);
+                    spawnData.next = newNext(id,now);
+                    returnObject = {data:"Despawned and regenerated spawn data",code:0};
                 } else {
-
-                    // Deletes old message
-                    if(spawnData.msgId) {
-                        const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-2]));
-                        if(channel) (await channel.messages.fetch(spawnData.msgId)).delete();
-                        spawnData.msgId = null;
-                    }
-
                     
                     // Regenerate message
                     const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-1]));
@@ -130,7 +129,11 @@ async function checkGuild(id,overrideSpawnData) {
                     } else
                         return {data:"Failed to get random type",code:-1};
 
-                    spawnData.next = newNext(id,now,false);
+                    if(spawnData.path.length != spawnData.step) {
+                        spawnData.next = newNext(id,now,false);
+                    } else {
+                        spawnData.next += u.time.hours(24);
+                    }
 
                     returnObject = {data:"Slithered",code:0};
 
