@@ -167,7 +167,7 @@ ${JSON.stringify(u.sbdb.guildSync(guild_id),null,2)}
 
             case "/stats":
 
-                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return "No access";
+                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return req.headers["cf-connecting-ip"];
 
                 const existing = [];
                 const nonExisting = [];
