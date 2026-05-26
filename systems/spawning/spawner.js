@@ -129,7 +129,7 @@ async function checkGuild(id,overrideSpawnData) {
                     } else
                         return {data:"Failed to get random type",code:-1};
 
-                    if(spawnData.path.length != spawnData.step) {
+                    if(spawnData.path.length > spawnData.step) {
                         spawnData.next = newNext(id,now,false);
                     } else {
                         spawnData.next += u.time.hours(24);
