@@ -3,7 +3,7 @@ const u = require("../../../../u.js");
 
 module.exports = {
 
-    request(req,res,url,args,hostedDir) {
+    async request(req,res,url,args,hostedDir) {
         
         switch(url) {
 
@@ -95,7 +95,7 @@ module.exports = {
 
                 (async () => {
                     
-                    if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer && req.socket.remoteAddress != "127.0.0.1") return;
+                    if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return;
 
                     const guild_id = args.guild_id;
                     const channel_id = args.channel_id;
@@ -141,6 +141,82 @@ ${JSON.stringify(u.sbdb.guildSync(guild_id),null,2)}
                 })();
 
                 return "<g>";
+
+            case "/cleanup":
+
+                u.sbdb.fileWrites = false;
+
+                const removed = [];
+
+                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return "No access";
+                
+                for(const id of u.sbdb.getAllIDs()) {
+                    var exists = false;
+                    try {
+                        if(u.cache.client.guilds.cache.get(id) ?? await u.cache.client.guilds.fetch(id)) exists = true;
+                    } catch(ignored) {}
+                    if(!exists) {
+                        u.sbdb.removeGuild(id);
+                        removed.push(id);
+                    }
+                }
+
+                u.sbdb.fileWrites = true;
+
+                return "~~~~~~ REMOVED ~~~~~~\n" + removed.join("\n") + "\n~~~~~~~~~~~~~~~~~~~~~"
+
+            case "/stats":
+
+                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return "No access";
+
+                const existing = [];
+                const nonExisting = [];
+                const spawnDatas = [];
+                for(const id of u.sbdb.getAllIDs()) {
+                    var exists = false;
+                    var name = "";
+                    var props = "";
+                    try {
+                        props = JSON.stringify(Object.keys(u.sbdb.guildSync(id)));
+                        if(u.sbdb.getGuildProperty(id,"spawning.timestamp")) spawnDatas.push(
+                            new Date(
+                                u.sbdb.getGuildProperty(id,"spawning.timestamp")-u.time.hours(7) // PST
+                            )
+                            .toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false // 24-hour format
+                            }) + " ("+id+")"
+                        )
+                        const guild = u.cache.client.guilds.cache.get(id) ?? await u.cache.client.guilds.fetch(id);
+                        if(guild) {
+                            exists = true;
+                            name = guild.name;
+                        }
+                    } catch(ignored) {}
+                    if(!exists) {
+                        nonExisting.push(nonExisting.length + " | " + id + " ... " + props);
+                    } else {
+                        existing.push(existing.length + " | " + id + " | " + name + " ... " + props);
+                    }
+                }
+
+                return `~~~~~~~ STATS ~~~~~~~
+
+Added:
+${existing.join("\n")}
+
+Not added anymore:
+${nonExisting.join("\n")}
+
+Spawning data:
+${spawnDatas.join("\n")}
+
+~~~~~~~~~~~~~~~~~~~~~`;
 
             default: return {code:404};
 

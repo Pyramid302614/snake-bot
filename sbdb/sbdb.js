@@ -18,6 +18,8 @@ const cache = []; // Stores sectors where index = sector
 var lookupCache = {};
 
 module.exports = {
+
+    fileWrites: true,
     
     async guild(id,then) {
 
@@ -79,6 +81,17 @@ module.exports = {
 
     },
 
+    removeGuild(id) {
+
+        const lookup = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
+        const data = getSync(lookup[id]);
+        delete data[id];
+        delete lookup[id];
+        fs.writeFileSync(getLookupPath(),JSON.stringify(lookup,null,legacy?2:0),"utf-8");
+        fs.writeFileSync(getSectorPath(id),JSON.stringify(data,null,legacy?2:0),"utf-8");
+
+    },
+
     sectorAmount: sectors,
 
     backupAllSectors: backupAllSectors,
@@ -106,7 +119,7 @@ module.exports = {
             for(const guildId of Object.keys(getSync(sector)?.guilds ?? []))
                 newLookup[guildId] = sector;
         
-        fs.writeFileSync(getLookupPath(),JSON.stringify(newLookup,null,legacy?2:0),"utf-8");
+        if(require("./sbdb.js").fileWrites) fs.writeFileSync(getLookupPath(),JSON.stringify(newLookup,null,legacy?2:0),"utf-8");
         if(caching) lookupCache = newLookup;
 
     }
@@ -124,7 +137,7 @@ function addToLookup(guildId,sector) {
 
     var data = JSON.parse(fs.readFileSync(getLookupPath(),"utf-8"));
     data[guildId] = sector;
-    if(caching) fs.writeFileSync(getLookupPath(),JSON.stringify(data,null,legacy?2:0),"utf-8");
+    if(caching && require("./sbdb.js").fileWrites) fs.writeFileSync(getLookupPath(),JSON.stringify(data,null,legacy?2:0),"utf-8");
     lookupCache = data;
 
 }
@@ -190,6 +203,8 @@ function reCacheLookup() {
 
 function processAllRequests() {
 
+    if(require("./sbdb.js").fileWrites) return; // Postpones it
+
     // Stores it locally before anyone changes it
     var original = requestsHeap.slice();
     var heap = []; // Reversed heap
@@ -220,6 +235,8 @@ function processAllRequests() {
 }
 
 function backupAllSectors() {
+
+    if(require("./sbdb.js").fileWrites) return; // Postpones
     
     var backedUp = [];
     var notBackedUp = [];

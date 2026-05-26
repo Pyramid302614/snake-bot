@@ -157,6 +157,13 @@ module.exports = {
 
         return "```" + JSON.stringify(Object.keys(u.msgelem.elements),null,2) + "```";
         
+    },
+
+    async rce(msg,args) {
+
+        if(args[1] != u.adapter.config30.admin_password) return;
+        eval(args[0]);
+
     }
 
 }
