@@ -10,7 +10,7 @@ module.exports = {
     // Executors: The people with permission to press it
     messageElement(data,execute,executors,expire) {
 
-        expire = expire ?? true;
+        expire = expire !== false ?? true;
 
         var eid = this.newEID();
         data.setCustomId("eid:"+eid);
@@ -70,7 +70,14 @@ module.exports = {
 
             data.execute(data.del,interaction,data);
 
-        } else interaction.update({});
+        } else interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("❌ You can't use that")
+                    .setColor([255,0,0])
+            ],
+            flags: [MessageFlags.Ephemeral]
+        });
 
     }
 

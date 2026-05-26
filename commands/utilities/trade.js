@@ -1,5 +1,6 @@
-const { SlashCommandBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, ButtonBuilder, ButtonStyle, EmbedBuilder, SeparatorBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder, LabelBuilder, StringSelectMenuInteraction } = require("discord.js");
+const { SlashCommandBuilder, ContainerBuilder, TextDisplayBuilder, MessageFlags, ButtonBuilder, ButtonStyle, EmbedBuilder, SeparatorBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder, LabelBuilder, StringSelectMenuInteraction, SeparatorSpacingSize } = require("discord.js");
 const u = require("../../u");
+const { parseItem } = require("../../utilities/values");
 
 module.exports = {
 
@@ -19,7 +20,7 @@ module.exports = {
         const tradewith = interaction.options.getUser("person");
         const trader = interaction.user;
 
-        if(trader.id == tradewith.id) {
+        if(trader.id == tradewith.id && trader.id != "801895100443131976") {
             interaction.reply("schitz ahh");
             return;
         }
@@ -162,9 +163,29 @@ ${traderOfferings}
                     dels = [];
 
                     // Adds to offerings
-                    if(b_interaction.user.id == trader.id) data.traderOfferings.push(item);
-                    else data.tradewithOfferings.push(item);
-                    
+                    if(b_interaction.user.id == trader.id) {
+                        var duplicate = -1;
+                        for(let i = 0; i < data.traderOfferings.length; i++) {
+                            const offering = data.traderOfferings[i];
+                            // console.log(offering.replace(/:\d+/,"") +","+ item.replace(/:\d+/,""));
+                            if(offering.replace(/:\d+/,"") == item.replace(/:\d+/,"")) {
+                                duplicate = i;
+                                break;
+                            }
+                        }
+                        data.traderOfferings[duplicate==-1?data.traderOfferings.length:duplicate] = item;
+                    } else {
+                        var duplicate = -1;
+                        for(let i = 0; i < data.tradewithOfferings.length; i++) {
+                            const offering = data.tradewithOfferings[i];
+                            if(offering.replace(/:\d+/,"") == item.replace(/:\d+/,"")) {
+                                duplicate = i;
+                                break;
+                            }
+                        }
+                        data.tradewithOfferings[duplicate==-1?data.tradewithOfferings.length:duplicate] = item;
+                    }
+
                     // Resets accepted-s
                     data.traderAccepted = false;
                     data.tradewithAccepted = false;
@@ -321,44 +342,31 @@ ${tradewithOfferings}
 function offerUI(interaction,data,offerFunction) {
 
     // Options
-    var itemSelectOptions = [];
+    const snakeSelectOptions = [];
+    const shardSelectOptions = [];
+    var socialCreditButton = undefined;
     const snakes = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".snakes") ?? {};
     for(const snake of Object.keys(snakes)) {
-        itemSelectOptions.push({
-            value: "snake:"+snakes[snake]+":"+snake, label: (u.snakes.types.getTypeData(snake).pretty ?? snake) + " (Available Amount: " + (snakes[snake]??0) + ")"
+        if(snakes[snake] != 0) snakeSelectOptions.push({
+            value: "snake:"+snakes[snake]+":"+snake,
+            label: (u.snakes.types.getTypeData(snake).pretty ?? snake),
+            description: "Available: " + snakes[snake]
         });
     }
     const shards = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".shards") ?? {};
     for(const shard of Object.keys(shards)) {
-        itemSelectOptions.push({
-            value: "shard:"+shards[shard]+":"+shard, label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard) + " (Available Amount: " + (shards[shard]??0) + ")"
+        if(shards[shard] != 0) shardSelectOptions.push({
+            value: "shard:"+shards[shard]+":"+shard,
+            label: (u.snakes.types.getTypeData(shard).shardPretty ?? shard),
+            description: "Available: " + shards[shard]
         });
     }
-    const socialCredit = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".socialCredit") ?? 0;
-    itemSelectOptions.push({
-        value: "socialCredit:"+socialCredit,
-        label: "Social Credit (Available Amount: " + socialCredit + ")"
-    });
+    const socialCredit = u.sbdb.getGuildProperty(interaction.guild.id,"inventories."+interaction.user.id+".socialCredit");
+    if(socialCredit != 0) socialCreditButton = "Social Credit (Available: " + socialCredit + ")";
 
     // Constant variables
-    var itemName = "?";
-    var itemAmount = 0;
-    let newItemSelectOptions = [];
-    for(let i = 0; i < itemSelectOptions.length; i++) {
-        const option = itemSelectOptions[i];
-        var usedAlready = false;
-        data.offered.forEach(e => { // Removes entries that are already offered
-            if(e.replaceAll(/:\d+:/g,"") == option.value.replaceAll(/:\d+:/g,"")) {
-                usedAlready = true;
-            }
-        });
-        if(!usedAlready) newItemSelectOptions.push(option);
-        if(option.value == data.selected) {
-            itemName = option.label;
-            itemAmount = parseInt(option.value.split(":")[1]);
-        }
-    }
-    if(newItemSelectOptions.length > 0) itemSelectOptions = newItemSelectOptions;
+    var itemName = parseItem(data?.selected);
+    var itemAmount = parseInt(data?.selected?.split?.(":")?.[1]??"0");
 
     var itemNameNoNumberPlural = "";
     var itemNameNoNumberNonPlural = "";
@@ -378,7 +386,7 @@ function offerUI(interaction,data,offerFunction) {
         new ButtonBuilder()
             .setLabel("Set Amount > " + (itemAmount==1?"1 (You only have " + itemNameNoNumberNonPlural.toLocaleLowerCase() + " to offer)":(data.amount??(data.amountError??(data.selected?"Click me!":"Select item first")))))
             .setDisabled(data.selected === undefined || itemAmount == 1)
-            .setStyle(data.amount?ButtonStyle.Success:(data.amountError?ButtonStyle.Danger:(data.selected?ButtonStyle.Primary:ButtonStyle.Secondary))),
+            .setStyle(data.amount?ButtonStyle.Secondary:(data.amountError?ButtonStyle.Danger:(data.selected?ButtonStyle.Primary:ButtonStyle.Secondary))),
         (del,b_interaction,d) => {
             
             const itemAmountInput = new TextInputBuilder()
@@ -429,34 +437,82 @@ function offerUI(interaction,data,offerFunction) {
             b_interaction.showModal(modal.data);
 
         }
-    )
+    );
 
-    const itemSelect =
+    const itemSelectFunc = (del,b_interaction,d,item) => {
+
+        for(const Del of dels) Del();
+        dels = [];
+
+        // Resets amount variables
+        data.amount = undefined;
+        data.amountError = undefined;
+
+        // Adds to selection
+        data.selected = item;
+
+        // Message
+        b_interaction.update(offerUI(interaction,data,offerFunction));
+
+    }
+
+    const snakeSelect =
         u.msgelem.messageElement(
             new StringSelectMenuBuilder()
-                .setPlaceholder(itemSelectOptions.length == 0 ? "You do not have anything to trade! /inv" : (data.selected !== undefined? itemName : "Select item to add to offerings..."))
-                .addOptions(itemSelectOptions.length == 0 ? [{value:"beantato",label:"Baked beans 2.0"}]:itemSelectOptions)
-                .setDisabled(itemSelectOptions.length == 0)
+                .setPlaceholder(snakeSelectOptions.length == 0 ? "Snakes would be selected here if you had any" : (data?.selected?.startsWith?.("snake") ? ("Selected item: " + itemName) : "Snakes can be selected here..."))
+                .addOptions(snakeSelectOptions.length == 0 ? [{value:"beantato",label:"Baked beans 2.0"}]:snakeSelectOptions)
+                .setDisabled(snakeSelectOptions.length == 0)
                 .setMinValues(1)
                 .setMaxValues(1),
-            (del,b_interaction,d) => {
-
-                for(const Del of dels) Del();
-                dels = [];
-
-                // Resets amount variables
-                data.amount = undefined;
-                data.amountError = undefined;
-
-                // Adds to selection
-                data.selected = b_interaction.values[0];
-
-                // Message
-                b_interaction.update(offerUI(interaction,data,offerFunction));
-
-            },
+            (del,b_interaction,d) => itemSelectFunc(del,b_interaction,d,b_interaction.values[0]),
             [interaction.user.id]
         );
+    const shardSelect =
+        u.msgelem.messageElement(
+            new StringSelectMenuBuilder()
+                .setPlaceholder(shardSelectOptions.length == 0 ? "Shards would be selected here if you had any" : (data?.selected?.startsWith?.("shard") ? ("Selected item: " + itemName) : "Shards can be selected here"))
+                .addOptions(shardSelectOptions.length == 0 ? [{value:"beantato",label:"Baked beans 2.0"}]:shardSelectOptions)
+                .setDisabled(shardSelectOptions.length == 0)
+                .setMinValues(1)
+                .setMaxValues(1),
+            (del,b_interaction,d) => itemSelectFunc(del,b_interaction,d,b_interaction.values[0]),
+            [interaction.user.id]
+        );
+        const socialCreditSelect =
+            u.msgelem.messageElement(
+                new ButtonBuilder()
+                    .setLabel(socialCredit == 0 ? "Broke ahh dont have social credit to trade 👎" : (data?.selected?.startsWith?.("socialCredit") ? ("Selected item: "  + socialCreditButton) : "Social credit can be selected here"))
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(socialCredit == 0),
+                (del,b_interaction,d) => itemSelectFunc(del,b_interaction,d,"socialCredit:"+socialCredit),
+                [interaction.user.id]
+            )
+    // const itemSelect =
+    //     u.msgelem.messageElement(
+    //         new StringSelectMenuBuilder()
+    //             .setPlaceholder(itemSelectOptions.length == 0 ? "You do not have anything to trade! /inv" : (data.selected !== undefined? itemName : "Select item to add to offerings..."))
+    //             .addOptions(itemSelectOptions.length == 0 ? [{value:"beantato",label:"Baked beans 2.0"}]:itemSelectOptions)
+    //             .setDisabled(itemSelectOptions.length == 0)
+    //             .setMinValues(1)
+    //             .setMaxValues(1),
+    //         (del,b_interaction,d) => {
+
+    //             for(const Del of dels) Del();
+    //             dels = [];
+
+    //             // Resets amount variables
+    //             data.amount = undefined;
+    //             data.amountError = undefined;
+
+    //             // Adds to selection
+    //             data.selected = b_interaction.values[0];
+
+    //             // Message
+    //             b_interaction.update(offerUI(interaction,data,offerFunction));
+
+    //         },
+    //         [interaction.user.id]
+    //     );
 
     const offerButton =
         u.msgelem.messageElement(
@@ -465,14 +521,18 @@ function offerUI(interaction,data,offerFunction) {
                 .setDisabled(data.amount === undefined)
                 .setStyle(data.amount === undefined?ButtonStyle.Secondary:ButtonStyle.Primary),
             (del,b_interaction,d) => {
+
                 for(const Del of dels) Del();
                 dels = [];
                 offerFunction(data.selected.replace(itemAmount,data.amount));
                 interaction.deleteReply("@original");
+
             }
         )
 
-    dels.push(itemSelect.del);
+    dels.push(snakeSelect.del);
+    dels.push(shardSelect.del);
+    dels.push(socialCreditSelect.del);
     dels.push(amountButton.del);
     dels.push(offerButton.del);
     
@@ -480,20 +540,41 @@ function offerUI(interaction,data,offerFunction) {
 
         components: [
             new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder()
+                        .setContent(
+                            "**Selected item:**\n"+(data.selected?parseItem(data.selected):"You haven't selected anything yet. Choose any of the 3 select menus below to choose something.")
+                        )
+                )
                 .addActionRowComponents(
                     new ActionRowBuilder()
                         .addComponents(
-                            itemSelect.data,
+                            snakeSelect.data,
                         ),
                     new ActionRowBuilder()
                         .addComponents(
-                            amountButton.data,
+                            shardSelect.data,
                         ),
+                    new ActionRowBuilder()
+                        .addComponents(
+                            socialCreditSelect.data,
+                        )
+                )
+                .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large))
+                .addActionRowComponents(
+                    new ActionRowBuilder()
+                        .addComponents(
+                            amountButton.data,
+                        )
+                )
+                .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large))
+                .addActionRowComponents(
                     new ActionRowBuilder()
                         .addComponents(
                             offerButton.data,
                         )
                 )
+                .setAccentColor(u.color.rgb("#5e848f")) // looking good
         ],
 
         flags: [

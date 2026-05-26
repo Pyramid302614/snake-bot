@@ -26,3 +26,6 @@ Snake Bot is an indirect competitor of Cat Bot
 Snake's real name is actually Sna Kig Uess, which is a Snakean language that only 3 tribes speak today.
 Pyramid's real name is actually Pyram Id30 2614, which comes from ancient egyptian hyroglyphs.
 Snake and Pyramid both dislike portobello mushrooms.
+Snake Bot's minigame engine was tested over 700 times before being released
+Pong was tested hundreds of times before being released as an official minigame
+The first minigame to be created was Snake, which was much more difficult than it is today.
