@@ -236,7 +236,7 @@ function processAllRequests() {
 
 function backupAllSectors() {
 
-    if(require("./sbdb.js").fileWrites) return; // Postpones
+    if(!require("./sbdb.js").fileWrites) return; // Postpones
     
     var backedUp = [];
     var notBackedUp = [];
