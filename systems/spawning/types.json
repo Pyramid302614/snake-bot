@@ -1,6 +1,8 @@
 {
-    "assetsdir": "images/snakes",
+    "assetsdir": "images",
     "types": {
+
+
         "regular": {
             "pretty": "Regular Snake",
             "shardPretty": "Regular Shard",
@@ -9,32 +11,63 @@
         "rare": {
             "pretty": "Rare Snake",
             "shardPretty": "Rare Shard",
-            "chance": 0.60
+            "chance": 0.70
         },
-        "strange": {
-            "pretty": "Strange Snake",
-            "shardPretty": "Strange Shard",
-            "change": 0.70
+        "silly": {
+            "pretty": "Silly Snake",
+            "shardPretty": "Silly Shard",
+            "change": 0.80
         },
         "coral": {
             "pretty": "Coral Snake",
             "shardPretty": "Coral Shard",
             "chance": 0.80
         },
-        "angry": {
-            "pretty": "Angry Snake",
-            "shardPretty": "Angry Shard",
+        "fire": {
+            "pretty": "Fire Snake",
+            "shardPretty": "Fire Shard",
+            "chance": 0.80
+        },
+        "pine": {
+            "pretty": "Pine Snake",
+            "shardPretty": "Pine Shard",
             "chance": 0.80
         },
         "happy": {
             "pretty": "Happy Snake",
             "shardPretty": "Happy Shard",
-            "chance": 0.98
+            "chance": 0.90
+        },
+        "sloppy": {
+            "pretty": "Sloppy Snake",
+            "shardPretty": "Sloppy Shard",
+            "chance": 0.95
         },
         "squared": {
             "pretty": "Snake²",
             "shardPretty": "Shard²",
+            "chance": 0.98
+        },
+        
+        "golden": {
+            "pretty": "Golden Snake",
+            "shardPretty": "Golden Shard",
             "chance": 1
+        },
+
+
+
+
+
+        "strange": {
+            "pretty": "No longer obtainable > Strange Snake",
+            "shardPretty": "No logner obtainable > Strange Shard",
+            "chance": 0
+        },
+        "angry": {
+            "pretty": "No longer obtainable > Angry Snake",
+            "shardPretty": "No logner obtainable > Angry Shard",
+            "chance": 0
         }
     }
 }

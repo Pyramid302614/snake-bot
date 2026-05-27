@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const u = require("../../../u");
 const { ButtonBuilder } = require("@discordjs/builders");
-const { ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags } = require("discord.js");
+const { ButtonStyle, ContainerBuilder, TextDisplayBuilder, MessageFlags, AttachmentBuilder } = require("discord.js");
 const { newMinigame } = require("../minigame");
 const fs = require("fs");
 const messagesDir = "snake-bot/systems/spawning/messages";
@@ -30,21 +30,30 @@ module.exports = {
 
         return {
             data: {
-                content: evaluate(
-                    guildData?.settings?.spawning?.slithering?.enabled ?
-                        newM(emerge_slithers):
-                        newM(emerge_noslithers),
-                    {
-                        type: (snake.data.pretty ?? snake.name).toLowerCase(),
-                        channel: `<#${channel.id}>`
-                    }
-                ),
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(
+                            evaluate(
+                                guildData?.settings?.spawning?.slithering?.enabled ?
+                                    newM(emerge_slithers):
+                                    newM(emerge_noslithers),
+                                {
+                                    type: (snake.data.pretty ?? snake.name).toLowerCase(),
+                                    channel: `<#${channel.id}>`
+                                }
+                            )
+                        )
+                        .setColor(u.color.rgb("#snake-bot"))
+                ],
                 components: [{type:1,components:[
                     new ButtonBuilder()
                         .setLabel("Catch")
                         .setStyle(ButtonStyle.Primary)
                         .setCustomId("action:1092")
-                ]}]
+                ]}],
+                files: [
+                    new AttachmentBuilder(u.cache.sbdir+"/assets/"+require("../types.json").assetsdir+"/snakes/"+snake.name+".png",{ name: snake.name+".png" })
+                ]
             },
             code: 0
         };
@@ -54,22 +63,30 @@ module.exports = {
     async slither(guildData,snake,channel,guildId) {
 
         if(!snake.name) return {data:"No type provided.",code:-1};
-
         return {
             data: {
-                content: evaluate(
-                    newM(slithers),
-                    {
-                        type: (snake.data.pretty ?? snake.name).toLowerCase(),
-                        channel: `<#${channel.id}>`
-                    }
-                ),
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(
+                            evaluate(
+                                newM(slithers),
+                                {
+                                    type: (snake.data.pretty ?? snake.name).toLowerCase(),
+                                    channel: `<#${channel.id}>`
+                                }
+                            )
+                        )
+                        .setColor(u.color.rgb("#snake-bot"))
+                ],
                 components: [{type:1,components:[
                     new ButtonBuilder()
                         .setLabel("Catch")
                         .setStyle(ButtonStyle.Primary)
                         .setCustomId("action:1092")
-                ]}]
+                ]}],
+                files: [
+                    new AttachmentBuilder(u.cache.sbdir+"/assets/"+require("../types.json").assetsdir+"/snakes/"+snake.name+".png",{ name: snake.name+".png" })
+                ]
             },
             code: 0
         };

@@ -94,9 +94,9 @@ module.exports = {
         u.log.log("Logging in");
         client.login(token);
 
-        await new Promise(resolve => setInterval(() => {
-            if(client.isReady()) resolve();
-        },200))
+        await new Promise(resolve => { var i = setInterval(() => {
+            if(client.isReady()) { resolve(); clearTimeout(i); }
+        },200)});
 
         // Actually gets the commands over to discord, that way it can list what you can do
         u.log.log("Pushing application commands to Discord");

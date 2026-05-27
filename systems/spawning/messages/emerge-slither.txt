@@ -1,14 +1,14 @@
-A <type> has emerged. Catch it before it slithers away!
->> A <type> has emerged. Catch it before it slithers away!
->> A <type> has emerged. Catch it before it slithers away!
->> A <type> has emerged. Catch it before it slithers away!
->> A <type> has emerged. Catch it before it slithers away!
->> A <type> has entered the premises. Catch it before it slithers away!
->> A <type> has arrived at the scene. Catch it before it slithers away!
->> A <type> has been added to the environment. Catch it before it slithers away!
->> A <type> has appeared. Catch it before it slithers away!
->> A <type> has materialized. Catch it before it slithers away!
->> A <type> has wandered in. Catch it before it slithers away!
->> A <type> has been summoned. Catch it before it slithers away!
+A <type> has emerged, Catch it before it slithers away!
+>> A <type> has emerged, Catch it before it slithers away!
+>> A <type> has emerged, Catch it before it wanders away!
+>> A <type> has emerged, Catch it before it slithers away!
+>> A <type> has emerged, Catch it before it wanders away!
+>> A <type> has entered the premises, Catch it before it slithers away!
+>> A <type> has arrived at the scene, Catch it before it wanders away!
+>> A <type> has revealed itself, Catch it before it slithers away!
+>> A <type> has appeared, Catch it before it slithers away!
+>> A <type> has materialized, Catch it before it wanders away!
+>> A <type> has wandered in, Catch it before it slithers away!
+>> A <type> has been summoned, Catch it before it slithers away!
 >> <type> emerge u shall catch before slither
->> sss <type> sssss sss sss ss. sss ssss ssss ssssss!
+>> sss <type> sssss sss sss ss, sss ssss ssss ssssss!

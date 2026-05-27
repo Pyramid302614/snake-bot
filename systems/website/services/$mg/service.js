@@ -223,8 +223,13 @@ module.exports = {
                         return "<g>";
                     }
                     
-                    messageWithTheButton.edit(message.data);
-                        
+                    try {
+                        messageWithTheButton.delete();
+                        channel.send(message.data);
+                    } catch(ignored) {
+                        return;
+                    }
+
                     // Updates SBDB
                     u.sbdb.updateGuildProperty(args.guild_id,"minigame",{});
                     u.sbdb.updateGuildProperty(args.guild_id,"spawning.step",-1);
