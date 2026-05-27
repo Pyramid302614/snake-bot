@@ -203,7 +203,7 @@ function reCacheLookup() {
 
 function processAllRequests() {
 
-    if(require("./sbdb.js").fileWrites) return; // Postpones it
+    if(!require("./sbdb.js").fileWrites) return; // Postpones it
 
     // Stores it locally before anyone changes it
     var original = requestsHeap.slice();
