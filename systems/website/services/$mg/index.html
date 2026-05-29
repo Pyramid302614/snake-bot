@@ -53,8 +53,8 @@
 
                 s&&script
 
-                window.addEventListener("error",(e) => err(e.message));
-                window.addEventListener("unhandledrejection",(r) => err(r.message));
+                window.addEventListener("error",(e) => err(e.message??e));
+                window.addEventListener("unhandledrejection",(r) => err(r.message??r));
 
                 const canvas = document.getElementById("canvas");
                 const g = canvas.getContext("2d");

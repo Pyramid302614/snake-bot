@@ -6,53 +6,63 @@
         "regular": {
             "pretty": "Regular Snake",
             "shardPretty": "Regular Shard",
-            "chance": 0.60
+            "chance": 0.40,
+            "minAge": 0
         },
         "rare": {
             "pretty": "Rare Snake",
             "shardPretty": "Rare Shard",
-            "chance": 0.70
+            "chance": 0.40,
+            "minAge": 0
         },
         "silly": {
             "pretty": "Silly Snake",
             "shardPretty": "Silly Shard",
-            "change": 0.80
+            "change": 0.40,
+            "minAge": 0
         },
         "coral": {
             "pretty": "Coral Snake",
             "shardPretty": "Coral Shard",
-            "chance": 0.80
+            "chance": 0.40,
+            "minAge": 0
         },
         "fire": {
             "pretty": "Fire Snake",
             "shardPretty": "Fire Shard",
-            "chance": 0.80
+            "chance": 0.40,
+            "minAge": 1
         },
         "pine": {
             "pretty": "Pine Snake",
             "shardPretty": "Pine Shard",
-            "chance": 0.80
+            "chance": 0.40,
+            "minAge": 5
         },
         "happy": {
             "pretty": "Happy Snake",
             "shardPretty": "Happy Shard",
-            "chance": 0.90
+            "chance": 0.50,
+            "minAge": 10
         },
         "sloppy": {
             "pretty": "Sloppy Snake",
             "shardPretty": "Sloppy Shard",
-            "chance": 0.95
+            "chance": 0.70,
+            "minAge": 20
         },
         "squared": {
             "pretty": "Snake²",
             "shardPretty": "Shard²",
-            "chance": 0.98
+            "chance": 0.80,
+            "minAge": 50
         },
         
         "golden": {
             "pretty": "Golden Snake",
             "shardPretty": "Golden Shard",
-            "chance": 1
+            "chance": 1,
+            "minAge": 100
         },
 
 

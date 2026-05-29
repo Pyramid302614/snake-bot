@@ -118,20 +118,20 @@ module.exports = {
             };
             const content = evaluate(catchMessage,evaluationArguments);
             
+            const image = new AttachmentBuilder(`${u.cache.sbdir}/assets/${require("../types.json").assetsdir}/snakes/${data.snake.name}.png`,`${data.snake.name}.png`);
+
             return {
 
                 data: {
                     components: [],
                     content: "",
-                    components: [
-                        new ContainerBuilder()
-                            .addTextDisplayComponents(
-                                new TextDisplayBuilder()
-                                    .setContent(content + (data.mobile?"\n-# Completed on a mobile device":""))
-                            )
-                            .setAccentColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription(content + (data.mobile?"\n-# Completed on a mobile device":""))
+                            .setColor(u.color.rgb(u.errTitles.newTitle("successColorPack")))
+                            .setThumbnail(`attachment://${data.snake.name}.png`)
                     ],
-                    flags: [MessageFlags.IsComponentsV2]
+                    files: [image]
                 },
                 code: 0
 

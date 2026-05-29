@@ -2,6 +2,9 @@ const defaultFormat = "<<!y years, >><<!w weeks, >><<!h hours, >><<!min minutes,
 
 module.exports = {
 
+    days(v) {
+        return v*24*60*60*1000;
+    },
     hours(v) {
         return v*60*60*1000;
     },

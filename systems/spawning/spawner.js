@@ -64,7 +64,7 @@ async function checkGuild(id,overrideSpawnData) {
 
                 // Generate message 
                 const channel = await guildObj.channels.fetch(spawnData.path[0]);
-                const type = u.snakes.types.randomType();
+                const type = u.snakes.types.randomType(id);
                 const emergeMessage = await messages.emerge(u.sbdb.guildSync(id),type,channel,id);
 
 
@@ -117,7 +117,7 @@ async function checkGuild(id,overrideSpawnData) {
                     
                     // Regenerate message
                     const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-1]));
-                    const slitherMessage = await messages.slither(u.sbdb.guildSync(id),u.snakes.types.randomType(),channel,id);
+                    const slitherMessage = await messages.slither(u.sbdb.guildSync(id),u.snakes.types.randomType(id),channel,id);
                     if(slitherMessage.code == 0) {
 
                         // Sends message
