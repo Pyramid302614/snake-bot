@@ -10,15 +10,15 @@ module.exports = {
                 interaction.message.delete();
                 return;
             }
-            const users = u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users") ?? {};
-            users[interaction.user.id] = "unknown";
+            // const users = u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users") ?? {};
+            // users[interaction.user.id] = "unknown";
             try {
                 await interaction.launchActivity({
                     "application_id": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id
                 });
-                u.adapter.timeouts.push(setTimeout(() => {
-                    if(u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users."+interaction.user.id) == "unknown") u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users."+interaction.user.id,"unfulfilled");
-                },15_000));
+                // u.adapter.timeouts.push(setTimeout(() => {
+                //     if(u.sbdb.getGuildProperty(interaction.guild.id,"minigame.users."+interaction.user.id) == "unknown") u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users."+interaction.user.id,"unfulfilled");
+                // },15_000));
             } catch(e) {
                 interaction.update({});
                 return;
@@ -38,7 +38,7 @@ module.exports = {
                 });
                 return;
             }
-            u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users",users);
+            // u.sbdb.updateGuildProperty(interaction.guild.id,"minigame.users",users);
             
             if(!u.sbdb.getGuildProperty(interaction.guild.id,"DSAMs."+interaction.user.id+".mobileActivityConnectionLatencyWarning")) {
                 interaction.followUp({

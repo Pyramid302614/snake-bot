@@ -23,12 +23,14 @@
 
         <script>
             
+            const logEnabled = false;
+
             function overrideDisplay(msg) {
-                // document.getElementById("display").innerHTML = msg;
+                if(logEnabled) document.getElementById("display").innerHTML = msg;
             }
             function log(msg,override) {
                 console.log(msg);
-                // document.getElementById("display").innerHTML += `<br/>[INF] ${msg}`;
+                if(logEnabled) document.getElementById("display").innerHTML += `<br/>[INF] ${msg}`;
             }
             function err(m) {
                 console.error(m);
@@ -48,13 +50,15 @@
             
             document.addEventListener("DOMContentLoaded",() => {
 
+                if("&&platform" != "desktop") document.getElementById("display").innerHTML += "<br/><br/>";
+
                 var mouseX = 0;
                 var mouseY = 0;
 
                 s&&script
 
-                window.addEventListener("error",(e) => err(e.message??e));
-                window.addEventListener("unhandledrejection",(r) => err(r.message??r));
+                window.addEventListener("error",(e) => err(JSON.stringify(e.message??e,null,2)));
+                window.addEventListener("unhandledrejection",(r) => err(JSON.stringify(r.reason??r,null,2)??r));
 
                 const canvas = document.getElementById("canvas");
                 const g = canvas.getContext("2d");
@@ -295,6 +299,12 @@
                         // log("Executing SDK startup delay");
                         // await new Promise(resolve => setTimeout(resolve,1_000));
 
+                        updateCanvasSize();
+                        textSize(20);
+                        textFamily("dm_sans");
+                        fill(255,255,255);
+                        text("Loading...",canvas.width/2-textWidth("Loading...")/2,canvas.height-20*2)
+
                         const { DiscordSDK } = window;
                         var sdk = false;
                         var ws = false;
@@ -304,30 +314,48 @@
                             log("Waiting for SDK dap...");
                             await sdk.ready();
                             log("SDK dapped ("+Math.floor(Math.random()*100)+"% resonant)");
-                            console.log(sdk.guildId + ", " + sdk.instanceId)
-                            if(sdk.guildId != "&&guildid" || sdk.instanceId != "&&instanceid") {
-                                err("Error verifying URL IDs.");
-                                return;
-                            }
-                            log("Verified URL IDs. Proceeding");
 
-                            log("Configuring SDK");
-                            sdk.commands.encourageHardwareAcceleration();
+                            // log("Commands: " + Object.keys(sdk.commands));
 
                         } else {
                             log ("(!) No SDK");
                             return;
                         }
 
+                        log("Fetching user");
+                        const { code } = await sdk.commands.authorize({
+                            client_id: "&&clientid",
+                            response_type: "code",
+                            scope: ["identify"],
+                            prompt: "none"
+                        });
+                        log("OAuth access token: " + code);
+                        const user = await (await fetch("/$mg/me", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: code,
+                        })).json();
+                        
+                        log("User: " + user.username);
+
+                        if(sdk.guildId != "&&guildid" || sdk.instanceId != "&&instanceid") {
+                            err("Error verifying URL IDs.");
+                            return;
+                        }
+                        log("Verified URL IDs. Proceeding");
+
+                        log("Configuring SDK");
+                        sdk.commands.encourageHardwareAcceleration();
+
                         if(Adapter) loadCanvas();
 
                         const r = await Adapter.report();
                         
-                        fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=&&userid&mobile=${"&&platform"!="desktop"}&data=${JSON.stringify(r)}`);
+                        fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=${user.id}&mobile=${"&&platform"!="desktop"}&data=${JSON.stringify(r)}`);
 
                     } catch(e) {
                         
-                        err(e);
+                        err(e.message ?? e);
                     
                     }
 

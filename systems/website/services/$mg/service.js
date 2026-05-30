@@ -106,28 +106,28 @@ module.exports = {
                     await new Promise(resolve => setTimeout(resolve,1000));
 
                     // Fetches user
-                    const users = u.sbdb.getGuildProperty(args.guild_id,"minigame.users");
-                    var user = users[req.headers["cf-connecting-ip"]] ?? "unknown";
-                    if(user == "unknown") for(let i = 0; i < Object.keys(users).length; i++) {
-                        if(Object.values(users)[i] == "unknown") {
-                            user = Object.keys(users)[i];
-                            break;
-                        }
-                    }
-                    if(user == "unknown") return {
-                        type: "text/html",
-                        msg: fs.readFileSync(hostedDir+"/$mg/lost.html"),
-                        code: 200
-                    };
+                    // const users = u.sbdb.getGuildProperty(args.guild_id,"minigame.users");
+                    // var user = users[req.headers["cf-connecting-ip"]] ?? "unknown";
+                    // if(user == "unknown") for(let i = 0; i < Object.keys(users).length; i++) {
+                    //     if(Object.values(users)[i] == "unknown") {
+                    //         user = Object.keys(users)[i];
+                    //         break;
+                    //     }
+                    // }
+                    // if(user == "unknown") return {
+                    //     type: "text/html",
+                    //     msg: fs.readFileSync(hostedDir+"/$mg/lost.html"),
+                    //     code: 200
+                    // };
 
                     // Adds you to the whitelist
-                    u.sbdb.updateGuildProperty(args.guild_id,`minigame.users.${user}`,req.headers["cf-connecting-ip"]);
+                    // u.sbdb.updateGuildProperty(args.guild_id,`minigame.users.${user}`,req.headers["cf-connecting-ip"]);
                     
                     // Fetches minigame ID
                     const id = u.sbdb.getGuildProperty(args.guild_id,"minigame.id");
 
                     // Crafts ambervars
-                    const member = await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(user);
+                    // const member = await (await u.cache.client.guilds.fetch(args.guild_id)).members.fetch(user);
                     const s = Math.floor(Math.random()*1000000000);
                     u.sbdb.updateGuildProperty(args.guild_id,"minigame.s",s);
                     const headers = {
@@ -136,7 +136,7 @@ module.exports = {
                         "wsip": u.adapter.chip?"wss://beetroot-ws.pyramidstudios.xyz":"wss://snakebot-ws.pyramidstudios.xyz",
                         "guildid": args.guild_id,
                         "instanceid": args.instance_id,
-                        "userid": member.user.id,
+                        // "userid": member.user.id,
                         // "displayname": member.user.displayName,
                         "script": fs.readFileSync(`${hostedDir}/$mg/all/${id}.js`),
                         "clientid": u.adapter.chip?u.adapter.config30.beetroot_client_id:u.adapter.config30.snakebot_client_id,
@@ -249,6 +249,48 @@ module.exports = {
                     msg: fs.readFileSync(u.cache.sbdir + "/assets/images/profile/pfp/pfp-gen3-2048-mono.png"),
                     code: 200
                 }
+
+
+            // case "/token":
+
+                
+                
+            
+            case "/me":
+
+                var body = "";
+                req.on("data", chunk => body += chunk);
+                req.on("error", e => {
+                    res.writeHead(400, { "Content-Type": "text/plain" });
+                    res.end(JSON.stringify(e.message ?? e,null,2));
+                });
+                await new Promise(resolve => req.on("end",resolve));
+                const code = body;
+
+                const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        client_id: u.adapter.chip ? u.adapter.config30.beetroot_client_id : u.adapter.config30.snakebot_client_id,
+                        client_secret: u.adapter.chip ? u.adapter.config30.beetroot_client_secret : u.adapter.config30.snakebot_client_secret,
+                        grant_type: "authorization_code",
+                        code,
+                        redirect_uri: "http://discord.com"
+                    })
+                });
+
+                const tokenData = await tokenResponse.json();
+
+                const userRes = await fetch("https://discord.com/api/users/@me", {
+                    headers: {
+                        Authorization: `Bearer ${tokenData.access_token}`
+                    }
+                });
+
+                const User = await userRes.json();
+
+                return JSON.stringify(User);
+                
 
 
             default:
