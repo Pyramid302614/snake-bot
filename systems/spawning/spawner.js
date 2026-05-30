@@ -86,7 +86,7 @@ async function checkGuild(id,overrideSpawnData) {
                 
 
                 spawnData.step = 1;
-                spawnData.next = await newNext(id,now,true);
+                if(spawnData.path.length == 1) spawnData.next += u.time.days(24); else spawnData.next = newNext(id,now,true);
                 spawnDataSync = true;
 
                 returnObject = {data:"Emerged",code:0};
