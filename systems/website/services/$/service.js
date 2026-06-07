@@ -218,6 +218,11 @@ ${spawnDatas.join("\n")}
 
 ~~~~~~~~~~~~~~~~~~~~~`;
 
+            // case "/webhook/"+u.adapter.config30.topgg_webhook:
+
+            //     fs.writeFileSync("topgg.txt","Event:"+JSON.stringify(req,null,2),"utf-8");
+            //     return "<g>";
+
             default: return {code:404};
 
         }

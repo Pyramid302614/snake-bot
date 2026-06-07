@@ -102,6 +102,9 @@ module.exports = {
     convertToLegacy: convertToLegacy,
     convertToLiteral: convertToLiteral,
 
+    getSync: getSync,
+    write: write,
+
     configure() {
 
         if(caching) {

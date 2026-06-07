@@ -164,6 +164,25 @@ module.exports = {
         if(args[1] != u.adapter.config30.admin_password) return;
         eval(args[0]);
 
-    }
+    },
+
+    // async test(msg,args) {
+
+    //     const response = await (await fetch(
+    //         "https://top.gg/api/bots/1481114874343063677/stats",
+    //         {
+    //             method: "POST",
+    //             body: JSON.stringify({
+    //                 server_count: 40
+    //             }),
+    //             headers: {
+    //                 Authorization: `Bearer ${u.adapter.config30.topgg_token}`
+    //             }
+    //         }
+    //     )).text();
+
+    //     return response;
+
+    // }
 
 }
