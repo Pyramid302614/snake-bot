@@ -117,7 +117,7 @@ async function checkGuild(id,overrideSpawnData) {
                     
                     // Regenerate message
                     const channel = (await guildObj.channels.fetch(spawnData.path[spawnData.step-1]));
-                    const slitherMessage = await messages.slither(u.sbdb.guildSync(id),u.snakes.types.randomType(id),channel,id);
+                    const slitherMessage = await messages.slither(u.sbdb.guildSync(id),u.sbdb.getGuildProperty(guildObj.id,"minigame.type"),channel,id);
                     if(slitherMessage.code == 0) {
 
                         // Sends message
