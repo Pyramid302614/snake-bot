@@ -6,6 +6,7 @@ module.exports = {
 
     getTypeData(name) {
 
+        if(name === "blank") return JSON.parse(fs.readFileSync(dataDir,"utf-8")).blank;
         return JSON.parse(fs.readFileSync(dataDir,"utf-8"))?.types?.[name];
 
     },
@@ -14,6 +15,7 @@ module.exports = {
         return getTypeDirectory(name) + "/image.png";
 
     },
+    dataDir: dataDir,
 
     // Returns { name, data }
     // randomType() {
@@ -43,7 +45,17 @@ module.exports = {
         if(!data?.types) return null;
 
         const now = Date.now();
+        const age = now - require("../../sbdb/sbdb.js").getGuildProperty(id,"addedTimestamp");
 
+        // Blank Snake
+        if(Math.random() <= data.blank.chance && data.blank.minAge < age) {
+            return {
+                name: "blank",
+                data: data.blank
+            };
+        }
+
+        // Regular Types
         for(var i = 0; i < Object.keys(data.types).length; i++) {
             
             const key = Object.keys(data.types)[i];
@@ -51,7 +63,7 @@ module.exports = {
             
             if(
                 (Math.random() <= value.chance) ||
-                ((now - require("../../sbdb/sbdb.js").getGuildProperty(id,"addedTimestamp")) < (Object.values(data.types)[i+1].minAge ?? 0))
+                (age < (Object.values(data.types)[i+1].minAge ?? 0))
             )
                 return {
                     name: key,

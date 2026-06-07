@@ -21,7 +21,7 @@ module.exports = {
             var value_ = Object.values(snakes)[i];
             var prettyName = u.snakes.types.getTypeData(key_).pretty;
 
-            options.push({
+            if(key_ != "blank") options.push({
                 label: `${prettyName} (Amount: ${value_})`,
                 value: key_
             });

@@ -1,5 +1,12 @@
 {
     "assetsdir": "images",
+
+    "blank": {
+        "pretty": "Blank Snake",
+        "chance": 0.01,
+        "minAge": 10
+    },
+
     "types": {
 
 

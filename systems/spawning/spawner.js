@@ -23,7 +23,7 @@ module.exports = {
 
 }
 
-async function checkGuild(id,overrideSpawnData) {
+async function checkGuild(id,overrideSpawnData,forceType) {
 
     if(!u.settings.get(id,"spawning.enabled")) return;
 
@@ -64,7 +64,7 @@ async function checkGuild(id,overrideSpawnData) {
 
                 // Generate message 
                 const channel = await guildObj.channels.fetch(spawnData.path[0]);
-                const type = u.snakes.types.randomType(id);
+                const type = forceType ? {name:forceType,data:u.snakes.types.getTypeData(forceType)} : u.snakes.types.randomType(id);
                 const emergeMessage = await messages.emerge(u.sbdb.guildSync(id),type,channel,id);
 
 
@@ -82,7 +82,7 @@ async function checkGuild(id,overrideSpawnData) {
 
                 } else
 
-                    return {data:"Failed to get random type",code:-1};
+                    return {data:"Failed to generate message:\n"+emergeMessage.data,code:-1};
                 
 
                 spawnData.step = 1;
