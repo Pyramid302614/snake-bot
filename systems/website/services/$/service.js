@@ -95,7 +95,8 @@ module.exports = {
 
                 (async () => {
                     
-                    if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return;
+                    // if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return;
+                    if(args.password != u.adapter.config30.admin_password) return;
 
                     const guild_id = args.guild_id;
                     const channel_id = args.channel_id;
@@ -144,8 +145,9 @@ ${JSON.stringify(u.sbdb.guildSync(guild_id),null,2)}
 
             case "/cleanup":
 
-                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return req.headers["cf-connecting-ip"];
-
+                // if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return req.headers["cf-connecting-ip"];
+                if(args.password != u.adapter.config30.admin_password) return;
+                
                 u.sbdb.fileWrites = false;
 
                 const removed = [];
@@ -167,8 +169,9 @@ ${JSON.stringify(u.sbdb.guildSync(guild_id),null,2)}
 
             case "/stats":
 
-                if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return req.headers["cf-connecting-ip"];
-
+                // if(req.headers["cf-connecting-ip"] != u.adapter.config30.pyshomecomputer) return req.headers["cf-connecting-ip"];
+                if(args.password != u.adapter.config30.admin_password) return;
+                
                 const existing = [];
                 const nonExisting = [];
                 const spawnDatas = [];
