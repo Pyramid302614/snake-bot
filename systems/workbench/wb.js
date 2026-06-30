@@ -1,6 +1,8 @@
 const stationNames = [
     "Home", // Never displayed
-    "Snake Shard Crafting"
+    "Snake Shard Crafting",
+    "Blank Snakes",
+    "Pets"
 ];
 
 
@@ -26,9 +28,17 @@ function getContainer(interaction,station,stations,dels) {
             return require("./stations/home.js").container(interaction,station,stations,dels);
 
         case 1:
-            return require("./stations/shardCrafting.js").container(interaction,station,stations,dels)
+            return require("./stations/shardCrafting.js").container(interaction,station,stations,dels);
+
+        case 2:
+            return require("./stations/blankSnakeAdoption.js").container(interaction,station,stations,dels);
+
+        case 3:
+            return require("./stations/petEditting.js").container(interaction,station,stations,dels);
 
     }
+
+    
 
 }
 

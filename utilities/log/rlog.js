@@ -11,7 +11,7 @@ module.exports = {
         const m = msg.content.slice(msg.content.split(".")[0].length+1);
 
         const cmd = m.split(":")[0];
-        const args = (m.split(":").length == 1)?[]:(m.slice(m.split(":")[0].length+1)).split(",");
+        const args = (m.split(":").length == 1)?[]:(m.slice(m.split(":")[0].length+1)).split(",,");
 
         for(let i = 0; i < args.length; i++) {
             args[i] = await parseValue(args[i]); // Is it still Theseus's ship?

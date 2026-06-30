@@ -166,6 +166,12 @@ module.exports = {
 
     },
 
+    async catch(msg,args) {
+
+        fetch(`https://${u.adapter.chip?"beetroot":"snakebot"}.pyramidstudios.xyz/$mg/report?guild_id=${msg.guild.id}&s=${u.sbdb.getGuildProperty(msg.guild.id,"minigame.s")}&user_id=${msg.author.id}&mobile=false&data=[0,0,0,0,0,0,0]`);
+
+    }
+
     // async test(msg,args) {
 
     //     const response = await (await fetch(

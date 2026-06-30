@@ -5,6 +5,7 @@ const u = require("../../../../u");
 
 const fs = require("fs");
 const { args } = require("../../../../utilities/url");
+const { ContainerBuilder, TextDisplayBuilder, MessageFlags } = require("discord.js");
 
 var proxy = null;
 
@@ -235,6 +236,36 @@ module.exports = {
                     u.sbdb.updateGuildProperty(args.guild_id,"spawning.step",-1);
                     await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+user_id+".snakes."+type.name,(u.sbdb.getGuildProperty(args.guild_id,"inventories."+user_id+".snakes."+type.name)??0)+amount);
                     await u.sbdb.updateGuildProperty(args.guild_id,"inventories."+user_id+".socialCredit",(u.sbdb.getGuildProperty(args.guild_id,"inventories."+user_id+".socialCredit")??0)+socialCreditAmount);
+
+                    if(type.name == "blank") {
+
+                        if(!u.sbdb.getGuildProperty(guild.id,"DSAMs."+user_id+".blankSnakeCatch")) {
+
+                            u.sbdb.updateGuildProperty(guild.id,"DSAMs."+user_id+".blankSnakeCatch",true);
+                            (await guild.members.cache.get(user_id) ?? guild.members.fetch(user_id)).send({
+                                components: [
+                                    new ContainerBuilder()
+                                        .addTextDisplayComponents(
+                                            new TextDisplayBuilder()
+                                                .setContent(
+`### Wow :o
+You have caught your first **blank snake**!
+
+### What is that?
+A blank snake is essentially a potential **pet**,
+where if you apply snake shards of any type in any order in \`/wb\`,
+you can make your own custom **pet snake** to show off in
+your inventory!`
+                                                )
+                                        )
+                                        .setAccentColor([255,255,255]) // blanco
+                                ],
+                                flags: [MessageFlags.IsComponentsV2]
+                            });
+
+                        }
+
+                    }
 
                 } catch(ignored) {
                     console.log(ignored);
