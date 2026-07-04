@@ -96,5 +96,7 @@
             "shardPretty": "No logner obtainable > Angry Shard",
             "chance": 0
         }
-    }
+    },
+
+    "discontinued": ["strange","angry"]
 }

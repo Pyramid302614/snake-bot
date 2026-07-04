@@ -23,6 +23,19 @@ module.exports = {
         var type = interaction.options.getString("type")?.toLowerCase?.() ?? undefined;
         if(type) {
             const typeFile = JSON.parse(require("fs").readFileSync(u.snakes.types.dataDir,"utf-8"));
+            if(typeFile.discontinued.includes(type)) {
+                return interaction.reply({
+                    components: [
+                        new ContainerBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder()
+                                    .setContent("### :(\nThat type is no longer obtainable, and has been discontinued.")
+                            )
+                            .setAccentColor(u.color.rgb("#8c00ff"))
+                    ],
+                    flags: [MessageFlags.Ephemeral,MessageFlags.IsComponentsV2]
+                });
+            }
             var discovered = false;
             typeFile.types.blank = typeFile.blank;
             for(const snake of Object.keys(typeFile.types)) {
