@@ -161,7 +161,10 @@ module.exports = {
 
             case "/report":
 
-                if(args.s != u.sbdb.getGuildProperty(args.guild_id,"minigame.s") + "") return "<g>";
+                if(args.s != u.sbdb.getGuildProperty(args.guild_id,"minigame.s") + "") {
+                    console.log("bad s: " + Date.now());
+                    return "<g>";
+                }
 
                 try {
 
