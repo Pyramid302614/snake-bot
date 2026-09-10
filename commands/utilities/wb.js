@@ -20,12 +20,7 @@ module.exports = {
             stations.push({});
         }
         
-        const msg = await interaction.reply({
-            components: [
-                wb.getContainer(interaction,0,stations,[])
-            ],
-            flags: [MessageFlags.IsComponentsV2,MessageFlags.Ephemeral]
-        });
+        const msg = await interaction.reply(wb.getMessage(interaction,0,stations,[],{flags:[MessageFlags.Ephemeral]}));
 
     }
 

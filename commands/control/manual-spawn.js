@@ -100,6 +100,7 @@ To see your added channels, run \`/settings\``
             step: 0, // 0 = waiting to emerge
             msgId: null // Set later
         },type??undefined);
+        console.log(response);
         const ok = response.code >= 0;
 
         if(!silent) await interaction.editReply({

@@ -5,7 +5,7 @@ const pets = require("../../pets/pets.js");
 
 module.exports = {
  
-    container(interaction,station,stations,dels) {
+    async container(interaction,station,stations,dels) {
 
 
         const blanks = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.snakes.blank`) ?? 0;
@@ -28,7 +28,7 @@ module.exports = {
 
         return new ContainerBuilder()
 
-            .addActionRowComponents(wb.fetchToolbar(interaction,station,stations,dels))
+            .addActionRowComponents(await wb.fetchToolbar(interaction,station,stations,dels))
             .addSeparatorComponents(new SeparatorBuilder())
             .addTextDisplayComponents(
                 new TextDisplayBuilder()
@@ -108,7 +108,7 @@ async function success(interaction,station,stations,dels) {
                 editting: stations[station].index
             };
             await b_interaction.update({ // Redirects to station 3 (Pet Editting)
-                components: [require("../wb.js").getContainer(b_interaction,3,stations,dels)]
+                components: [await wb.getMessage(b_interaction,3,stations,dels)]
             });
 
         },

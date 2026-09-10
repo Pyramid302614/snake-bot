@@ -15,63 +15,63 @@
             "shardPretty": "Regular Shard",
             "chance": 0.40,
             "minAge": 0,
-            "imprints": ["color:body","color:tongue","color:eyes"]
+            "imprints": ["body","tongue","eyes"]
         },
         "rare": {
             "pretty": "Rare Snake",
             "shardPretty": "Rare Shard",
             "chance": 0.40,
             "minAge": 0,
-            "imprints": ["color:body","color:tongue","color:eyes"]
+            "imprints": ["body","tongue","eyes"]
         },
         "silly": {
             "pretty": "Silly Snake",
             "shardPretty": "Silly Shard",
             "change": 0.40,
             "minAge": 0,
-            "imprints": ["eyes","tongue","color:body","color:tongue","color:eyes"]
+            "imprints": ["eyes","tongue","body"]
         },
         "coral": {
             "pretty": "Coral Snake",
             "shardPretty": "Coral Shard",
             "chance": 0.40,
             "minAge": 0,
-            "imprints": ["body","color:body","color:tongue","color:eyes"]
+            "imprints": ["body","tongue","eyes"]
         },
         "fire": {
             "pretty": "Fire Snake",
             "shardPretty": "Fire Shard",
             "chance": 0.40,
             "minAge": 1,
-            "imprints": ["fire","color:body","color:eyes","color:tongue"]
+            "imprints": ["body","eyes","tongue"]
         },
         "pine": {
             "pretty": "Pine Snake",
             "shardPretty": "Pine Shard",
             "chance": 0.40,
             "minAge": 5,
-            "imprints": ["body","color:body","color:tongue","color:eyes"]
+            "imprints": ["body","tongue","eyes"]
         },
         "happy": {
             "pretty": "Happy Snake",
             "shardPretty": "Happy Shard",
             "chance": 0.50,
             "minAge": 10,
-            "imprints": ["eyes","color:body","color:tongue","color:eyes"]
+            "imprints": ["eyes","body","tongue"]
         },
         "sloppy": {
             "pretty": "Sloppy Snake",
             "shardPretty": "Sloppy Shard",
             "chance": 0.70,
             "minAge": 20,
-            "imprints": ["sloppy","color:body","color:tongue","color:eyes"]
+            "imprints": ["body","tongue","eyes"]
         },
         "squared": {
             "pretty": "Snake²",
             "shardPretty": "Shard²",
             "chance": 0.80,
             "minAge": 50,
-            "imprints": ["glow","color:body","color:eyes","color:tongue"]
+            "imprints": ["glow","body","eyes","tongue"]
         },
         
         "golden": {
@@ -79,7 +79,7 @@
             "shardPretty": "Golden Shard",
             "chance": 1,
             "minAge": 100,
-            "imprints": ["glow","color:body","color:eyes","color:tongue"]
+            "imprints": ["glow","body","eyes","tongue"]
         },
 
 
@@ -95,7 +95,16 @@
             "pretty": "No longer obtainable > Angry Snake",
             "shardPretty": "No logner obtainable > Angry Shard",
             "chance": 0
+        },
+
+        "null": {
+            "pretty": "Null Snake",
+            "shardPretty": "Null Shard",
+            "chance": 0,
+            "minAge": 0,
+            "imprints": []
         }
+
     },
 
     "discontinued": ["strange","angry"]

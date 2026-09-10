@@ -15,26 +15,26 @@ module.exports = {
     fetchToolbar: fetchToolbar,
     homeButton: homeButton,
     stationButton: stationButton,
-    getContainer: getContainer
+    getMessage: getMessage
 
 };
 
 // Gets message elements for station
-function getContainer(interaction,station,stations,dels) {
+async function getContainer(interaction,station,stations,dels,data) {
 
     switch(station) {
 
         case 0:
-            return require("./stations/home.js").container(interaction,station,stations,dels);
+            return await require("./stations/home.js").container(interaction,station,stations,dels,data);
 
         case 1:
-            return require("./stations/shardCrafting.js").container(interaction,station,stations,dels);
+            return await require("./stations/shardCrafting.js").container(interaction,station,stations,dels,data);
 
         case 2:
-            return require("./stations/blankSnakeAdoption.js").container(interaction,station,stations,dels);
+            return await require("./stations/blankSnakeAdoption.js").container(interaction,station,stations,dels,data);
 
         case 3:
-            return require("./stations/petEditting.js").container(interaction,station,stations,dels);
+            return await require("./stations/petEditting.js").container(interaction,station,stations,dels,data);
 
     }
 
@@ -43,13 +43,13 @@ function getContainer(interaction,station,stations,dels) {
 }
 
 // Gives components array with buttons based on station
-function fetchToolbar(interaction,station,stations,dels) {
+async function fetchToolbar(interaction,station,stations,dels) {
 
     const toolbarComponents = [
-        homeButton(interaction,station,stations,dels).data
+        (await homeButton(interaction,station,stations,dels)).data
     ];
     for(let i = 1; i < stationNames.length; i++) { // i = 1 to exlude home station
-        toolbarComponents.push(stationButton(interaction,i,stations,dels).data);
+        toolbarComponents.push((await stationButton(interaction,i,stations,dels)).data);
     }
     return [{
 
@@ -61,7 +61,7 @@ function fetchToolbar(interaction,station,stations,dels) {
 }
 
 // Back button (Returns msgelem)
-function homeButton(interaction,station,stations,dels) {
+async function homeButton(interaction,station,stations,dels) {
 
     const disabled = station == 0;
 
@@ -73,10 +73,7 @@ function homeButton(interaction,station,stations,dels) {
         async (del,interaction,data) => {
             for(const Del of dels) Del();
             dels = [];
-            await interaction.update({
-                components: [getContainer(interaction,0,stations,dels)],
-                flags: [MessageFlags.IsComponentsV2]
-            });
+            await interaction.update(await getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
     );
@@ -87,25 +84,34 @@ function homeButton(interaction,station,stations,dels) {
 
 // Gets msgelem of station button
 // Station is # not name btw
-function stationButton(interaction,station,stations,dels) {
+async function stationButton(interaction,station,stations,dels) {
 
     const obj = u.msgelem.messageElement(
         new ButtonBuilder()
             .setLabel(stationNames[station] ?? "?")
             .setStyle(ButtonStyle.Secondary),
-        async (del,interaction,data) => {
+        async (del,interaction) => {
             for(const Del of dels) Del();
             dels = [];
-            await interaction.update({
-                components: [
-                    getContainer(interaction,station,stations,dels)
-                ],
-                flags: [MessageFlags.IsComponentsV2]
-            });
+            await interaction.update(await getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
     );
     dels.push(obj.del);
     return obj;
 
+}
+
+async function getMessage(interaction,station,stations,dels,Data) {
+    Data = Data ?? {};
+    const data = {};
+    const container = await getContainer(interaction,station,stations,dels,data);
+    const flags = [MessageFlags.IsComponentsV2]; for(const flag of Data.flags ?? []) flags.push(flag);
+    return {
+        components: [
+            container
+        ],
+        files: data.files ?? [],
+        flags: flags
+    };
 }

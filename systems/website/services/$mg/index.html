@@ -72,31 +72,56 @@
                     log("Fetched adapter!");//\n" + JSON.stringify(Adapter,null,2));
                 }
                 
+                var strokeOn = false;
+                var fillOn = true;
                 function fill(r,g_,b,a) {
+                    fillOn = true;
                     if(a !== undefined) g.fillStyle = `rgba(${r},${g_},${b},${Math.round(a/255*100)/100})`;
                     else g.fillStyle = `rgb(${r},${g_},${b})`;
                 }
                 function noFill() {
-                    // idek
+                    strokeOn = false;
+                    g.fillStyle = `rgba(0,0,0,0)`;
+                    // "idek" - here lies the comment that used made up the entirety of this function since alpha+1.0.0 and someone worked :sob:
+                }
+                function stroke(r,g_,b,a) {
+                    strokeOn = true;
+                    g.strokeStyle = `rgba(${r},${g_},${b},${Math.round(a/255*100)/100}`;
                 }
                 function noStroke() {
-                
+                    strokeOn = false;
+                    g.strokeStyle = `rgba(0,0,0,0)`;
+                }
+                function strokeWeight(num) {
+                    g.lineWidth = num;
                 }
                 function rect(x,y,w,h,r) {
-                    if(!r) g.fillRect(x,y,w,h);
-                    else {
+                    if(!r) {
+                        if(strokeOn) g.strokeRect(x,y,w,h);
+                        if(fillOn) g.fillRect(x,y,w,h);
+                    } else {
                         g.beginPath();
                         g.roundRect(x,y,w,h,r);
-                        g.fill();
+                        if(strokeOn) g.stroke();
+                        if(fillOn) g.fill();
                     }
                 }
                 function ellipse(x,y,w,h) {
                     g.beginPath();
                     g.ellipse(x,y,w/2,h/2,0,0,Math.PI*2);
-                    g.fill();
+                    if(strokeOn) g.stroke();
+                    if(fillOn) g.fill();
+                }
+                function line(x1,y1,x2,y2) {
+                    g.beginPath();
+                    g.moveTo(x1,y1);
+                    g.lineTo(x2,y2);
+                    if(strokeOn) g.stroke();
+                    if(fillOn) g.fill();
                 }
                 function text(t,x,y) {
-                    g.fillText(t,x,y);
+                    if(strokeOn) g.strokeText(t,x,y);
+                    if(fillOn) g.fillText(t,x,y);
                 }
                 var fontSize = 12;
                 var fontFamily = "Arial";
@@ -286,7 +311,7 @@
                             const opacity = (now-startupCompletedTimestamp)/2_000;
                             fill(0,0,0,255-opacity*255);
                             document.body.style.backgroundColor = `rgb(${(Adapter.background[0]-(Adapter.background[0]-(255/2))/5)*opacity},${(Adapter.background[1]-(Adapter.background[1]-(255/2))/5)*opacity},${(Adapter.background[2]-(Adapter.background[2]-(255/2))/5)*opacity})`;
-                            rect(0,0,Adapter.canvas[0],Adapter.canvas[1]);
+                            rect(0,0,canvas.width,canvas.height);
                         }
                     } ,1000/Adapter.frameRate);
 
@@ -351,7 +376,13 @@
 
                         const r = await Adapter.report();
                         
-                        fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=${user.id}&mobile=${"&&platform"!="desktop"}&data=${JSON.stringify(r)}`);
+                        await fetch(`/$mg/report?guild_id=&&guildid&s=&&s_&user_id=${user.id}&mobile=${"&&platform"!="desktop"}&data=${JSON.stringify(r)}`);
+
+                        await new Promise(resolve => setTimeout(resolve,5000));
+
+                        setInterval(() => {
+                            text("You may close this activity now.",canvas.width-text,canvas.height);
+                        },60);
 
                     } catch(e) {
                         

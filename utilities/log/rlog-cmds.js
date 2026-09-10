@@ -1,3 +1,4 @@
+const { AttachmentBuilder } = require("discord.js");
 const u = require("../../u.js");
 const LOG = require("./log");
 
@@ -169,6 +170,23 @@ module.exports = {
     async catch(msg,args) {
 
         fetch(`https://${u.adapter.chip?"beetroot":"snakebot"}.pyramidstudios.xyz/$mg/report?guild_id=${msg.guild.id}&s=${u.sbdb.getGuildProperty(msg.guild.id,"minigame.s")}&user_id=${msg.author.id}&mobile=false&data=[0,0,0,0,0,0,0]`);
+
+    },
+
+    async render_pet(msg,args) {
+
+        const image = new AttachmentBuilder(await require("../../systems/pets/render.js").render(args[0]),{ name: `pet.png` });;
+
+        return {
+            raw: true,
+            files: [image]
+        };
+
+    },
+
+    async pet_chars(msg,args) {
+
+        return require("../../systems/pets/pets.js").getCharacteristics(args);
 
     }
 
