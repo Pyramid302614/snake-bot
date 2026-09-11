@@ -7,7 +7,7 @@
    viewBox="0 0 211.66669 158.7496"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
    sodipodi:docname="eyes.svg"
    inkscape:export-filename="squared.png"
    inkscape:export-xdpi="96"
@@ -928,8 +928,8 @@
      id="rect1"
      width="196.52803"
      height="146.84398"
-     x="-22.817862"
-     y="-5.8886986" />
+     x="-15.938688"
+     y="-1.655365" />
   <g
      inkscape:label="py was here"
      inkscape:groupmode="layer"
@@ -937,15 +937,15 @@
     <circle
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.65453;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="path59"
-       cx="64.197464"
-       cy="62.781189"
+       cx="71.076637"
+       cy="67.014526"
        r="3.912431"
        inkscape:label="eye-left" />
     <circle
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.65453;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="path59-1"
-       cx="92.369164"
-       cy="62.72282"
+       cx="99.248337"
+       cy="66.956154"
        r="3.912431"
        inkscape:label="eye-right" />
   </g>

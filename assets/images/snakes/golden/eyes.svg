@@ -7,7 +7,7 @@
    viewBox="0 0 211.66683 185.20787"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
    sodipodi:docname="eyes.svg"
    inkscape:export-filename="golden.png"
    inkscape:export-xdpi="96"
@@ -27,7 +27,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="0.71891836"
-     inkscape:cx="456.24095"
+     inkscape:cx="340.78974"
      inkscape:cy="284.45511"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -914,32 +914,6 @@
          style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.20649;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="M 30.914392,23.968045 V 41.449147 H 48.304028 V 23.968045 Z m 5.709729,2.306836 c 1.200568,0.02288 2.774201,0.352417 4.812107,1.262454 6.162119,2.751725 5.556768,7.816577 5.556768,7.816577 l -1.012343,-0.0186 -0.772562,-0.105936 -0.406694,-0.113689 -0.837673,0.04858 -0.64234,-0.09767 -0.715716,-0.194821 -1.203545,-0.430982 -0.902787,-0.390673 -0.789099,-0.414446 -0.568957,-0.374137 -0.439251,-0.365868 -0.195337,-0.03256 -0.130225,-0.05684 -0.430982,-0.24443 -0.951362,-0.747758 -1.154452,-0.797369 -0.732255,-0.577223 -0.406694,-0.382408 -0.471289,-0.528651 -0.293005,-0.438732 -0.414962,-0.715716 -0.37362,-0.715719 c 0,0 0.835022,-1.433722 3.476275,-1.383379 z" />
     </mask>
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
-       id="filter3-4"
-       x="-0.30451623"
-       y="-1.2286384"
-       width="1.6090325"
-       height="3.4572767">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="19.184179"
-         id="feGaussianBlur3-8" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       style="color-interpolation-filters:sRGB"
-       id="filter5"
-       x="-0.15771965"
-       y="-0.63635495"
-       width="1.3154393"
-       height="2.2727099">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="9.9361598"
-         id="feGaussianBlur5" />
-    </filter>
     <mask
        maskUnits="userSpaceOnUse"
        id="mask6">
@@ -961,38 +935,18 @@
      inkscape:label="py was here"
      inkscape:groupmode="layer"
      id="layer1">
-    <ellipse
-       style="opacity:0.774734;mix-blend-mode:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.26907;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;filter:url(#filter5)"
-       id="path3"
-       cx="123.9771"
-       cy="84.542625"
-       rx="75.598648"
-       ry="18.737015"
-       transform="matrix(0.66989127,0.07706307,-0.07567001,0.84887322,53.441622,51.268783)"
-       inkscape:label="shadow" />
-    <ellipse
-       style="opacity:0.774734;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.26907;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;filter:url(#filter3-4)"
-       id="path3-4"
-       cx="123.9771"
-       cy="84.542625"
-       rx="75.598648"
-       ry="18.737015"
-       transform="matrix(0.44083561,-0.02896799,0.02179854,0.33173081,17.529687,95.453144)"
-       inkscape:transform-center-x="-6.2565034"
-       inkscape:transform-center-y="3.6802988"
-       inkscape:label="shadow" />
     <circle
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.65453;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="path59"
        cx="70.80484"
-       cy="78.488586"
+       cy="79.546921"
        r="3.912431"
        inkscape:label="eye-left" />
     <circle
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.65453;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="path59-1"
        cx="98.976532"
-       cy="78.430214"
+       cy="79.488548"
        r="3.912431"
        inkscape:label="eye-right" />
   </g>

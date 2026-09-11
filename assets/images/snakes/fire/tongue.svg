@@ -7,7 +7,7 @@
    viewBox="0 0 158.75012 142.87458"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
    sodipodi:docname="tongue.svg"
    inkscape:export-filename="fire.png"
    inkscape:export-xdpi="96"
@@ -28,7 +28,7 @@
      inkscape:document-units="px"
      inkscape:zoom="0.71891836"
      inkscape:cx="168.3084"
-     inkscape:cy="159.26704"
+     inkscape:cy="47.988759"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -988,7 +988,7 @@
        id="path-1"
        style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#f5d600;stroke-width:1.78609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        mask="url(#mask1)"
-       transform="matrix(1.7574141,0,0,1.7574141,-26.100169,18.8682)"
+       transform="matrix(1.7574141,0,0,1.7574141,-26.100169,15.693198)"
        inkscape:label="tongue" />
   </g>
 </svg>

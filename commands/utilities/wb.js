@@ -20,7 +20,7 @@ module.exports = {
             stations.push({});
         }
         
-        const msg = await interaction.reply(wb.getMessage(interaction,0,stations,[],{flags:[MessageFlags.Ephemeral]}));
+        await interaction.reply(await wb.getMessage(interaction,0,stations,[],{flags:[MessageFlags.Ephemeral]}));
 
     }
 

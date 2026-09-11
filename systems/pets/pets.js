@@ -43,13 +43,24 @@ module.exports = {
 
     },
 
-    async renderPet(guildId,userId,index) {
+    async renderPet(guildId,userId,index,draft) {
 
         return await require("./render.js").render(
             this.getCharacteristics(
                 require("./pets.js").getPet(guildId,userId,index).shards
-            )
+            ),
+            draft
         );
+
+    },
+    async renderTheoreticalPet(shards,draft) {
+
+        return await require("./render.js").render(
+            this.getCharacteristics(
+                shards
+            ),
+            draft
+        );        
 
     },
 
@@ -59,7 +70,7 @@ module.exports = {
         const characteristics = [];
         const takenImprints = [];
 
-        const requirements = ["color:body","color:tongue","color:eyes"];
+        const requirements = ["body","tongue","eyes"];
 
         for(var lapses = 0; true; lapses++) {
 

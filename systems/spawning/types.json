@@ -64,7 +64,7 @@
             "shardPretty": "Sloppy Shard",
             "chance": 0.70,
             "minAge": 20,
-            "imprints": ["body","tongue","eyes"]
+            "imprints": []
         },
         "squared": {
             "pretty": "Snake²",

@@ -1,4 +1,4 @@
-const { ContainerBuilder, SeparatorBuilder, TextDisplayBuilder, SectionBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, StringSelectMenuBuilder, AttachmentBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder } = require("discord.js")
+const { ContainerBuilder, SeparatorBuilder, TextDisplayBuilder, SectionBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, StringSelectMenuBuilder, AttachmentBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder, FileBuilder } = require("discord.js")
 const wb = require("../wb")
 const pets = require("../../pets/pets");
 const u = require("../../../u");
@@ -23,12 +23,25 @@ async function editting(interaction,station,stations,dels,data) {
     const allUsedShards = []; pets.allPets().forEach(i => allUsedShards.push(i.shards));
     const shards = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.shards`);
 
+    // Shards: pet.shards (real)  -  stations[station].shards (draft)  -  shards (inv)
+
+    
     if(!stations[station].shards) stations[station].shards = pet.shards ?? [];
     const selected = stations[station].shards;
     var availableShards = [];
     for(const shard of Object.keys(shards)) if(!allUsedShards.includes(shard) && !selected.includes(shard)) availableShards.push(shard);
     const options = availableShards.map(i => ({ label: u.snakes.types.getTypeData(i).shardPretty, value: i }));
     options.push({ label: "None", value: "none" });
+
+
+    var draft = false;
+    for(var i = 0; i < pet?.shards?.length ?? 0; i++) {
+        if((stations[station]?.shards ?? [])?.[i] != pet?.shards?.[i]) {
+            draft = true;
+            break;
+        }
+    }
+
 
     const returnToList = u.msgelem.messageElement(
         new ButtonBuilder()
@@ -92,7 +105,7 @@ async function editting(interaction,station,stations,dels,data) {
             dels = [];
             pet.shards = [];
             await pets.editPet(interaction.guild.id,interaction.user.id,stations[station].editting,"shards",`object:["${stations[station].shards.join("\",\"")}"]`);
-            stations[station] = {};
+            stations[station] = {editting:stations[station].editting};
             b_interaction.update(await wb.getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
@@ -117,10 +130,13 @@ async function editting(interaction,station,stations,dels,data) {
     dels.push(imprint.del);
     dels.push(revert.del);
 
-    const render = await pets.renderPet(interaction.guild.id,interaction.user.id,stations[station].editting);
-    const attachment = new AttachmentBuilder().setFile(render).setName("render").setDescription("Render");
+    const renderShards = stations[station].shards;
+    for(var i = 0; i < renderShards.length; i++) {
+        if(typeof renderShards[i] !== "string") renderShards[i] = "none";
+    } // Prevents <1 blank item>
+    const render = await pets.renderTheoreticalPet(renderShards,draft);
+    const attachment = new AttachmentBuilder().setFile(render).setName("render.png").setDescription("Render"); // ig we are just assuming PNG type?
     data.files = [attachment];
-    console.log(attachment);
 
     return new ContainerBuilder()
 
@@ -135,7 +151,7 @@ async function editting(interaction,station,stations,dels,data) {
             new MediaGalleryBuilder()
                 .addItems(
                     new MediaGalleryItemBuilder()
-                        .setURL("attachment://render")
+                        .setURL("attachment://render.png")
                         .setDescription("Render")
                 )
         )

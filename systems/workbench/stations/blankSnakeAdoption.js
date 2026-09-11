@@ -107,9 +107,7 @@ async function success(interaction,station,stations,dels) {
             stations[3] = {
                 editting: stations[station].index
             };
-            await b_interaction.update({ // Redirects to station 3 (Pet Editting)
-                components: [await wb.getMessage(b_interaction,3,stations,dels)]
-            });
+            await b_interaction.update(await wb.getMessage(b_interaction,3,stations,dels));
 
         },
         [interaction.user.id]

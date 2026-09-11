@@ -70,10 +70,10 @@ async function homeButton(interaction,station,stations,dels) {
             .setLabel("< Home")
             .setStyle(ButtonStyle.Danger)
             .setDisabled(disabled),
-        async (del,interaction,data) => {
+        async (del,b_interaction,data) => {
             for(const Del of dels) Del();
             dels = [];
-            await interaction.update(await getMessage(interaction,station,stations,dels));
+            await b_interaction.update(await getMessage(b_interaction,station,stations,dels));
         },
         [interaction.user.id]
     );
@@ -90,10 +90,10 @@ async function stationButton(interaction,station,stations,dels) {
         new ButtonBuilder()
             .setLabel(stationNames[station] ?? "?")
             .setStyle(ButtonStyle.Secondary),
-        async (del,interaction) => {
+        async (del,b_interaction) => {
             for(const Del of dels) Del();
             dels = [];
-            await interaction.update(await getMessage(interaction,station,stations,dels));
+            await b_interaction.update(await getMessage(b_interaction,station,stations,dels));
         },
         [interaction.user.id]
     );

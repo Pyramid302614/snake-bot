@@ -9,7 +9,7 @@ const order = [
 
 module.exports = {
 
-    async render(imprintData) { // imprintData: expects {type:x,char:x}
+    async render(imprintData,draft) { // imprintData: expects {type:x,char:x}
 
         const canvas = createCanvas(800,700);
         const g = canvas.getContext("2d");
@@ -36,6 +36,15 @@ module.exports = {
 
             }
 
+        }
+
+        if(draft) {
+            g.strokeStyle = "rgba(255,255,255,125)";
+            g.lineWidth = 4;
+            g.strokeRect(20,20,canvas.width-40,canvas.height-40);
+            g.fillStyle = "white";
+            g.font = "40px Arial";
+            g.fillText("PREVIEW",40,40+g.measureText("PREVIEW").actualBoundingBoxAscent);
         }
 
         return canvas.toBuffer();

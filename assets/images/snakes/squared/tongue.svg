@@ -7,7 +7,7 @@
    viewBox="0 0 211.66669 158.7496"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
    sodipodi:docname="tongue.svg"
    inkscape:export-filename="squared.png"
    inkscape:export-xdpi="96"
@@ -939,7 +939,7 @@
        id="path-1"
        style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#00f528;stroke-width:1.78609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        mask="url(#mask1)"
-       transform="matrix(1.7574141,0,0,1.7574141,-5.1224718,20.935137)"
+       transform="matrix(1.7574141,0,0,1.7574141,1.7566954,25.168473)"
        inkscape:label="tongue" />
   </g>
 </svg>
