@@ -19,24 +19,30 @@ module.exports = {
 
 async function editting(interaction,station,stations,dels,data) {
 
+    var selected = stations[station].shards;
+
     const pet = pets.getPet(interaction.guild.id,interaction.user.id,stations[station].editting);
-    const allUsedShards = []; pets.allPets().forEach(i => allUsedShards.push(i.shards));
     const shards = u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.shards`);
 
-    // Shards: pet.shards (real)  -  stations[station].shards (draft)  -  shards (inv)
+    
+    if(selected === undefined) selected = pet?.shards?.slice?.() ?? [];
+    for(const shard of selected) shards[shard]--;
+
+    // Shards: pet.shards (real)  -  selected (draft)  -  shards (inv)
 
     
-    if(!stations[station].shards) stations[station].shards = pet.shards ?? [];
-    const selected = stations[station].shards;
-    var availableShards = [];
-    for(const shard of Object.keys(shards)) if(!allUsedShards.includes(shard) && !selected.includes(shard)) availableShards.push(shard);
-    const options = availableShards.map(i => ({ label: u.snakes.types.getTypeData(i).shardPretty, value: i }));
-    options.push({ label: "None", value: "none" });
-
+    const options = [];
+    Object.keys(shards).forEach(i => {
+        if(shards[i] > 0) options.push({
+            label: u.snakes.types.getTypeData(i).shardPretty + " (Available: " + shards[i] + ")",
+            value: i
+        });
+    });
+    options.push({ label: "None", value: "none" }); // Also makes sure list is always 1 in length
 
     var draft = false;
-    for(var i = 0; i < pet?.shards?.length ?? 0; i++) {
-        if((stations[station]?.shards ?? [])?.[i] != pet?.shards?.[i]) {
+    for(var i = 0; i < 3; i++) {
+        if(selected?.[i] != pet?.shards?.[i]) {
             draft = true;
             break;
         }
@@ -62,11 +68,12 @@ async function editting(interaction,station,stations,dels,data) {
     const shardA = u.msgelem.messageElement(
         new StringSelectMenuBuilder()
             .addOptions(options)
-            .setPlaceholder(selected[0] ? (selected[0] == "none" ? "None" : u.snakes.types.getTypeData(selected[0]).shardPretty) : "( ! ) Selected Shard A"),
+            .setPlaceholder(selected[0] ? (selected[0] == "none" ? "None" : ((pet?.shards?.[0] == selected[0] ? "" : "*") + u.snakes.types.getTypeData(selected[0]).shardPretty)) : "( ! ) Selected Shard A"),
         async (del,b_interaction,d) => {
             for(const Del of dels) Del();
             dels = [];
             selected[0] = b_interaction.values[0];
+            stations[station].shards = selected;
             b_interaction.update(await wb.getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
@@ -74,11 +81,12 @@ async function editting(interaction,station,stations,dels,data) {
     const shardB = u.msgelem.messageElement(
         new StringSelectMenuBuilder()
             .addOptions(options)
-            .setPlaceholder(selected[1] ? (selected[1] == "none" ? "None" : u.snakes.types.getTypeData(selected[1]).shardPretty) : "( ! ) Selected Shard B"),
+            .setPlaceholder(selected[1] ? (selected[1] == "none" ? "None" : ((pet?.shards?.[1] == selected[1] ? "" : "*") + u.snakes.types.getTypeData(selected[1]).shardPretty)) : "( ! ) Selected Shard B"),
         async (del,b_interaction,d) => {
             for(const Del of dels) Del();
             dels = [];
             selected[1] = b_interaction.values[0];
+            stations[station].shards = selected;
             b_interaction.update(await wb.getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
@@ -86,11 +94,12 @@ async function editting(interaction,station,stations,dels,data) {
     const shardC = u.msgelem.messageElement(
         new StringSelectMenuBuilder()
             .addOptions(options)
-            .setPlaceholder(selected[2] ? (selected[2] == "none" ? "None" : u.snakes.types.getTypeData(selected[2]).shardPretty) : "( ! ) Selected Shard C"),
+            .setPlaceholder(selected[2] ? (selected[2] == "none" ? "None" : ((pet?.shards?.[2] == selected[2] ? "" : "*") + u.snakes.types.getTypeData(selected[2]).shardPretty)) : "( ! ) Selected Shard C"),
         async (del,b_interaction,d) => {
             for(const Del of dels) Del();
             dels = [];
             selected[2] = b_interaction.values[0];
+            stations[station].shards = selected;
             b_interaction.update(await wb.getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
@@ -98,14 +107,14 @@ async function editting(interaction,station,stations,dels,data) {
     const imprint = u.msgelem.messageElement(
         new ButtonBuilder()
             .setLabel("IMPRINT")
-            .setDisabled(selected.length < 3)
-            .setStyle(ButtonStyle.Danger),
+            .setDisabled(selected.length < 3 || !draft)
+            .setStyle((selected.length < 3 || !draft) ? ButtonStyle.Secondary : ButtonStyle.Danger),
         async (del,b_interaction,d) => {
             for(const Del of dels) Del();
             dels = [];
-            pet.shards = [];
-            await pets.editPet(interaction.guild.id,interaction.user.id,stations[station].editting,"shards",`object:["${stations[station].shards.join("\",\"")}"]`);
+            await pets.editPet(interaction.guild.id,interaction.user.id,stations[station].editting,"shards",`object:["${selected.join("\",\"")}"]`);
             stations[station] = {editting:stations[station].editting};
+            for(var i = 0; i < selected.length; i++) if(pet?.shards?.[i] != selected[i]) u.sbdb.updateGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.shards.${selected[i]}`,u.sbdb.getGuildProperty(interaction.guild.id,`inventories.${interaction.user.id}.shards.${selected[i]}`)-1)
             b_interaction.update(await wb.getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
@@ -117,7 +126,7 @@ async function editting(interaction,station,stations,dels,data) {
         async (del,b_interaction,d) => {
             for(const Del of dels) Del();
             dels = [];
-            stations[station].shards = null; // Forces regrab
+            stations[station].shards = undefined; // Forces regrab
             b_interaction.update(await wb.getMessage(interaction,station,stations,dels));
         },
         [interaction.user.id]
@@ -130,7 +139,7 @@ async function editting(interaction,station,stations,dels,data) {
     dels.push(imprint.del);
     dels.push(revert.del);
 
-    const renderShards = stations[station].shards;
+    const renderShards = selected.slice();
     for(var i = 0; i < renderShards.length; i++) {
         if(typeof renderShards[i] !== "string") renderShards[i] = "none";
     } // Prevents <1 blank item>

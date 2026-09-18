@@ -107,5 +107,7 @@
 
     },
 
-    "discontinued": ["strange","angry"]
+    "discontinued": ["strange","angry"],
+    "invisible": ["null"]
+    
 }

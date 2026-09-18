@@ -82,7 +82,13 @@ module.exports = {
         }
         return result.join("\n");
 
-    }
+    },
+
+    allTypeDatas() {
+        
+        // const types = 
+
+    },
 
 }
 
