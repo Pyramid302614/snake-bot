@@ -73,7 +73,7 @@ async function homeButton(interaction,station,stations,dels) {
         async (del,b_interaction,data) => {
             for(const Del of dels) Del();
             dels = [];
-            await b_interaction.update(await getMessage(b_interaction,station,stations,dels));
+            await b_interaction.update(await getMessage(b_interaction,0,stations,dels));
         },
         [interaction.user.id]
     );
