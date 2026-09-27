@@ -13,63 +13,63 @@
         "regular": {
             "pretty": "Regular Snake",
             "shardPretty": "Regular Shard",
-            "chance": 0.40,
+            "chance": 0.30,
             "minAge": 0,
             "imprints": ["body","tongue","eyes"]
         },
         "rare": {
             "pretty": "Rare Snake",
             "shardPretty": "Rare Shard",
-            "chance": 0.40,
+            "chance": 0.30,
             "minAge": 0,
             "imprints": ["body","tongue","eyes"]
         },
         "silly": {
             "pretty": "Silly Snake",
             "shardPretty": "Silly Shard",
-            "change": 0.40,
+            "chance": 0.30,
             "minAge": 0,
             "imprints": ["eyes","tongue","body"]
         },
         "coral": {
             "pretty": "Coral Snake",
             "shardPretty": "Coral Shard",
-            "chance": 0.40,
+            "chance": 0.30,
             "minAge": 0,
             "imprints": ["body","tongue","eyes"]
         },
         "fire": {
             "pretty": "Fire Snake",
             "shardPretty": "Fire Shard",
-            "chance": 0.40,
+            "chance": 0.30,
             "minAge": 1,
             "imprints": ["body","eyes","tongue"]
         },
         "pine": {
             "pretty": "Pine Snake",
             "shardPretty": "Pine Shard",
-            "chance": 0.40,
+            "chance": 0.30,
             "minAge": 5,
             "imprints": ["body","tongue","eyes"]
         },
         "happy": {
             "pretty": "Happy Snake",
             "shardPretty": "Happy Shard",
-            "chance": 0.50,
+            "chance": 0.30,
             "minAge": 10,
             "imprints": ["eyes","body","tongue"]
         },
         "sloppy": {
             "pretty": "Sloppy Snake",
             "shardPretty": "Sloppy Shard",
-            "chance": 0.70,
+            "chance": 0.30,
             "minAge": 20,
             "imprints": []
         },
         "squared": {
             "pretty": "Snake²",
             "shardPretty": "Shard²",
-            "chance": 0.80,
+            "chance": 0.50,
             "minAge": 50,
             "imprints": ["glow","body","eyes","tongue"]
         },

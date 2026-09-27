@@ -86,7 +86,14 @@ module.exports = {
 
     allTypeDatas() {
         
-        // const types = 
+        const typesFile = JSON.parse(fs.readFileSync(dataDir,"utf-8"));
+        const datas = [];
+
+        for(const type of Object.keys(typesFile.types))
+            if(!typesFile.invisible.includes(type) && !typesFile.discontinued.includes(type))
+                datas[type] = typesFile.types[type];
+    
+        return datas;
 
     },
 
