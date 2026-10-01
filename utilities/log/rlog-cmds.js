@@ -188,6 +188,15 @@ module.exports = {
 
         return require("../../systems/pets/pets.js").getCharacteristics(args);
 
+    },
+
+    async announce(msg,args) {
+        
+        var replied = msg.reference;
+        replied = await (await (await u.cache.client.guilds.fetch(replied.guildId)).channels.fetch(replied.channelId)).messages.fetch(replied.messageId);
+        require("../../systems/announcements/announcements.js").announce(replied.content.split("\n")[0],replied.content.split("\n").slice(1).join("\n"));
+        return "Announcement request sent :)";
+
     }
 
     // async test(msg,args) {

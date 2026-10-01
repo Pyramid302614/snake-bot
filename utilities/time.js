@@ -12,7 +12,7 @@ module.exports = {
         return v*60*1000;
     },
 
-    format: format,
+    format: formatDuration,
     defaultFormat: defaultFormat
 
 }
@@ -27,7 +27,7 @@ const exclams = {
     "ms": 1,
 };
 
-function format(format,milli) {
+function formatDuration(format,milli) {
 
     if(!milli) { milli = format; format = defaultFormat; }
 
