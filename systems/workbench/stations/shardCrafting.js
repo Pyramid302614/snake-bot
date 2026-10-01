@@ -5,7 +5,7 @@ const wb = require("../../../systems/workbench/wb.js");
 
 module.exports = {
 
-    container(interaction,station,stations,dels) {
+    async container(interaction,station,stations,dels) {
 
         // Variables and stuff
         const options = [];
@@ -33,7 +33,7 @@ module.exports = {
 
         return new ContainerBuilder()
 
-            .addActionRowComponents(wb.fetchToolbar(interaction,station,stations,dels))
+            .addActionRowComponents(await wb.fetchToolbar(interaction,station,stations,dels))
             .addSeparatorComponents(new SeparatorBuilder())
 
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(`
@@ -48,13 +48,13 @@ module.exports = {
                 [{
                     type: 1,
                     components: [
-                        dropdown(interaction,station,stations,options,dels).data,
+                        await dropdown(interaction,station,stations,options,dels).data,
                     ],
                 },
                 {
                     type: 1,
                     components: [
-                        craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes,dels).data,
+                        await craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes,dels).data,
                     ]
                 }]
             )
@@ -90,7 +90,7 @@ module.exports = {
 
 }
 
-function craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes,dels) {
+async function craftButton(interaction,station,stations,data,snakes,amount,sufficientSnakes,dels) {
 
     const obj = u.msgelem.messageElement(
         new ButtonBuilder()
@@ -111,10 +111,7 @@ function craftButton(interaction,station,stations,data,snakes,amount,sufficientS
                 currentAmountOfShards + 1
             );
 
-            await interaction.update({
-                components: [wb.getContainer(interaction,station,stations,dels)],
-                flags: [MessageFlags.IsComponentsV2]
-            });
+            await interaction.update(await wb.getMessage(interaction,station,stations,dels));
 
             await interaction.followUp({
                 embeds: [
@@ -133,7 +130,7 @@ function craftButton(interaction,station,stations,data,snakes,amount,sufficientS
 
 }
 
-function dropdown(interaction,station,stations,options,dels) {
+async function dropdown(interaction,station,stations,options,dels) {
 
     const obj = u.msgelem.messageElement(
         new StringSelectMenuBuilder()
@@ -153,9 +150,7 @@ function dropdown(interaction,station,stations,options,dels) {
             dels = [];
             
             stations[station].selected = interaction.values[0]; // Should always be 1 in length
-            await interaction.update({
-                components: [wb.getContainer(interaction,station,stations,dels)]
-            });
+            await interaction.update(await wb.getMessage(interaction,station,stations,dels));
 
         },
         [interaction.user.id]

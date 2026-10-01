@@ -4,11 +4,11 @@ const u = require("../../../u")
 
 module.exports = {
 
-    container(interaction,station,stations,dels) {
+    async container(interaction,station,stations,dels) {
 
         return new ContainerBuilder()
 
-            .addActionRowComponents(wb.fetchToolbar(interaction,station,stations,dels))
+            .addActionRowComponents(await wb.fetchToolbar(interaction,station,stations,dels))
             .addSeparatorComponents(new SeparatorBuilder())
             
             .addTextDisplayComponents(

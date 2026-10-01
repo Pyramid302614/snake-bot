@@ -29,3 +29,4 @@ Snake and Pyramid both dislike portobello mushrooms.
 Snake Bot's minigame engine was tested over 700 times before being released
 Pong was tested hundreds of times before being released as an official minigame
 The first minigame to be created was Snake, which was much more difficult than it is today.
+Pyramid doesn't know that SnakeIGuess added this fact, but he will probably find out once he sees the changes commited in Github.

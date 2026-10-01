@@ -11,7 +11,7 @@ module.exports = {
         const m = msg.content.slice(msg.content.split(".")[0].length+1);
 
         const cmd = m.split(":")[0];
-        const args = (m.split(":").length == 1)?[]:(m.slice(m.split(":")[0].length+1)).split(",");
+        const args = (m.split(":").length == 1)?[]:(m.slice(m.split(":")[0].length+1)).split(",,");
 
         for(let i = 0; i < args.length; i++) {
             args[i] = await parseValue(args[i]); // Is it still Theseus's ship?
@@ -23,7 +23,7 @@ module.exports = {
         }
         try {
             const ret = await require("./rlog-cmds.js")[cmd](msg,args);
-            if(ret) msg.reply(ret?.toString()??ret);
+            if(ret) msg.reply(ret.raw?ret:(ret?.toString()??ret));
         } catch(e) {
             LOG.err("Error executing RatteLog command ("+m+")"+": %s",e,"rattlelog");
         }

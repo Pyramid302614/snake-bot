@@ -52,7 +52,7 @@ module.exports = {
                         .setCustomId("action:1092")
                 ]}],
                 files: [
-                    new AttachmentBuilder(u.cache.sbdir+"/assets/"+require("../types.json").assetsdir+"/snakes/"+snake.name+".png",{ name: snake.name+".png" })
+                    new AttachmentBuilder(u.cache.sbdir+"/assets/"+require("../types.json").assetsdir+"/snakes/"+snake.name+"/full.png",{ name: snake.name+".png" })
                 ]
             },
             code: 0
@@ -85,7 +85,7 @@ module.exports = {
                         .setCustomId("action:1092")
                 ]}],
                 files: [
-                    new AttachmentBuilder(u.cache.sbdir+"/assets/"+require("../types.json").assetsdir+"/snakes/"+snake.name+".png",{ name: snake.name+".png" })
+                    new AttachmentBuilder(u.cache.sbdir+"/assets/"+require("../types.json").assetsdir+"/snakes/"+snake.name+"/full.png",{ name: snake.name+".png" })
                 ]
             },
             code: 0
@@ -118,7 +118,7 @@ module.exports = {
             };
             const content = evaluate(catchMessage,evaluationArguments);
             
-            const image = new AttachmentBuilder(`${u.cache.sbdir}/assets/${require("../types.json").assetsdir}/snakes/${data.snake.name}.png`,`${data.snake.name}.png`);
+            const image = new AttachmentBuilder(`${u.cache.sbdir}/assets/${require("../types.json").assetsdir}/snakes/${data.snake.name}/full.png`,{ name: `${data.snake.name}.png` });
 
             return {
 
