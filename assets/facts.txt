@@ -5,8 +5,8 @@ The snake in the Snake Bot pfp is named Pinyon.
 Snake Bot was built on years of experience with Discord Bot developing
 Snake Bot was coded with Javascript, using the popular library Discord.js
 Python is not real
-Snake Bot was founded by @snakeiguess, but coded entirely by @pyramid302614
-All art is homemade in Pixlr X
+Snake Bot was founded by snakeiguess, but coded entirely by pyramid
+All art is homemade in Inkscape
 Snake Bot's code is 100% human-coded. Nothing is AI generated!
 You can find Snake Bot's source code at https://github.com/Pyramid302614/snake-bot
 @snakeiguess likes #0bff00 strangely enough
@@ -17,9 +17,10 @@ Snake Bot ME took a full month of coding to work. The first full release was InD
 Snake Bot ME stands for Snake Bot Minigame Engine
 Snake Bot's website runs on Cloudflare!
 The Snake Bot project started development on March 10th, 2026, but actual bot didn't start development for 5 long days.
+Snake Bot's core functionality took 2 months to make.
 While the official Snake Bot server is owned by the lead designer, snakeiguess, the development server is owned by its developer, pyramid302614!
-Snake Bot's lead designer, snakeiguess, is notorious for being petty by deleting messages clogging a channel with specific use
-Snake Bot's lead developer, pyramid302614, is notorious for using stylish words for replies, such as "lowkenuinely" or "sobinator"
+Snakeiguess is notorious for being petty by deleting messages clogging a channel with specific use
+Pyramid is notorious for using stylish words for replies, such as "lowkenuinely" or "sobinator"
 Nobody truley knows the origin of tin can
 The test version of Snake Bot, used to test code before updating it to the official bot, is called Beetroot
 Snake Bot is an indirect competitor of Cat Bot
